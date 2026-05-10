@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CitizenIQ – US Citizenship Test Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1a56db;
+    --blue-light: #e8f0fe;
+    --blue-mid: #3b82f6;
+    --red: #e02424;
+    --red-light: #fde8e8;
+    --green: #057a55;
+    --green-light: #def7ec;
+    --gold: #e3a008;
+    --gold-light: #fdf3d0;
+    --gray-bg: #f4f5f7;
+    --gray-mid: #9ca3af;
+    --gray-dark: #374151;
+    --white: #ffffff;
+    --radius: 18px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 16px rgba(0,0,0,0.10);
+    --shadow-btn: 0 4px 0px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: var(--gray-bg);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ===== SCREEN MANAGEMENT ===== */
+  .screen { display: none; flex-direction: column; height: 100%; }
+  .screen.active { display: flex; }
+
+  /* ===== HOME SCREEN ===== */
+  #home {
+    background: linear-gradient(160deg, #1e3a8a 0%, #1a56db 60%, #3b82f6 100%);
+    align-items: center;
+    padding: 60px 28px 40px;
+    gap: 0;
+  }
+
+  .flag-emoji { font-size: 72px; margin-bottom: 12px; animation: wave 2s ease-in-out infinite; }
+  @keyframes wave {
+    0%,100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+  }
+
+  .app-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 42px;
+    color: white;
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+
+  .app-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.80);
+    text-align: center;
+    margin-bottom: 40px;
+    max-width: 260px;
+    line-height: 1.5;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 36px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stat-pill {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.30);
+    border-radius: 40px;
+    padding: 8px 18px;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .cat-card {
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.30);
+    border-radius: var(--radius);
+    padding: 18px 14px;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s;
+    text-align: center;
+    color: white;
+  }
+
+  .cat-card:active { transform: scale(0.96); }
+  .cat-card.selected { background: rgba(255,255,255,0.30); border-color: white; }
+
+  .cat-icon { font-size: 28px; margin-bottom: 6px; }
+  .cat-name { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; }
+  .cat-count { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 18px;
+    background: white;
+    color: var(--blue);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 0px rgba(0,0,0,0.15);
+    transition: transform 0.1s, box-shadow 0.1s;
+    letter-spacing: 0.2px;
+  }
+
+  .btn-primary:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0px rgba(0,0,0,0.15);
+  }
+
+  /* ===== QUIZ SCREEN ===== */
+  #quiz { background: var(--gray-bg); }
+
+  .quiz-header {
+    background: white;
+    padding: 16px 20px 12px;
+    border-bottom: 2px solid var(--gray-bg);
+  }
+
+  .quiz-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .quiz-cat-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 4px 12px;
+    border-radius: 40px;
+  }
+
+  .hearts {
+    display: flex;
+    gap: 3px;
+    font-size: 18px;
+  }
+
+  .score-badge {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: var(--gold);
+    font-size: 15px;
+    background: var(--gold-light);
+    padding: 4px 12px;
+    border-radius: 40px;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 40px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--blue-mid));
+    border-radius: 40px;
+    transition: width 0.4s ease;
+  }
+
+  .question-area {
+    flex: 1;
+    padding: 24px 20px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .q-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gray-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .q-text {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--gray-dark);
+    line-height: 1.35;
+    margin-bottom: 28px;
+    flex: 1;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .option-btn {
+    width: 100%;
+    padding: 16px 18px;
+    background: white;
+    border: 2.5px solid #e5e7eb;
+    border-radius: var(--radius-sm);
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-dark);
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 0 #e5e7eb;
+  }
+
+  .option-btn:not(.disabled):active { transform: scale(0.98); }
+
+  .option-letter {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--gray-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--gray-mid);
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .option-btn.correct {
+    border-color: var(--green);
+    background: var(--green-light);
+    box-shadow: 0 2px 0 #84e1bc;
+  }
+  .option-btn.correct .option-letter {
+    background: var(--green);
+    color: white;
+  }
+
+  .option-btn.wrong {
+    border-color: var(--red);
+    background: var(--red-light);
+    box-shadow: 0 2px 0 #f8b4b4;
+  }
+  .option-btn.wrong .option-letter {
+    background: var(--red);
+    color: white;
+  }
+
+  .option-btn.disabled { cursor: default; }
+
+  /* ===== FEEDBACK BANNER ===== */
+  .feedback-banner {
+    padding: 16px 20px 20px;
+    border-top: 2px solid transparent;
+    transition: all 0.3s;
+    display: none;
+  }
+
+  .feedback-banner.correct {
+    display: block;
+    background: var(--green-light);
+    border-top-color: #84e1bc;
+  }
+
+  .feedback-banner.wrong {
+    display: block;
+    background: var(--red-light);
+    border-top-color: #f8b4b4;
+  }
+
+  .fb-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .feedback-banner.correct .fb-title { color: var(--green); }
+  .feedback-banner.wrong .fb-title { color: var(--red); }
+
+  .fb-fact {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .btn-continue {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-continue:active { transform: translateY(3px); box-shadow: none !important; }
+  .feedback-banner.correct .btn-continue { background: var(--green); color: white; box-shadow: 0 4px 0 #046c4e; }
+  .feedback-banner.wrong .btn-continue { background: var(--red); color: white; box-shadow: 0 4px 0 #9b1c1c; }
+
+  /* ===== RESULTS SCREEN ===== */
+  #results {
+    background: white;
+    align-items: center;
+    padding: 48px 28px 40px;
+    text-align: center;
+  }
+
+  .result-emoji { font-size: 80px; margin-bottom: 16px; }
+
+  .result-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 32px;
+    color: var(--gray-dark);
+    margin-bottom: 8px;
+  }
+
+  .result-sub {
+    font-size: 15px;
+    color: var(--gray-mid);
+    margin-bottom: 32px;
+    max-width: 260px;
+    line-height: 1.6;
+  }
+
+  .result-score-ring {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 8px solid var(--blue-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 32px;
+    position: relative;
+  }
+
+  .result-pct {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 36px;
+    color: var(--blue);
+  }
+
+  .result-label { font-size: 12px; color: var(--gray-mid); font-weight: 700; }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 32px;
+  }
+
+  .result-stat {
+    background: var(--gray-bg);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+  }
+
+  .rs-val {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 26px;
+    color: var(--gray-dark);
+  }
+
+  .rs-label { font-size: 12px; color: var(--gray-mid); font-weight: 600; margin-top: 2px; }
+
+  .btn-retry {
+    width: 100%;
+    padding: 18px;
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #1e40af;
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-bottom: 12px;
+  }
+  .btn-retry:active { transform: translateY(3px); box-shadow: none; }
+
+  .btn-home {
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    color: var(--blue);
+    border: 2.5px solid var(--blue-light);
+    border-radius: var(--radius);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-home:active { background: var(--blue-light); }
+
+  /* ===== STREAKS / XP animations ===== */
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .pop { animation: popIn 0.35s ease forwards; }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  .shake { animation: shake 0.35s ease; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== HOME SCREEN ===== -->
+  <div id="home" class="screen active">
+    <div class="flag-emoji">🇺🇸</div>
+    <div class="app-title">CitizenIQ</div>
+    <div class="app-sub">Master the 100 official USCIS civics questions with bite-size lessons</div>
+
+    <div class="stats-row">
+      <div class="stat-pill" id="streak-pill">🔥 <span id="streak-count">0</span> day streak</div>
+      <div class="stat-pill">⭐ <span id="xp-count">0</span> XP</div>
+    </div>
+
+    <div class="category-grid">
+      <div class="cat-card selected" data-cat="all">
+        <div class="cat-icon">📚</div>
+        <div class="cat-name">All Topics</div>
+        <div class="cat-count">100 questions</div>
+      </div>
+      <div class="cat-card" data-cat="government">
+        <div class="cat-icon">🏛️</div>
+        <div class="cat-name">Government</div>
+        <div class="cat-count">36 questions</div>
+      </div>
+      <div class="cat-card" data-cat="history">
+        <div class="cat-icon">📜</div>
+        <div class="cat-name">History</div>
+        <div class="cat-count">34 questions</div>
+      </div>
+      <div class="cat-card" data-cat="rights">
+        <div class="cat-icon">⚖️</div>
+        <div class="cat-name">Rights & Duties</div>
+        <div class="cat-count">30 questions</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="start-btn">Start Quiz 🚀</button>
+  </div>
+
+  <!-- ===== QUIZ SCREEN ===== -->
+  <div id="quiz" class="screen">
+    <div class="quiz-header">
+      <div class="quiz-top">
+        <div class="quiz-cat-badge" id="cat-badge">All Topics</div>
+        <div class="hearts" id="hearts">❤️❤️❤️</div>
+        <div class="score-badge">⭐ <span id="live-score">0</span></div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="question-area">
+      <div class="q-number" id="q-number">Question 1 of 10</div>
+      <div class="q-text" id="q-text">Loading...</div>
+      <div class="options-list" id="options-list"></div>
+    </div>
+
+    <div class="feedback-banner" id="feedback-banner">
+      <div class="fb-title" id="fb-title">Correct!</div>
+      <div class="fb-fact" id="fb-fact"></div>
+      <button class="btn-continue" id="continue-btn">Continue</button>
+    </div>
+  </div>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <div id="results" class="screen">
+    <div class="result-emoji" id="result-emoji">🎉</div>
+    <div class="result-title" id="result-title">Great job!</div>
+    <div class="result-sub" id="result-sub">You're on your way to becoming a citizen!</div>
+
+    <div class="result-score-ring">
+      <div class="result-pct" id="result-pct">0%</div>
+      <div class="result-label">SCORE</div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-stat">
+        <div class="rs-val" id="r-correct">0</div>
+        <div class="rs-label">✅ Correct</div>
+      </div>
+      <div class="result-stat">
+        <div class="rs-val" id="r-wrong">0</div>
+        <div class="rs-label">❌ Missed</div>
+      </div>
+      <div class="result-stat">
+        <div class="rs-val" id="r-xp">0</div>
+        <div class="rs-label">⭐ XP earned</div>
+      </div>
+      <div class="result-stat">
+        <div class="rs-val" id="r-streak">0</div>
+        <div class="rs-label">🔥 Day streak</div>
+      </div>
+    </div>
+
+    <button class="btn-retry" id="retry-btn">Play Again</button>
+    <button class="btn-home" id="home-btn">Choose Category</button>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  // ===== GOVERNMENT =====
+  { cat:"government", q:"What is the supreme law of the land?", a:"The Constitution", opts:["The Declaration of Independence","The Constitution","The Bill of Rights","The Federalist Papers"], fact:"The U.S. Constitution, ratified in 1788, is the supreme law. All other laws must comply with it." },
+  { cat:"government", q:"What do we call the first ten amendments to the Constitution?", a:"The Bill of Rights", opts:["The Declaration of Rights","The Bill of Rights","The Articles of Freedom","The Constitutional Amendments"], fact:"The Bill of Rights was ratified in 1791 and guarantees fundamental rights like freedom of speech and religion." },
+  { cat:"government", q:"How many amendments does the Constitution have?", a:"27", opts:["10","21","27","32"], fact:"The Constitution has 27 amendments. The most recent, the 27th, was ratified in 1992 regarding Congressional pay." },
+  { cat:"government", q:"What are the two parts of the U.S. Congress?", a:"The Senate and House", opts:["The House and Supreme Court","The Senate and Presidency","The Senate and House","The Congress and Cabinet"], fact:"Congress has two chambers: the Senate (100 senators, 2 per state) and the House of Representatives (435 members)." },
+  { cat:"government", q:"How many U.S. senators are there?", a:"100", opts:["50","100","435","535"], fact:"There are 100 U.S. senators – two from each of the 50 states. Senators serve 6-year terms." },
+  { cat:"government", q:"We elect a U.S. representative for how many years?", a:"Two years", opts:["Two years","Four years","Six years","Eight years"], fact:"Representatives serve 2-year terms. Elections for all 435 House seats occur every even-numbered year." },
+  { cat:"government", q:"Who is in charge of the executive branch?", a:"The President", opts:["The Speaker of the House","The President","The Chief Justice","The Senate Majority Leader"], fact:"The President leads the executive branch, which also includes the Vice President and Cabinet departments." },
+  { cat:"government", q:"For how many years do we elect a President?", a:"Four years", opts:["Two years","Four years","Six years","Eight years"], fact:"Presidents serve 4-year terms. The 22nd Amendment limits them to two terms (8 years total)." },
+  { cat:"government", q:"What is the highest court in the United States?", a:"The Supreme Court", opts:["The Court of Appeals","The Federal District Court","The Supreme Court","The Constitutional Court"], fact:"The Supreme Court has 9 justices appointed for life. It has the final say on constitutional questions." },
+  { cat:"government", q:"How many justices are on the Supreme Court?", a:"Nine", opts:["Five","Seven","Nine","Eleven"], fact:"Nine justices sit on the Supreme Court: one Chief Justice and eight Associate Justices." },
+  { cat:"government", q:"Under our Constitution, some powers belong to the federal government. What is one power of the federal government?", a:"To print money", opts:["To issue driver's licenses","To print money","To provide schooling","To set local speed limits"], fact:"Printing money is an exclusive federal power. States cannot create their own currency." },
+  { cat:"government", q:"What is the economic system in the United States?", a:"Capitalist economy", opts:["Socialist economy","Communist economy","Capitalist economy","Mixed command economy"], fact:"The U.S. has a capitalist (free market) economy where private individuals and businesses own the means of production." },
+  { cat:"government", q:"What is the 'rule of law'?", a:"Everyone must follow the law", opts:["Only citizens must follow the law","The government can ignore the law","Everyone must follow the law","Laws only apply in courts"], fact:"The rule of law means that no one—including the President—is above the law. It is a foundation of American democracy." },
+  { cat:"government", q:"Name one branch or part of the government.", a:"Executive", opts:["Presidential","Executive","Judicial Council","Military"], fact:"The three branches are: Executive (President), Legislative (Congress), and Judicial (Supreme Court)." },
+  { cat:"government", q:"What stops one branch of government from becoming too powerful?", a:"Checks and balances", opts:["The President's veto","Checks and balances","The Bill of Rights","The Electoral College"], fact:"Checks and balances is a system where each branch can limit the power of the others to prevent any one branch from dominating." },
+  { cat:"government", q:"Who is the Commander in Chief of the military?", a:"The President", opts:["The Secretary of Defense","The Chairman of the Joint Chiefs","The President","The Vice President"], fact:"The President is Commander in Chief of the U.S. Armed Forces, as stated in Article II of the Constitution." },
+  { cat:"government", q:"Who signs bills to become laws?", a:"The President", opts:["The Speaker of the House","The President","The Chief Justice","The Senate Majority Leader"], fact:"After both chambers of Congress pass a bill, the President can sign it into law or veto it." },
+  { cat:"government", q:"What does the judicial branch do?", a:"Reviews laws", opts:["Makes federal laws","Reviews laws","Commands the military","Collects taxes"], fact:"The judicial branch, headed by the Supreme Court, interprets laws and determines if they are constitutional." },
+  { cat:"government", q:"What are two Cabinet-level positions?", a:"Secretary of State and Secretary of Defense", opts:["Attorney General and Supreme Court Justice","Secretary of State and Secretary of Defense","Governor and Mayor","Speaker and Vice President"], fact:"The Cabinet advises the President. It includes the Vice President and heads of 15 executive departments." },
+  { cat:"government", q:"How many total voting members does the House of Representatives have?", a:"435", opts:["100","300","435","535"], fact:"The House has 435 voting members. Each state gets seats based on its population, determined by the census every 10 years." },
+
+  // ===== HISTORY =====
+  { cat:"history", q:"What happened at the Constitutional Convention?", a:"The Constitution was written", opts:["The Declaration was signed","The Constitution was written","The Bill of Rights was passed","The Civil War ended"], fact:"The Constitutional Convention met in Philadelphia in 1787. Delegates drafted the U.S. Constitution to replace the Articles of Confederation." },
+  { cat:"history", q:"When was the Constitution written?", a:"1787", opts:["1776","1783","1787","1791"], fact:"The Constitution was written in 1787 and ratified in 1788. It became the supreme law of the land." },
+  { cat:"history", q:"The Federalist Papers supported the passage of the U.S. Constitution. Name one of the writers.", a:"James Madison", opts:["Thomas Jefferson","Benjamin Franklin","James Madison","John Adams"], fact:"The Federalist Papers were written by Alexander Hamilton, James Madison, and John Jay under the pen name 'Publius.'" },
+  { cat:"history", q:"What is one thing Benjamin Franklin is famous for?", a:"U.S. diplomat", opts:["First President","U.S. diplomat","Wrote the Constitution","Led the Continental Army"], fact:"Benjamin Franklin was a U.S. diplomat, inventor (lightning rod, bifocals), and one of the Founding Fathers." },
+  { cat:"history", q:"Who is the 'Father of Our Country'?", a:"George Washington", opts:["John Adams","Thomas Jefferson","George Washington","Benjamin Franklin"], fact:"George Washington is called the 'Father of Our Country.' He commanded the Continental Army and became the first President." },
+  { cat:"history", q:"Who was the first President?", a:"George Washington", opts:["John Adams","Thomas Jefferson","George Washington","James Madison"], fact:"George Washington served as the first President from 1789 to 1797. He set many precedents for the office." },
+  { cat:"history", q:"What territory did the United States buy from France in 1803?", a:"The Louisiana Territory", opts:["The Texas Territory","The Alaska Territory","The Louisiana Territory","The Florida Territory"], fact:"The Louisiana Purchase doubled the size of the U.S. for $15 million. Napoleon sold it to fund his European wars." },
+  { cat:"history", q:"Name one war fought by the United States in the 1800s.", a:"Civil War", opts:["World War I","The Korean War","Civil War","The Cold War"], fact:"The Civil War (1861-1865) was fought between the Union and Confederate states, primarily over slavery." },
+  { cat:"history", q:"What did the Emancipation Proclamation do?", a:"Freed the slaves", opts:["Ended World War I","Gave women the right to vote","Freed the slaves","Created the income tax"], fact:"President Lincoln issued the Emancipation Proclamation on January 1, 1863, declaring enslaved people in Confederate states to be free." },
+  { cat:"history", q:"What did Susan B. Anthony do?", a:"Fought for women's rights", opts:["Led the civil rights movement","Was the first female senator","Fought for women's rights","Wrote the Constitution"], fact:"Susan B. Anthony was a leader of the women's suffrage movement. She was arrested for voting illegally in 1872." },
+  { cat:"history", q:"Name one war fought by the United States in the 1900s.", a:"World War II", opts:["The Revolutionary War","The Civil War","World War II","The Mexican-American War"], fact:"The U.S. fought in WWI, WWII, Korea, and Vietnam in the 1900s. The U.S. entered WWII after Pearl Harbor in 1941." },
+  { cat:"history", q:"Who was President during World War I?", a:"Woodrow Wilson", opts:["Theodore Roosevelt","William Taft","Woodrow Wilson","Calvin Coolidge"], fact:"Woodrow Wilson was president during WWI (1913-1921). He proposed the 14 Points and the League of Nations." },
+  { cat:"history", q:"Who was President during the Great Depression and World War II?", a:"Franklin Roosevelt", opts:["Herbert Hoover","Franklin Roosevelt","Harry Truman","Dwight Eisenhower"], fact:"FDR led the U.S. through the Depression (New Deal) and WWII. He served the longest of any president: 1933-1945." },
+  { cat:"history", q:"What was the main concern of the United States during the Cold War?", a:"Communism", opts:["Terrorism","Nazism","Communism","Nuclear war with China"], fact:"The Cold War (1947-1991) was a political and military competition between the U.S. and Soviet Union over the spread of communism." },
+  { cat:"history", q:"What movement tried to end racial discrimination?", a:"Civil rights movement", opts:["The suffrage movement","The labor movement","Civil rights movement","The progressive movement"], fact:"The civil rights movement of the 1950s-1960s fought racial segregation and discrimination. Key leaders included Dr. Martin Luther King Jr." },
+  { cat:"history", q:"Why did colonists fight the British?", a:"Because of high taxes", opts:["For religious freedom","Because of high taxes","To gain free land","To help France"], fact:"The American Revolution began largely due to taxation without representation — the colonists had no voice in British Parliament." },
+  { cat:"history", q:"When was the Declaration of Independence adopted?", a:"July 4, 1776", opts:["July 4, 1776","June 15, 1775","September 17, 1787","March 4, 1789"], fact:"Independence Day, July 4, 1776, marks when the Continental Congress formally adopted the Declaration of Independence." },
+  { cat:"history", q:"There were 13 original states. Name three.", a:"Virginia, Massachusetts, New York", opts:["Virginia, Massachusetts, New York","Texas, California, Florida","Ohio, Indiana, Illinois","Georgia, Alabama, Tennessee"], fact:"The 13 original colonies that became states were: Delaware, Pennsylvania, New Jersey, Georgia, Connecticut, Massachusetts, Maryland, South Carolina, New Hampshire, Virginia, New York, North Carolina, and Rhode Island." },
+  { cat:"history", q:"What is one reason colonists came to America?", a:"Freedom", opts:["To find gold only","Freedom","Escape from war only","Better climate"], fact:"Colonists came to America for many reasons: religious freedom, economic opportunity, political freedom, and to escape persecution." },
+  { cat:"history", q:"Who wrote the Declaration of Independence?", a:"Thomas Jefferson", opts:["George Washington","Benjamin Franklin","Thomas Jefferson","John Adams"], fact:"Thomas Jefferson was the primary author of the Declaration of Independence. A committee including Franklin and Adams also helped." },
+
+  // ===== RIGHTS =====
+  { cat:"rights", q:"What is freedom of religion?", a:"You can practice any religion, or not practice a religion", opts:["You must follow the state religion","The government chooses your religion","You can practice any religion, or not practice a religion","Only Christians are free to worship"], fact:"The First Amendment protects freedom of religion. The government cannot establish an official religion or prevent the free exercise of religion." },
+  { cat:"rights", q:"What is one right or freedom from the First Amendment?", a:"Freedom of speech", opts:["Right to bear arms","Freedom of speech","Right to a fair trial","Right to vote"], fact:"The First Amendment protects five freedoms: speech, religion, press, assembly, and the right to petition the government." },
+  { cat:"rights", q:"How many amendments does the Constitution have protecting citizens' rights?", a:"27 (including the Bill of Rights)", opts:["10","13","21","27 (including the Bill of Rights)"], fact:"All 27 constitutional amendments deal with rights or government structure, with the first 10 (Bill of Rights) being the most focused on individual rights." },
+  { cat:"rights", q:"What do we show loyalty to when we say the Pledge of Allegiance?", a:"The United States", opts:["The President","The Flag only","The United States","The Constitution only"], fact:"When reciting the Pledge, we pledge allegiance to the flag AND to the Republic (the United States of America) for which it stands." },
+  { cat:"rights", q:"What is one promise you make when you become a United States citizen?", a:"Give up loyalty to other countries", opts:["Never leave the country","Always vote in elections","Give up loyalty to other countries","Learn a new language"], fact:"In the Oath of Allegiance, new citizens promise to renounce foreign allegiances, support the Constitution, and serve the country if needed." },
+  { cat:"rights", q:"How old do citizens have to be to vote for President?", a:"18 and older", opts:["16 and older","18 and older","21 and older","25 and older"], fact:"The 26th Amendment (1971) lowered the voting age from 21 to 18. Before that, 18-20 year olds could be drafted but couldn't vote." },
+  { cat:"rights", q:"What are two rights of everyone living in the United States?", a:"Freedom of expression and freedom of worship", opts:["Right to vote and run for office","Freedom of expression and freedom of worship","Free healthcare and free education","Right to bear arms and free speech only"], fact:"All people in the U.S. (citizens and non-citizens) have rights including: freedom of expression, speech, assembly, press, petition, and worship." },
+  { cat:"rights", q:"What do we call the first 10 amendments to the Constitution?", a:"The Bill of Rights", opts:["The Bill of Freedom","The Constitutional Amendments","The Bill of Rights","The Rights of Man"], fact:"The Bill of Rights was added in 1791. James Madison drafted these amendments to address concerns that the Constitution didn't protect individual liberties." },
+  { cat:"rights", q:"What is one responsibility that is only for United States citizens?", a:"Serve on a jury", opts:["Pay taxes","Obey the law","Serve on a jury","Respect others"], fact:"Jury duty is a right and responsibility of U.S. citizens. Other responsibilities unique to citizens include serving in the military and voting in federal elections." },
+  { cat:"rights", q:"Name one right only for United States citizens.", a:"Vote in a federal election", opts:["Freedom of speech","Pay taxes","Vote in a federal election","Drive a car"], fact:"Only U.S. citizens can vote in federal elections. Citizens can also run for federal office and obtain a U.S. passport." },
+  { cat:"rights", q:"What are two ways that Americans can participate in their democracy?", a:"Vote and run for office", opts:["Vote and run for office","Pay taxes and obey laws","Join the military and attend church","Write letters and move to a new state"], fact:"Citizens can participate by voting, running for office, joining a political party, contacting officials, joining civic groups, and staying informed." },
+  { cat:"rights", q:"When is the last day you can send in federal income tax forms?", a:"April 15", opts:["January 1","March 31","April 15","June 30"], fact:"The federal tax deadline is April 15. You can file an extension, but taxes owed must still be paid by that date to avoid penalties." },
+  { cat:"rights", q:"When must all men register for the Selective Service?", a:"At age 18", opts:["At age 16","At age 18","At age 21","At age 25"], fact:"Male U.S. citizens and male immigrants (documented and undocumented) must register with the Selective Service within 30 days of their 18th birthday." },
+  { cat:"rights", q:"We elect a President for how many years?", a:"Four years", opts:["Two years","Four years","Six years","Eight years"], fact:"The President serves a 4-year term. The 22nd Amendment (1951) limits presidents to two terms after FDR served four." },
+  { cat:"rights", q:"In what month do we vote for President?", a:"November", opts:["October","November","December","January"], fact:"Presidential elections are held on the first Tuesday after the first Monday in November. The next step is the Electoral College vote in December." },
+  { cat:"rights", q:"What is the name of the national anthem?", a:"The Star-Spangled Banner", opts:["America the Beautiful","God Bless America","The Star-Spangled Banner","My Country 'Tis of Thee"], fact:"'The Star-Spangled Banner' was written by Francis Scott Key during the War of 1812 and officially became the national anthem in 1931." },
+  { cat:"rights", q:"What is the capital of the United States?", a:"Washington, D.C.", opts:["New York City","Philadelphia","Washington, D.C.","Boston"], fact:"Washington D.C. became the permanent capital in 1800. It is a federal district not part of any state, governed by Congress." },
+  { cat:"rights", q:"Where is the Statue of Liberty?", a:"New York (Harbor)", opts:["Washington D.C.","Boston Harbor","New York (Harbor)","Philadelphia"], fact:"The Statue of Liberty stands on Liberty Island in New York Harbor. It was a gift from France, dedicated on October 28, 1886." },
+  { cat:"rights", q:"Why does the flag have 13 stripes?", a:"Because there were 13 original colonies", opts:["To represent the 13 states that voted first","Because there were 13 original colonies","To honor 13 Founding Fathers","Because 13 men signed the Constitution"], fact:"The 13 stripes (7 red, 6 white) represent the 13 original British colonies that declared independence and became the first states." },
+  { cat:"rights", q:"Why does the flag have 50 stars?", a:"Because there are 50 states", opts:["Because there are 50 senators","Because there are 50 states","To represent 50 years of independence","Because 50 men wrote the Constitution"], fact:"The flag has one star for each state. Stars were added as new states joined. Hawaii became the 50th state in 1960, giving us the current flag design." }
+];
+
+const QUIZ_LENGTH = 10;
+const HEARTS = 3;
+const LETTERS = ['A','B','C','D'];
+
+let state = {
+  screen: 'home',
+  category: 'all',
+  queue: [],
+  current: 0,
+  hearts: HEARTS,
+  score: 0,
+  correct: 0,
+  wrong: 0,
+  answered: false,
+  xp: parseInt(localStorage.getItem('ciq_xp') || '0'),
+  streak: parseInt(localStorage.getItem('ciq_streak') || '0'),
+  lastPlayed: localStorage.getItem('ciq_last') || ''
+};
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (state.lastPlayed === today) return;
+  if (state.lastPlayed === yesterday) { state.streak++; }
+  else if (state.lastPlayed !== today) { state.streak = 1; }
+  state.lastPlayed = today;
+  localStorage.setItem('ciq_streak', state.streak);
+  localStorage.setItem('ciq_last', state.lastPlayed);
+}
+
+function saveXP() { localStorage.setItem('ciq_xp', state.xp); }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  state.screen = id;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for(let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function getQueue() {
+  let pool = state.category === 'all' ? QUESTIONS : QUESTIONS.filter(q => q.cat === state.category);
+  return shuffle(pool).slice(0, QUIZ_LENGTH);
+}
+
+function startQuiz() {
+  state.queue = getQueue();
+  state.current = 0;
+  state.hearts = HEARTS;
+  state.score = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.answered = false;
+
+  const catNames = { all:'All Topics', government:'Government', history:'History', rights:'Rights & Duties' };
+  document.getElementById('cat-badge').textContent = catNames[state.category];
+  document.getElementById('live-score').textContent = 0;
+
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderHearts() {
+  const full = '❤️', empty = '🖤';
+  let h = '';
+  for(let i=0;i<HEARTS;i++) h += (i < state.hearts ? full : empty);
+  const el = document.getElementById('hearts');
+  el.textContent = h;
+}
+
+function renderQuestion() {
+  const q = state.queue[state.current];
+  const total = state.queue.length;
+
+  document.getElementById('q-number').textContent = `Question ${state.current+1} of ${total}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('progress-fill').style.width = `${(state.current/total)*100}%`;
+  renderHearts();
+
+  const opts = document.getElementById('options-list');
+  opts.innerHTML = '';
+  const shuffledOpts = shuffle(q.opts);
+
+  shuffledOpts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${LETTERS[i]}</span><span>${opt}</span>`;
+    btn.addEventListener('click', () => selectAnswer(opt, q));
+    opts.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedback-banner');
+  fb.className = 'feedback-banner';
+  state.answered = false;
+}
+
+function selectAnswer(selected, q) {
+  if(state.answered) return;
+  state.answered = true;
+
+  const isCorrect = selected === q.a;
+  const buttons = document.querySelectorAll('.option-btn');
+
+  buttons.forEach(btn => {
+    btn.classList.add('disabled');
+    const text = btn.querySelector('span:last-child').textContent;
+    if(text === q.a) btn.classList.add('correct');
+    else if(text === selected && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('feedback-banner');
+  const fbTitle = document.getElementById('fb-title');
+  const fbFact = document.getElementById('fb-fact');
+
+  if(isCorrect) {
+    state.correct++;
+    const pts = 10;
+    state.score += pts;
+    state.xp += pts;
+    saveXP();
+    document.getElementById('live-score').textContent = state.score;
+    fb.className = 'feedback-banner correct';
+    fbTitle.textContent = ['Correct! 🎉','Amazing! 🌟','You got it! 💪','Brilliant! ✨'][Math.floor(Math.random()*4)];
+  } else {
+    state.wrong++;
+    state.hearts--;
+    renderHearts();
+    fb.className = 'feedback-banner wrong';
+    fbTitle.textContent = 'Correct answer:';
+    document.getElementById('hearts').classList.add('shake');
+    setTimeout(() => document.getElementById('hearts').classList.remove('shake'), 400);
+  }
+  fbFact.textContent = q.fact;
+}
+
+function nextQuestion() {
+  state.current++;
+  if(state.current >= state.queue.length || state.hearts <= 0) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  updateStreak();
+  const pct = Math.round((state.correct / state.queue.length) * 100);
+  let emoji = '😕', title = 'Keep practicing!', sub = 'Review the material and try again.';
+  if(pct >= 90) { emoji='🏆'; title='Outstanding!'; sub='You're ready for the citizenship test!'; }
+  else if(pct >= 70) { emoji='🎉'; title='Great job!'; sub='You're on your way to becoming a citizen!'; }
+  else if(pct >= 50) { emoji='👍'; title='Good effort!'; sub='Keep studying – you can do it!'; }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+  document.getElementById('result-pct').textContent = pct + '%';
+  document.getElementById('r-correct').textContent = state.correct;
+  document.getElementById('r-wrong').textContent = state.wrong;
+  document.getElementById('r-xp').textContent = state.score;
+  document.getElementById('r-streak').textContent = state.streak;
+
+  showScreen('results');
+}
+
+// Init home screen state
+function initHome() {
+  document.getElementById('streak-count').textContent = state.streak;
+  document.getElementById('xp-count').textContent = state.xp;
+}
+
+// Category selection
+document.querySelectorAll('.cat-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    state.category = card.dataset.cat;
+  });
+});
+
+document.getElementById('start-btn').addEventListener('click', startQuiz);
+document.getElementById('continue-btn').addEventListener('click', nextQuestion);
+document.getElementById('retry-btn').addEventListener('click', startQuiz);
+document.getElementById('home-btn').addEventListener('click', () => { initHome(); showScreen('home'); });
+
+initHome();
+</script>
+</body>
+</html>
