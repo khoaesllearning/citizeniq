@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>CitizenReady — US Citizenship Test 2025</title>
+<title>CitizenReady — Thi Quốc Tịch Mỹ 2025</title>
 
 <style>
 :root {
@@ -771,6 +771,22 @@ body {
 .btn-next { background: var(--navy); color: white; }
 .btn-next.last { background: var(--gold); color: var(--navy); }
 
+.btn-exit-interview {
+  background: none;
+  border: 1.5px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate);
+  cursor: pointer;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+}
+
 /* ============================================
    RESULTS SCREEN
    ============================================ */
@@ -916,10 +932,10 @@ body {
   <div class="home-header">
     <div class="home-eyebrow">USCIS 2025 — Galveston, Texas</div>
     <div class="home-title">Citizen<span>Ready</span></div>
-    <div class="home-subtitle">128 official civics questions — customized for Galveston County residents</div>
+    <div class="home-subtitle">128 câu hỏi chính thức về công dân — tùy chỉnh cho cư dân Quận Galveston</div>
     <div class="xp-section">
       <div class="xp-row">
-        <span class="xp-level" id="home-level-label">Level 1 — Beginner</span>
+        <span class="xp-level" id="home-level-label">Cấp 1 — Người mới bắt đầu</span>
         <span class="xp-pts" id="home-xp-pts">0 / 300 XP</span>
       </div>
       <div class="xp-track"><div class="xp-fill" id="home-xp-fill" style="width:0%"></div></div>
@@ -929,95 +945,95 @@ body {
   <div class="stats-row">
     <div class="stat-box">
       <div class="sv" id="stat-streak">0</div>
-      <div class="sl">Streak</div>
+      <div class="sl">Chuỗi thắng</div>
     </div>
     <div class="stat-box">
       <div class="sv" id="stat-xp">0</div>
-      <div class="sl">Total XP</div>
+      <div class="sl">Tổng XP</div>
     </div>
     <div class="stat-box">
       <div class="sv" id="stat-best">—</div>
-      <div class="sl">Best Score</div>
+      <div class="sl">Điểm cao nhất</div>
     </div>
   </div>
 
   <div class="home-body">
     <div>
-      <div class="section-label">Study Mode</div>
+      <div class="section-label">Chế độ học</div>
       <div class="mode-cards" style="margin-top:8px;">
         <div class="mode-card selected" data-mode="practice" onclick="selectMode(this,'practice')">
           <div class="mode-icon">&#9670;</div>
-          <div class="mode-name">Practice</div>
-          <div class="mode-desc">Multiple choice with scoring, hearts, and XP</div>
+          <div class="mode-name">Luyện tập</div>
+          <div class="mode-desc">Trắc nghiệm có chấm điểm, mạng sống và XP</div>
         </div>
         <div class="mode-card" data-mode="interview" onclick="selectMode(this,'interview')">
           <div class="mode-icon">&#9632;</div>
-          <div class="mode-name">Interview</div>
-          <div class="mode-desc">Simulates USCIS officer session with all accepted answers</div>
+          <div class="mode-name">Phỏng vấn</div>
+          <div class="mode-desc">Mô phỏng buổi phỏng vấn với USCIS, hiển thị tất cả câu trả lời chấp nhận được</div>
         </div>
       </div>
     </div>
 
     <div id="practice-config">
-      <div class="section-label" style="margin-bottom:8px;">Configure Session</div>
+      <div class="section-label" style="margin-bottom:8px;">Cài đặt buổi học</div>
       <div class="config-grid">
         <div class="config-field">
-          <label>Category</label>
+          <label>Chủ đề</label>
           <select id="sel-cat">
-            <option value="all">All Topics (128)</option>
-            <option value="principles">Principles (12)</option>
-            <option value="government">Government (31)</option>
-            <option value="rights">Rights (10)</option>
-            <option value="colonial">Colonial Era (8)</option>
-            <option value="1800s">1800s History (9)</option>
-            <option value="recent">Recent History (15)</option>
-            <option value="geography">Geography (13)</option>
-            <option value="civics">Civics (16)</option>
+            <option value="all">Tất cả chủ đề (128)</option>
+            <option value="principles">Nguyên tắc (12)</option>
+            <option value="government">Chính phủ (31)</option>
+            <option value="rights">Quyền lợi (10)</option>
+            <option value="colonial">Thời kỳ Thuộc địa (8)</option>
+            <option value="1800s">Lịch sử thế kỷ 19 (9)</option>
+            <option value="recent">Lịch sử gần đây (15)</option>
+            <option value="geography">Địa lý (13)</option>
+            <option value="civics">Công dân (16)</option>
             <option value="texas">Texas / Galveston (3)</option>
           </select>
         </div>
         <div class="config-field">
-          <label>Questions</label>
+          <label>Số câu hỏi</label>
           <select id="sel-len">
-            <option value="10">10 questions</option>
-            <option value="20" selected>20 questions</option>
-            <option value="50">50 questions</option>
-            <option value="128">All 128</option>
+            <option value="10">10 câu hỏi</option>
+            <option value="20" selected>20 câu hỏi</option>
+            <option value="50">50 câu hỏi</option>
+            <option value="128">Tất cả 128</option>
           </select>
         </div>
         <div class="config-field">
-          <label>Answer Style</label>
+          <label>Phương thức trả lời</label>
           <select id="sel-mode">
-            <option value="multiple">Multiple Choice</option>
-            <option value="typing">Type Answer</option>
+            <option value="multiple">Trắc nghiệm</option>
+            <option value="typing">Gõ câu trả lời</option>
           </select>
         </div>
         <div class="config-field">
-          <label>Language</label>
+          <label>Ngôn ngữ</label>
           <select id="sel-lang">
-            <option value="en">English only</option>
-            <option value="both" selected>English + Vietnamese</option>
+            <option value="en">Chỉ tiếng Anh</option>
+            <option value="both" selected>Tiếng Anh + Tiếng Việt</option>
           </select>
         </div>
       </div>
     </div>
 
     <div id="interview-config" style="display:none;">
-      <div class="section-label" style="margin-bottom:8px;">Interview Options</div>
+      <div class="section-label" style="margin-bottom:8px;">Tùy chọn Phỏng vấn</div>
       <div class="config-grid">
         <div class="config-field">
-          <label>Questions</label>
+          <label>Số câu hỏi</label>
           <select id="sel-interview-cat">
-            <option value="all">All 128 Questions</option>
-            <option value="starred">65/20 Starred (20 Qs)</option>
-            <option value="texas">Texas Focus (3 Qs)</option>
+            <option value="all">Tất cả 128 câu hỏi</option>
+            <option value="starred">65/20 Starred (20 câu)</option>
+            <option value="texas">Tập trung Texas (3 câu)</option>
           </select>
         </div>
         <div class="config-field">
-          <label>Language</label>
+          <label>Ngôn ngữ</label>
           <select id="sel-interview-lang">
-            <option value="en">English only</option>
-            <option value="both" selected>English + Vietnamese</option>
+            <option value="en">Chỉ tiếng Anh</option>
+            <option value="both" selected>Tiếng Anh + Tiếng Việt</option>
           </select>
         </div>
       </div>
@@ -1025,23 +1041,23 @@ body {
 
     <div>
       <div class="sound-row">
-        <span class="sound-label">Sound effects</span>
+        <span class="sound-label">Hiệu ứng âm thanh</span>
         <button class="toggle on" id="toggle-sfx" onclick="toggleSFX(this)"></button>
       </div>
       <div class="sound-row" style="border-top:none; padding-top:0;">
-        <span class="sound-label">Ambient background music</span>
+        <span class="sound-label">Nhạc nền ambient</span>
         <button class="toggle" id="toggle-ambient" onclick="toggleAmbient(this)"></button>
       </div>
     </div>
 
-    <button class="btn-primary" id="btn-start" onclick="handleStart()">🚀 Begin Session</button>
+    <button class="btn-primary" id="btn-start" onclick="handleStart()">🚀 Bắt đầu buổi học</button>
   </div>
 </div>
 
 <!-- ========== QUIZ SCREEN ========== -->
 <div id="quiz" class="screen">
   <div class="quiz-header">
-    <button class="btn-exit" onclick="confirmExit()">Exit</button>
+    <button class="btn-exit" onclick="confirmExit()">Thoát</button>
     <div class="progress-wrap">
       <div class="progress-track">
         <div class="progress-fill" id="prog-fill" style="width:0%"></div>
@@ -1057,39 +1073,41 @@ body {
 
   <div class="quiz-scroll" id="quiz-scroll">
     <div class="q-meta">
-      <span class="q-num" id="q-num">Question 1</span>
-      <span class="q-badge" id="q-badge">Government</span>
+      <span class="q-num" id="q-num">Câu hỏi 1</span>
+      <span class="q-badge" id="q-badge">Chính phủ</span>
     </div>
     <div class="q-text" id="q-text"></div>
     <div class="q-translation" id="q-translation"></div>
     <div class="options-list" id="options-list"></div>
     <div class="type-area" id="type-area" style="display:none">
-      <input class="type-input" id="type-input" type="text" placeholder="Type your answer..." autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="btn-primary" id="btn-check" onclick="checkTyped()" style="margin-top:0;">Check Answer</button>
+      <input class="type-input" id="type-input" type="text" placeholder="Gõ câu trả lời của bạn..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="btn-primary" id="btn-check" onclick="checkTyped()" style="margin-top:0;">Kiểm tra câu trả lời</button>
     </div>
   </div>
 
   <div class="feedback-footer" id="feedback-footer">
-    <div class="fb-title" id="fb-title">Correct</div>
+    <div class="fb-title" id="fb-title">Đúng</div>
     <div class="fb-answer" id="fb-answer"></div>
-    <button class="fb-continue" id="fb-continue" onclick="advanceQuiz()">Continue</button>
+    <button class="fb-continue" id="fb-continue" onclick="advanceQuiz()">Tiếp tục</button>
   </div>
 </div>
 
 <!-- ========== INTERVIEW SCREEN ========== -->
 <div id="interview" class="screen">
+  <button class="btn-exit-interview" onclick="confirmExitInterview()">Thoát</button>
+  
   <div class="interview-header">
-    <div class="ih-eyebrow">USCIS Naturalization Interview</div>
-    <h2>Officer Simulation</h2>
-    <p>Study mode — all accepted answers shown</p>
+    <div class="ih-eyebrow">Phỏng vấn Nhập tịch USCIS</div>
+    <h2>Mô phỏng Viên chức</h2>
+    <p>Chế độ học — hiển thị tất cả câu trả lời chấp nhận được</p>
   </div>
 
   <div class="officer-card">
     <div class="officer-name-bar">
       <div class="officer-avatar">O</div>
       <div class="officer-info">
-        <div class="officer-title">Immigration Officer</div>
-        <div class="officer-name">USCIS — Galveston District</div>
+        <div class="officer-title">Viên chức Di trú</div>
+        <div class="officer-name">USCIS — Khu Galveston</div>
       </div>
     </div>
   </div>
@@ -1097,47 +1115,47 @@ body {
   <div class="interview-scroll" id="interview-scroll">
     <div style="height:20px;"></div>
     <div class="speech-bubble">
-      <div class="bubble-q-num" id="b-q-num">Question 1 of 128</div>
+      <div class="bubble-q-num" id="b-q-num">Câu hỏi 1 / 128</div>
       <div class="bubble-question" id="b-question"></div>
       <div class="bubble-translation" id="b-translation"></div>
       <button class="tts-btn" id="tts-btn" onclick="speakQuestion()">
         <div class="tts-dot" id="tts-dot"></div>
-        <span id="tts-label">Hear question</span>
+        <span id="tts-label">Nghe câu hỏi</span>
       </button>
     </div>
 
     <div class="answer-section">
-      <h4>Accepted Answers</h4>
+      <h4>Các câu trả lời được chấp nhận</h4>
       <div class="accepted-answers" id="accepted-answers"></div>
     </div>
   </div>
 
   <div class="interview-footer">
-    <button class="interview-nav-btn btn-prev" id="iv-prev" onclick="interviewNav(-1)">Previous</button>
-    <button class="interview-nav-btn btn-next" id="iv-next" onclick="interviewNav(1)">Next Question</button>
+    <button class="interview-nav-btn btn-prev" id="iv-prev" onclick="interviewNav(-1)">Trước</button>
+    <button class="interview-nav-btn btn-next" id="iv-next" onclick="interviewNav(1)">Câu hỏi tiếp theo</button>
   </div>
 </div>
 
 <!-- ========== RESULTS SCREEN ========== -->
 <div id="results" class="screen">
   <div class="results-header">
-    <div class="result-status" id="result-status">RESULT</div>
+    <div class="result-status" id="result-status">KẾT QUẢ</div>
     <div class="result-score" id="result-score">0%</div>
-    <div class="result-denominator" id="result-denom">0 of 0 correct</div>
+    <div class="result-denominator" id="result-denom">0 / 0 đúng</div>
   </div>
   <div class="results-body">
     <div class="result-verdict" id="result-verdict">
-      <div class="verdict-title" id="verdict-title">Result</div>
+      <div class="verdict-title" id="verdict-title">Kết quả</div>
       <div class="verdict-text" id="verdict-text"></div>
     </div>
     <div class="result-grid">
-      <div class="rg-card"><div class="rv" id="rr-correct">0</div><div class="rl">Correct</div></div>
-      <div class="rg-card"><div class="rv" id="rr-wrong">0</div><div class="rl">Wrong</div></div>
-      <div class="rg-card"><div class="rv" id="rr-xp">+0</div><div class="rl">XP Earned</div></div>
+      <div class="rg-card"><div class="rv" id="rr-correct">0</div><div class="rl">Đúng</div></div>
+      <div class="rg-card"><div class="rv" id="rr-wrong">0</div><div class="rl">Sai</div></div>
+      <div class="rg-card"><div class="rv" id="rr-xp">+0</div><div class="rl">XP nhận được</div></div>
     </div>
     <div class="results-actions">
-      <button class="btn-primary" onclick="retryQuiz()">Practice Again</button>
-      <button class="btn-secondary" onclick="goHome()">Back to Home</button>
+      <button class="btn-primary" onclick="retryQuiz()">Luyện tập lại</button>
+      <button class="btn-secondary" onclick="goHome()">Về trang chủ</button>
     </div>
   </div>
 </div>
@@ -1398,7 +1416,6 @@ function startAmbient() {
     master.gain.value = 0.05;
     master.connect(ctx.destination);
 
-    // Create a looping ambient pad using multiple detuned oscillators
     const baseFreqs = [82.4, 110, 164.8, 220, 246.9];
     const oscs = baseFreqs.map((freq, i) => {
       const o = ctx.createOscillator();
@@ -1406,7 +1423,7 @@ function startAmbient() {
       const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
       o.type = 'sine';
       o.frequency.value = freq;
-      o.detune.value = (i % 2 === 0 ? 1 : -1) * 4; // subtle detune for warmth
+      o.detune.value = (i % 2 === 0 ? 1 : -1) * 4;
       g.gain.value = 0.15 + (i * 0.05);
       if (pan) {
         pan.pan.value = (i - 2) * 0.2;
@@ -1418,11 +1435,10 @@ function startAmbient() {
       return { o, g };
     });
 
-    // Gentle breathing LFO
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
     lfo.type = 'sine';
-    lfo.frequency.value = 0.08; // very slow, ~12 second breath cycle
+    lfo.frequency.value = 0.08;
     lfoGain.gain.value = 0.03;
     lfo.connect(lfoGain);
     lfoGain.connect(master.gain);
@@ -1462,9 +1478,9 @@ function speakQuestion() {
   const dot = document.getElementById('tts-dot');
   const lbl = document.getElementById('tts-label');
   btn.classList.add('speaking');
-  lbl.textContent = 'Speaking...';
-  u.onend = () => { btn.classList.remove('speaking'); lbl.textContent = 'Hear question'; };
-  u.onerror = () => { btn.classList.remove('speaking'); lbl.textContent = 'Hear question'; };
+  lbl.textContent = 'Đang nói...';
+  u.onend = () => { btn.classList.remove('speaking'); lbl.textContent = 'Nghe câu hỏi'; };
+  u.onerror = () => { btn.classList.remove('speaking'); lbl.textContent = 'Nghe câu hỏi'; };
   ttsUtterance = u;
   window.speechSynthesis.speak(u);
 }
@@ -1488,7 +1504,7 @@ function updateHomeUI() {
   document.getElementById('stat-xp').textContent = xp;
   document.getElementById('stat-best').textContent = best !== null ? best + '%' : '—';
   const curLvl = lvl(xp);
-  document.getElementById('home-level-label').textContent = `Level ${curLvl} — ${lvlName(curLvl)}`;
+  document.getElementById('home-level-label').textContent = `Cấp ${curLvl} — ${lvlName(curLvl)}`;
   const pct = (xpInLvl(xp) / XP_PER_LEVEL) * 100;
   document.getElementById('home-xp-fill').style.width = pct + '%';
   document.getElementById('home-xp-pts').textContent = `${xpInLvl(xp)} / ${XP_PER_LEVEL} XP`;
@@ -1510,7 +1526,7 @@ function toggleAmbient(btn) {
 }
 
 function handleStart() {
-  getAudioCtx(); // unlock audio
+  getAudioCtx();
   if (state.studyMode === 'interview') {
     startInterview();
   } else {
@@ -1552,7 +1568,6 @@ function updateHearts() {
   }
 }
 
-// Build wrong options from other questions' first accepted answer
 function buildOptions(q) {
   const correct = q.answers[0];
   const pool = Q.filter(x => x.id !== q.id).map(x => x.answers[0]);
@@ -1564,21 +1579,20 @@ function renderQuestion() {
   const q = state.queue[state.idx];
   const total = state.queue.length;
 
-  document.getElementById('q-num').textContent = `Question ${state.idx + 1}`;
+  document.getElementById('q-num').textContent = `Câu hỏi ${state.idx + 1}`;
   document.getElementById('prog-fill').style.width = `${(state.idx / total) * 100}%`;
   document.getElementById('prog-label').textContent = `${state.idx} / ${total}`;
 
   const catLabels = {
-    principles:'Principles', government:'Government', rights:'Rights & Responsibilities',
-    colonial:'Colonial History', '1800s':'1800s History', recent:'Recent History',
-    geography:'Geography', civics:'Civics', texas:'Texas / Galveston'
+    principles:'Nguyên tắc', government:'Chính phủ', rights:'Quyền & Trách nhiệm',
+    colonial:'Lịch sử Thuộc địa', '1800s':'Lịch sử thế kỷ 19', recent:'Lịch sử gần đây',
+    geography:'Địa lý', civics:'Công dân', texas:'Texas / Galveston'
   };
   document.getElementById('q-badge').textContent = catLabels[q.cat] || q.cat;
   document.getElementById('q-text').textContent = q.en;
   document.getElementById('q-translation').textContent = state.lang === 'both' ? q.vi : '';
   document.getElementById('q-translation').style.display = state.lang === 'both' ? 'block' : 'none';
 
-  // Reset feedback
   const fb = document.getElementById('feedback-footer');
   fb.className = 'feedback-footer';
 
@@ -1665,13 +1679,13 @@ function showFeedback(correct, q) {
   const fb = document.getElementById('feedback-footer');
   fb.classList.add(correct ? 'correct' : 'wrong');
 
-  document.getElementById('fb-title').textContent = correct ? 'Correct' : 'Incorrect';
+  document.getElementById('fb-title').textContent = correct ? 'Đúng' : 'Sai';
   document.getElementById('fb-answer').innerHTML = correct
-    ? 'Well done. Continue to the next question.'
-    : `Correct answer: <strong>${q.answers[0]}</strong>`;
+    ? 'Rất tốt. Tiếp tục sang câu hỏi tiếp theo.'
+    : `Câu trả lời đúng: <strong>${q.answers[0]}</strong>`;
 
   const isLast = state.idx + 1 >= state.queue.length || state.hearts <= 0;
-  document.getElementById('fb-continue').textContent = isLast ? 'View Results' : 'Continue';
+  document.getElementById('fb-continue').textContent = isLast ? 'Xem kết quả' : 'Tiếp tục';
   document.getElementById('fb-continue').className = 'fb-continue';
 
   fb.classList.add('visible');
@@ -1708,11 +1722,11 @@ function showResults() {
   if (best === null || pct > best) best = pct;
   persist();
 
-  document.getElementById('result-status').textContent = pass ? 'PASSED' : 'NOT PASSED';
+  document.getElementById('result-status').textContent = pass ? 'ĐẬU' : 'RỚT';
   document.getElementById('result-status').className = 'result-status ' + (pass ? 'pass' : 'fail');
   document.getElementById('result-score').textContent = pct + '%';
   document.getElementById('result-score').className = 'result-score ' + (pass ? 'pass' : 'fail');
-  document.getElementById('result-denom').textContent = `${state.correct} of ${total} correct`;
+  document.getElementById('result-denom').textContent = `${state.correct} / ${total} đúng`;
 
   document.getElementById('rr-correct').textContent = state.correct;
   document.getElementById('rr-wrong').textContent = state.wrong;
@@ -1720,10 +1734,10 @@ function showResults() {
 
   const v = document.getElementById('result-verdict');
   v.className = 'result-verdict ' + (pass ? 'pass' : 'fail');
-  document.getElementById('verdict-title').textContent = pass ? 'Meets USCIS standard' : 'Below USCIS standard';
+  document.getElementById('verdict-title').textContent = pass ? 'Đạt tiêu chuẩn USCIS' : 'Chưa đạt tiêu chuẩn USCIS';
   document.getElementById('verdict-text').textContent = pass
-    ? `You answered ${pct}% correctly. USCIS requires at least 60% (12/20) to pass the civics test. Keep practicing to build confidence.`
-    : `You answered ${pct}% correctly. USCIS requires at least 60% (12/20) to pass. Review missed questions and try again.`;
+    ? `Bạn trả lời đúng ${pct}%. USCIS yêu cầu ít nhất 60% (12/20) để đậu bài thi công dân.`
+    : `Bạn trả lời đúng ${pct}%. USCIS yêu cầu ít nhất 60% (12/20). Hãy ôn lại các câu sai và thử lại.`;
 
   if (pct >= 80) { playComplete(); confetti(); }
   showScreen('results');
@@ -1737,7 +1751,14 @@ function retryQuiz() {
 }
 
 function confirmExit() {
-  if (confirm('Exit this session? Your progress will be lost.')) {
+  if (confirm('Thoát buổi học này? Tiến độ sẽ bị mất.')) {
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    goHome();
+  }
+}
+
+function confirmExitInterview() {
+  if (confirm('Thoát chế độ phỏng vấn?')) {
     window.speechSynthesis && window.speechSynthesis.cancel();
     goHome();
   }
@@ -1765,14 +1786,14 @@ function renderInterviewQ() {
   const q = state.ivQueue[state.ivIdx];
   const total = state.ivQueue.length;
 
-  document.getElementById('b-q-num').textContent = `Question ${state.ivIdx + 1} of ${total}`;
+  document.getElementById('b-q-num').textContent = `Câu hỏi ${state.ivIdx + 1} / ${total}`;
   document.getElementById('b-question').textContent = q.en;
   document.getElementById('b-translation').textContent = state.ivLang === 'both' ? q.vi : '';
   document.getElementById('b-translation').style.display = state.ivLang === 'both' ? 'block' : 'none';
 
   const ttsBtn = document.getElementById('tts-btn');
   ttsBtn.classList.remove('speaking');
-  document.getElementById('tts-label').textContent = 'Hear question';
+  document.getElementById('tts-label').textContent = 'Nghe câu hỏi';
   ttsBtn.style.display = 'speechSynthesis' in window ? 'flex' : 'none';
 
   const ansDiv = document.getElementById('accepted-answers');
@@ -1785,7 +1806,7 @@ function renderInterviewQ() {
   prevBtn.disabled = state.ivIdx === 0;
 
   const isLast = state.ivIdx >= state.ivQueue.length - 1;
-  nextBtn.textContent = isLast ? 'Finish' : 'Next Question';
+  nextBtn.textContent = isLast ? 'Hoàn thành' : 'Câu hỏi tiếp theo';
   nextBtn.className = `interview-nav-btn btn-next${isLast ? ' last' : ''}`;
 
   document.getElementById('interview-scroll').scrollTo(0, 0);
