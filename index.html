@@ -478,11 +478,48 @@ body{
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+
+/* === TTS STYLES === */
+.tts-speaker{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:#f0f4ff;border:2.5px solid #d4e0f0;color:#2a8fa3;cursor:pointer;transition:all .25s;flex-shrink:0;margin-left:12px;}
+.tts-speaker:hover{background:#e0f0ff;border-color:#2a8fa3;transform:scale(1.05);}
+.tts-speaker.speaking{background:#2a8fa3;color:white;border-color:#2a8fa3;animation:speakerPulse 1.4s infinite;}
+.tts-speaker .wave{display:flex;gap:3px;height:20px;align-items:center;}
+.tts-speaker .bar{width:3.5px;background:currentColor;border-radius:999px;animation:soundWave .75s infinite ease-in-out;}
+.tts-speaker .bar:nth-child(2){animation-delay:.1s;height:65%;}
+.tts-speaker .bar:nth-child(3){animation-delay:.25s;}
+.tts-speaker .bar:nth-child(4){animation-delay:.15s;height:75%;}
+@keyframes speakerPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes soundWave{0%,100%{height:6px}50%{height:20px}}
+
+/* Audio Settings */
+#audio-settings{position:fixed;inset:0;background:rgba(26,58,92,0.75);backdrop-filter:blur(6px);z-index:700;display:none;align-items:center;justify-content:center;}
+#audio-settings.show{display:flex;}
+.settings-panel{background:white;border-radius:20px;width:100%;max-width:380px;box-shadow:var(--shadow-lg);overflow:hidden;}
+.settings-header{padding:20px 24px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;text-align:center;}
+.settings-body{padding:24px;}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #eee;}
+.setting-label{font-weight:700;color:#334155;font-size:15px;}
+
 </style>
 </head>
 <body>
 
 <div class="ambient-bar"><div class="ambient-inner" id="ambient-indicator"></div></div>
+
+<!-- AUDIO SETTINGS -->
+<div id="audio-settings">
+  <div class="settings-panel">
+    <div class="settings-header"><h2>🎵 Cài đặt Âm thanh & TTS</h2></div>
+    <div class="settings-body">
+      <div class="setting-row"><span class="setting-label">🔊 Narration (TTS)</span><button class="toggle on" id="toggle-narration"></button></div>
+      <div class="setting-row"><span class="setting-label">📢 Tự động đọc câu hỏi</span><button class="toggle" id="toggle-autonarr"></button></div>
+      <div class="setting-row"><span class="setting-label">Tốc độ đọc</span><input type="range" id="speed-slider" min="0.7" max="1.5" step="0.05" value="1" style="width:160px"><span id="speed-val" style="font-weight:700;min-width:48px;text-align:right;">1.0x</span></div>
+      <div class="setting-row"><span class="setting-label">Hiệu ứng âm thanh</span><button class="toggle on" id="toggle-sfx-global"></button></div>
+      <button onclick="closeAudioSettings()" class="btn btn-navy" style="margin-top:20px;width:100%;">Đóng</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- Level Up Modal -->
 <div class="modal-backdrop" id="levelup-modal">
@@ -1635,6 +1672,274 @@ setTimeout(()=>{
   const gp=document.getElementById('home-gp');
   if(gp){gp.classList.add('happy');setTimeout(()=>gp.classList.remove('happy'),800);}
 },400);
+
+
+// === IMPROVED TTS SYSTEM ===
+let speechRate = 1.0;
+let narrationEnabled = true;
+let isSpeaking = false;
+let currentSpeaker = null;
+
+function stopSpeaking() {
+  try { window.speechSynthesis.cancel(); } catch(e){}
+  isSpeaking = false;
+
+  document.querySelectorAll('.tts-speaker').forEach(btn => {
+    btn.classList.remove('speaking');
+    btn.dataset.active = 'false';
+  });
+
+  currentSpeaker = null;
+}
+
+function speak(text, btn=null) {
+  if (!text || !narrationEnabled || !('speechSynthesis' in window)) return;
+
+  stopSpeaking();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = speechRate;
+  utterance.pitch = 1.0;
+
+  utterance.onstart = () => {
+    isSpeaking = true;
+
+    if (btn) {
+      currentSpeaker = btn;
+      btn.dataset.active = 'true';
+      btn.classList.add('speaking');
+    }
+  };
+
+  utterance.onend = () => stopSpeaking();
+  utterance.onerror = () => stopSpeaking();
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function createSpeaker(text) {
+  const btn = document.createElement('button');
+  btn.className = 'tts-speaker';
+  btn.type = 'button';
+
+  btn.innerHTML = `
+    <div class="wave">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  `;
+
+  btn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (currentSpeaker === btn && isSpeaking) {
+      stopSpeaking();
+      return;
+    }
+
+    speak(text, btn);
+  };
+
+  return btn;
+}
+
+// Settings
+function openAudioSettings() {
+  const modal = document.getElementById('audio-settings');
+  if (modal) modal.classList.add('show');
+}
+
+function closeAudioSettings() {
+  const modal = document.getElementById('audio-settings');
+  if (modal) modal.classList.remove('show');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const narrationBtn = document.getElementById('toggle-narration');
+  if (narrationBtn) {
+    narrationBtn.onclick = function() {
+      narrationEnabled = !narrationEnabled;
+      this.classList.toggle('on', narrationEnabled);
+
+      if (!narrationEnabled) stopSpeaking();
+    };
+  }
+
+  const speedSlider = document.getElementById('speed-slider');
+  const speedVal = document.getElementById('speed-val');
+
+  if (speedSlider) {
+    speedSlider.oninput = function() {
+      speechRate = parseFloat(this.value);
+      if (speedVal) {
+        speedVal.textContent = speechRate.toFixed(1) + 'x';
+      }
+    };
+  }
+
+  // Home settings button
+  const homeBody = document.querySelector('.home-body');
+
+  if (homeBody && !document.getElementById('audio-settings-open')) {
+    const settingsBtn = document.createElement('button');
+    settingsBtn.id = 'audio-settings-open';
+    settingsBtn.className = 'btn btn-ghost';
+    settingsBtn.innerHTML = '🎧 Audio & TTS Settings';
+    settingsBtn.style.marginTop = '8px';
+    settingsBtn.onclick = openAudioSettings;
+
+    homeBody.appendChild(settingsBtn);
+  }
+});
+
+// ================================
+// PRACTICE MODE FIX
+// ================================
+if (typeof renderQuestion !== 'undefined') {
+
+  const originalRenderQuestion = renderQuestion;
+
+  renderQuestion = function() {
+
+    stopSpeaking();
+
+    originalRenderQuestion();
+
+    setTimeout(() => {
+
+      // Remove stale speaker
+      const oldSpeaker = document.getElementById('practice-question-speaker');
+      if (oldSpeaker) oldSpeaker.remove();
+
+      const qText = document.getElementById('q-text');
+
+      if (!qText) return;
+
+      const questionText = qText.textContent.trim();
+
+      const target =
+        document.querySelector('.q-meta') ||
+        qText.parentElement;
+
+      if (!target) return;
+
+      const speaker = createSpeaker(questionText);
+      speaker.id = 'practice-question-speaker';
+
+      target.appendChild(speaker);
+
+    }, 50);
+  };
+}
+
+// ================================
+// FEEDBACK MODE
+// Listen to correct answer
+// ================================
+if (typeof showFeedback !== 'undefined') {
+
+  const originalShowFeedback = showFeedback;
+
+  showFeedback = function(correct, q) {
+
+    originalShowFeedback(correct, q);
+
+    stopSpeaking();
+
+    if (correct) return;
+
+    setTimeout(() => {
+
+      const answerContainer =
+        document.getElementById('fb-answer') ||
+        document.querySelector('.fb-answer');
+
+      if (!answerContainer) return;
+
+      // prevent duplicates
+      const existing = document.getElementById('correct-answer-speaker');
+      if (existing) existing.remove();
+
+      const correctAnswer =
+        q && q.answers && q.answers.length
+          ? q.answers[0]
+          : answerContainer.textContent.trim();
+
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.alignItems = 'center';
+      wrap.style.gap = '10px';
+      wrap.style.marginTop = '12px';
+
+      const label = document.createElement('div');
+      label.style.fontWeight = '800';
+      label.textContent = 'Listen to Correct Answer';
+
+      const speaker = createSpeaker(correctAnswer);
+      speaker.id = 'correct-answer-speaker';
+
+      wrap.appendChild(label);
+      wrap.appendChild(speaker);
+
+      answerContainer.appendChild(wrap);
+
+    }, 80);
+  };
+}
+
+// ================================
+// INTERVIEW MODE
+// ================================
+if (typeof renderIV !== 'undefined') {
+
+  const originalRenderIV = renderIV;
+
+  renderIV = function() {
+
+    stopSpeaking();
+
+    originalRenderIV();
+
+    setTimeout(() => {
+
+      const q =
+        typeof S !== 'undefined' &&
+        S.ivQueue &&
+        S.ivQueue[S.ivIdx]
+          ? S.ivQueue[S.ivIdx]
+          : null;
+
+      if (!q || !q.answers) return;
+
+      const accepted = document.getElementById('accepted-answers');
+
+      if (!accepted) return;
+
+      accepted.querySelectorAll('.tts-speaker').forEach(el => el.remove());
+
+      accepted.querySelectorAll('.accepted-answer').forEach((row, idx) => {
+
+        const answerText = q.answers[idx] || row.textContent.trim();
+
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.justifyContent = 'space-between';
+        row.style.gap = '12px';
+
+        const speaker = createSpeaker(answerText);
+
+        row.appendChild(speaker);
+      });
+
+    }, 80);
+  };
+}
+
 </script>
 </body>
 </html>
