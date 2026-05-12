@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CitizenIQ — Thi Quốc Tịch Mỹ 2025</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
@@ -530,7 +530,16 @@ body{
     <button class="modal-btn" onclick="closeModal('levelup-modal')">Tiếp tục học 🚀</button>
   </div>
 </div>
-
+<!-- Exit Confirm Modal -->
+<div class="modal-backdrop" id="exit-modal">
+  <div class="modal-box">
+    <span class="modal-icon">🚪</span>
+    <div class="modal-title">Thoát buổi học?</div>
+    <div class="modal-sub">Tiến độ của bạn sẽ không được lưu.</div>
+    <button class="modal-btn" id="exit-confirm-btn" style="background:var(--red);margin-bottom:10px;">Thoát</button>
+    <button class="modal-btn" onclick="closeModal('exit-modal')" style="background:var(--cream2);color:var(--navy);">Tiếp tục học</button>
+  </div>
+</div>
 <!-- Achievement Modal -->
 <div class="modal-backdrop" id="achievement-modal">
   <div class="modal-box">
@@ -657,7 +666,7 @@ body{
             <option value="recent">Lịch sử gần đây (19)</option>
             <option value="geography">Địa lý & Biểu tượng (6)</option>
             <option value="civics">Công dân & Lễ (4)</option>
-            <option value="texas">Texas / Galveston (3)</option>
+            <option value="texas">Texas / Galveston</option>
           </select>
         </div>
         <div class="config-field">
@@ -1120,9 +1129,6 @@ const Q=[
 {id:126,cat:"civics",starred:true,en:"Name three national U.S. holidays.",vi:"Kể tên ba ngày lễ quốc gia Hoa Kỳ.",answers:["New Year's Day","Martin Luther King Jr. Day","Presidents Day","Memorial Day","Juneteenth","Independence Day","Labor Day","Columbus Day","Veterans Day","Thanksgiving Day","Christmas Day"]},
 {id:127,cat:"civics",starred:false,en:"What is Memorial Day?",vi:"Ngày Memorial Day là gì?",answers:["a holiday to honor soldiers who died in military service"]},
 {id:128,cat:"civics",starred:false,en:"What is Veterans Day?",vi:"Ngày Veterans Day là gì?",answers:["a holiday to honor people in the U.S. military","a holiday to honor people who have served in the U.S. military"]},
-{id:200,cat:"texas",starred:false,en:"What is the capital of your state? (Texas)",vi:"Thủ phủ của tiểu bang Texas là gì?",answers:["Austin"]},
-{id:201,cat:"texas",starred:true,en:"Who is the governor of your state now? (Texas)",vi:"Thống đốc tiểu bang Texas hiện nay là ai?",answers:["Greg Abbott","Governor Abbott"]},
-{id:202,cat:"texas",starred:false,en:"Name your U.S. representative. (Galveston area — District 14)",vi:"Hạ nghị sĩ liên bang của bạn là ai? (Galveston — Địa hạt 14)",answers:["Randy Weber","Representative Randy Weber"]},
 ];
 
 // ════════════════════════════════════════════════════════
@@ -1269,9 +1275,14 @@ function shuffle(arr){return[...arr].sort(()=>Math.random()-.5);}
 function norm(s){return s.trim().toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ');}
 function matchAnswer(selected,q){
   const ns=norm(selected);
+  if(ns.length<2)return false;
   return q.answers.some(a=>{
     const na=norm(a);
-    return ns===na||ns.includes(na)||na.includes(ns);
+    if(ns===na)return true;
+    // Only allow substring match if typed answer is at least 60% as long as correct answer
+    const minLen=Math.floor(na.length*0.6);
+    if(ns.length>=minLen&&na.includes(ns))return true;
+    return false;
   });
 }
 
@@ -1477,7 +1488,7 @@ function handleAnswer(selected,q){
     checkLevelUp(oldXp,xp);
     checkAchievements();
   }else{
-    S.hearts--;S.wrong++;
+    S.hearts=Math.max(0,S.hearts-1);S.wrong++;
     updateHearts();sndWrong();
     // Animate lost heart
     const h=document.getElementById('hp'+(S.hearts+1));
@@ -1573,9 +1584,22 @@ function showResults(){
 }
 
 function retryQuiz(){showScreen('home');updateHomeUI();setTimeout(startPractice,80);}
-function confirmExit(){if(confirm('Thoát buổi học này? Tiến độ sẽ bị mất.')){window.speechSynthesis&&window.speechSynthesis.cancel();goHome();}}
-function confirmExitIV(){if(confirm('Thoát chế độ phỏng vấn?')){window.speechSynthesis&&window.speechSynthesis.cancel();goHome();}}
-
+function confirmExit(){
+  document.getElementById('exit-confirm-btn').onclick=()=>{
+    closeModal('exit-modal');
+    window.speechSynthesis&&window.speechSynthesis.cancel();
+    goHome();
+  };
+  openModal('exit-modal');
+}
+function confirmExitIV(){
+  document.getElementById('exit-confirm-btn').onclick=()=>{
+    closeModal('exit-modal');
+    window.speechSynthesis&&window.speechSynthesis.cancel();
+    goHome();
+  };
+  openModal('exit-modal');
+}
 // ════════════════════════════════════════════════════════
 //  INTERVIEW MODE
 // ════════════════════════════════════════════════════════
