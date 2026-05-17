@@ -69,6 +69,12 @@ body{
 .screen{display:none;flex-direction:column;min-height:100dvh;}
 .screen.active{display:flex;}
 
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
 /* ═══════════════════════════════════════════
    AMBIENT BAR
 ═══════════════════════════════════════════ */
@@ -146,8 +152,6 @@ body{
 .stat-icon{font-size:20px;margin-bottom:4px;}
 .stat-val{font-size:26px;font-weight:900;color:var(--navy);line-height:1;font-family:var(--font2);}
 .stat-lbl{font-size:9.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
-
-/* Streak on stat box */
 .stat-box.streak .stat-val{color:#e07b20;}
 
 /* Mode cards */
@@ -172,6 +176,7 @@ body{
   cursor:pointer;outline:none;appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a5568' stroke-width='1.8' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 10px center;
+  font-size:16px; /* prevent iOS zoom */
 }
 .config-field select:focus{border-color:var(--navy);}
 
@@ -191,7 +196,7 @@ body{
 .gp-mascot.happy{animation:gpHappy .6s ease both,gpFloat 3s .6s ease-in-out infinite;}
 @keyframes gpHappy{0%{transform:scale(1)}30%{transform:scale(1.2) rotate(-5deg)}60%{transform:scale(0.95) rotate(3deg)}100%{transform:scale(1)}}
 .gp-mascot.sad{animation:gpSad .5s ease both;}
-@keyframes gpSad{0%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-3deg)}40%{transform:translateX(8px) rotate(3deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}100%{transform:translateX(0)}}
+@keyframes gpSad{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-3deg)}40%{transform:translateX(8px) rotate(3deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 
 /* ═══════════════════════════════════════════
    QUIZ SCREEN
@@ -207,8 +212,8 @@ body{
 }
 .btn-exit{
   background:none;border:2px solid var(--border2);border-radius:var(--r-sm);
-  padding:8px 12px;font-family:var(--font);font-size:12px;font-weight:800;color:var(--slate);
-  cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.3px;
+  padding:8px 14px;font-family:var(--font);font-size:14px;font-weight:800;color:var(--slate);
+  cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.3px;min-height:44px;
 }
 .btn-exit:hover{border-color:var(--navy);color:var(--navy);}
 
@@ -223,13 +228,32 @@ body{
 .heart-pip.pulse{animation:heartPulse .5s ease;}
 @keyframes heartPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
 
-.quiz-body{flex:1;overflow-y:auto;padding:22px 18px 130px;}
+.quiz-body{flex:1;overflow-y:auto;padding:22px 18px 130px;-webkit-overflow-scrolling:touch;}
 
 .q-meta{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
 .q-num{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .q-badge{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--teal);background:rgba(42,143,163,.1);border:1.5px solid rgba(42,143,163,.25);border-radius:5px;padding:3px 8px;}
 
-.q-text{font-size:21px;font-weight:800;color:var(--navy);line-height:1.4;margin-bottom:8px;letter-spacing:-.2px;}
+/* TTS speaker button */
+.tts-speaker{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;min-width:44px;border-radius:50%;
+  background:#f0f4ff;border:2.5px solid #d4e0f0;color:var(--teal);
+  cursor:pointer;transition:all .25s;flex-shrink:0;
+}
+.tts-speaker:hover{background:#e0f0ff;border-color:var(--teal);transform:scale(1.05);}
+.tts-speaker.speaking{background:var(--teal);color:white;border-color:var(--teal);animation:speakerPulse 1.4s infinite;}
+.tts-speaker .wave{display:flex;gap:3px;height:20px;align-items:center;}
+.tts-speaker .bar{width:3.5px;background:currentColor;border-radius:999px;height:6px;animation:soundWave .75s infinite ease-in-out;}
+.tts-speaker .bar:nth-child(1){animation-delay:0s;}
+.tts-speaker .bar:nth-child(2){animation-delay:.1s;}
+.tts-speaker .bar:nth-child(3){animation-delay:.25s;}
+.tts-speaker .bar:nth-child(4){animation-delay:.15s;}
+@keyframes speakerPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes soundWave{0%,100%{height:6px}50%{height:20px}}
+
+.q-text-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;}
+.q-text{font-size:21px;font-weight:800;color:var(--navy);line-height:1.4;letter-spacing:-.2px;flex:1;}
 .q-vi{font-size:13.5px;color:var(--muted);line-height:1.6;font-style:italic;margin-bottom:22px;padding-bottom:18px;border-bottom:1.5px solid var(--border2);}
 
 /* Options */
@@ -240,6 +264,7 @@ body{
   border:2.5px solid var(--border2);border-radius:var(--r);
   font-family:var(--font);font-size:14.5px;font-weight:700;color:var(--navy);
   text-align:left;cursor:pointer;transition:all .15s;width:100%;line-height:1.4;
+  min-height:56px;
 }
 .opt-btn:hover:not(:disabled){border-color:var(--navy3);background:#f5f8ff;transform:translateX(3px);}
 .opt-btn:disabled{cursor:default;}
@@ -261,17 +286,18 @@ body{
 .type-area{margin-top:4px;}
 .type-input{
   width:100%;padding:15px 16px;border:2.5px solid var(--border2);border-radius:var(--r);
-  font-family:var(--font);font-size:15px;font-weight:700;color:var(--navy);
+  font-family:var(--font);font-size:16px;font-weight:700;color:var(--navy);
   background:var(--white);outline:none;transition:border-color .2s;margin-bottom:10px;
 }
 .type-input:focus{border-color:var(--navy);}
 .type-input.correct{border-color:var(--green);background:var(--green-lt);}
 .type-input.wrong{border-color:var(--red);background:var(--red-lt);animation:shake .4s ease;}
+.type-hint{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:10px;text-align:center;}
 
 /* Feedback Footer */
 .feedback-footer{
   position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(105%);
-  width:100%;max-width:500px;padding:18px 18px 24px;
+  width:100%;max-width:500px;padding:18px 18px 28px;
   border-top:3px solid transparent;
   transition:transform .35s cubic-bezier(0.34,1.56,0.64,1);z-index:100;
 }
@@ -281,16 +307,24 @@ body{
 
 .fb-inner{display:flex;gap:12px;align-items:flex-start;margin-bottom:13px;}
 .fb-mascot-sm{width:52px;height:52px;flex-shrink:0;}
-.fb-text{}
 .fb-title{font-size:17px;font-weight:900;margin-bottom:3px;}
 .feedback-footer.correct .fb-title{color:var(--green);}
 .feedback-footer.wrong .fb-title{color:var(--red);}
 .fb-answer{font-size:12.5px;font-weight:600;color:var(--slate);line-height:1.5;}
 .fb-answer strong{color:var(--navy);}
 
+/* Listen to correct answer button in feedback */
+.fb-listen-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.6);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);padding:7px 12px;margin-top:8px;
+  font-family:var(--font);font-size:12px;font-weight:700;color:var(--slate);cursor:pointer;
+}
+
 .fb-continue{
   width:100%;padding:13px;border:none;border-radius:var(--r-sm);
   font-family:var(--font);font-size:14px;font-weight:900;letter-spacing:.3px;cursor:pointer;transition:all .2s;
+  min-height:48px;
 }
 .feedback-footer.correct .fb-continue{background:var(--green);color:#fff;}
 .feedback-footer.correct .fb-continue:hover{background:#236040;}
@@ -308,6 +342,116 @@ body{
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}20%{transform:translateY(-8px) scale(1.1)}100%{opacity:0;transform:translateY(-55px) scale(.9)}}
 
 /* ═══════════════════════════════════════════
+   KEYWORD FLASH MODE
+═══════════════════════════════════════════ */
+#flash{background:var(--white);}
+
+.flash-header{
+  padding:14px 16px 12px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:2px solid var(--border2);
+  flex-shrink:0;
+  background:var(--white);
+}
+
+.flash-body{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:24px 20px;gap:20px;
+  -webkit-overflow-scrolling:touch;
+}
+
+.flash-card{
+  width:100%;background:linear-gradient(135deg,var(--navy),var(--navy2));
+  border-radius:var(--r-lg);padding:36px 28px;text-align:center;
+  box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
+  min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:transform .15s;
+}
+.flash-card:active{transform:scale(.98);}
+.flash-card::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;border:2px solid rgba(212,168,67,.15);border-radius:50%;}
+.flash-cat-badge{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-family:var(--font2);}
+.flash-keyword{font-size:22px;font-weight:900;color:#fff;line-height:1.35;margin-bottom:8px;}
+.flash-keyword-vi{font-size:13px;color:rgba(255,255,255,.5);font-style:italic;line-height:1.5;}
+.flash-tap-hint{font-size:11px;color:rgba(255,255,255,.35);margin-top:16px;font-weight:700;letter-spacing:.5px;}
+
+.flash-answer-reveal{
+  width:100%;background:var(--gold-lt);border:2.5px solid var(--gold);
+  border-radius:var(--r);padding:22px;text-align:center;
+  display:none;
+}
+.flash-answer-reveal.show{display:block;}
+.flash-ans-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dk);margin-bottom:10px;}
+.flash-ans-text{font-size:20px;font-weight:900;color:var(--navy);line-height:1.4;}
+.flash-ans-vi{font-size:13px;color:var(--slate);font-style:italic;margin-top:6px;}
+
+.flash-actions{display:flex;gap:10px;width:100%;}
+.flash-btn{flex:1;padding:15px;border:none;border-radius:var(--r-sm);font-family:var(--font);font-size:14px;font-weight:900;cursor:pointer;transition:all .2s;min-height:52px;}
+.flash-btn-knew{background:var(--green);color:#fff;}
+.flash-btn-knew:hover{background:#236040;}
+.flash-btn-again{background:var(--red-lt);color:var(--red);border:2px solid var(--red-md);}
+.flash-btn-again:hover{background:var(--red);color:#fff;}
+
+.flash-progress{font-size:12px;font-weight:800;color:var(--muted);text-align:center;}
+
+/* ═══════════════════════════════════════════
+   KEYWORD MATCH MODE
+═══════════════════════════════════════════ */
+#match{background:var(--white);}
+.match-header{
+  padding:14px 16px 12px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:2px solid var(--border2);
+  flex-shrink:0;background:var(--white);
+}
+.match-body{flex:1;padding:16px 14px 100px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+.match-instructions{
+  font-size:13px;font-weight:700;color:var(--slate);text-align:center;
+  background:var(--cream);border-radius:var(--r-sm);padding:12px;margin-bottom:16px;
+  line-height:1.5;
+}
+
+.match-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.match-col-label{font-size:9.5px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:6px;}
+
+.match-col{display:flex;flex-direction:column;gap:8px;}
+
+.match-tile{
+  border:2.5px solid var(--border2);border-radius:var(--r-sm);
+  padding:13px 11px;font-family:var(--font);font-size:13px;font-weight:700;color:var(--navy);
+  text-align:center;cursor:pointer;transition:all .18s;background:var(--white);
+  line-height:1.35;min-height:52px;display:flex;align-items:center;justify-content:center;
+}
+.match-tile:hover{border-color:var(--navy3);background:#f5f8ff;}
+.match-tile.selected{border-color:var(--gold);background:var(--gold-lt);color:var(--navy);}
+.match-tile.matched{border-color:var(--green);background:var(--green-lt);color:var(--green);cursor:default;animation:matchPop .4s ease;}
+.match-tile.wrong-flash{border-color:var(--red);background:var(--red-lt);animation:shake .4s ease;}
+.match-tile.disabled{opacity:.35;cursor:default;}
+@keyframes matchPop{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
+
+.match-score-bar{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:500px;background:var(--white);
+  border-top:2px solid var(--border2);padding:12px 16px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:100;
+}
+.match-pairs-count{font-size:13px;font-weight:800;color:var(--slate);}
+.match-pairs-count span{color:var(--green);font-size:18px;}
+
+/* Match round complete */
+.match-complete{
+  text-align:center;padding:24px 20px;
+}
+.match-complete-icon{font-size:56px;margin-bottom:12px;display:block;}
+.match-complete-title{font-size:22px;font-weight:900;color:var(--navy);margin-bottom:6px;}
+.match-complete-sub{font-size:14px;color:var(--slate);font-weight:600;margin-bottom:20px;line-height:1.5;}
+
+/* ═══════════════════════════════════════════
    INTERVIEW SCREEN
 ═══════════════════════════════════════════ */
 #interview{background:var(--cream);}
@@ -319,31 +463,27 @@ body{
 .btn-exit-iv{
   position:absolute;top:14px;left:14px;
   background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
-  border-radius:var(--r-sm);padding:7px 11px;font-family:var(--font);
-  font-size:11.5px;font-weight:800;color:rgba(255,255,255,.7);cursor:pointer;
-  transition:all .2s;
+  border-radius:var(--r-sm);padding:10px 14px;font-family:var(--font);
+  font-size:13px;font-weight:800;color:rgba(255,255,255,.7);cursor:pointer;
+  transition:all .2s;min-height:44px;
 }
 .btn-exit-iv:hover{background:rgba(255,255,255,.2);color:#fff;}
 .iv-eyebrow{font-size:9.5px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
 .iv-title{font-size:20px;font-weight:900;color:#fff;margin-bottom:2px;}
 .iv-sub{font-size:11px;color:rgba(255,255,255,.4);}
+.iv-progress{font-size:11px;color:rgba(255,255,255,.6);margin-top:6px;font-weight:700;}
 
-/* Officer / Kingpin sprite */
 .officer-stage{
   margin:0 20px;
   background:var(--white);border:2px solid var(--border2);border-radius:var(--r);
   overflow:hidden;box-shadow:var(--shadow-sm);
 }
 .officer-bar{background:var(--navy2);padding:10px 16px;display:flex;align-items:center;gap:12px;}
-.officer-name-wrap{}
 .officer-title-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);}
 .officer-name-lbl{font-size:13.5px;font-weight:800;color:#fff;}
-
-/* Kingpin SVG sprite */
 .kingpin-sprite{display:flex;justify-content:center;padding:12px 0 4px;background:#f0f4ff;}
 
-/* Interview scroll */
-.interview-scroll{flex:1;overflow-y:auto;padding:14px 18px 140px;}
+.interview-scroll{flex:1;overflow-y:auto;padding:14px 18px 140px;-webkit-overflow-scrolling:touch;}
 
 .speech-bubble{
   background:var(--white);border:2px solid var(--border2);
@@ -356,25 +496,27 @@ body{
   background:var(--white);clip-path:polygon(0 0,100% 0,0 100%);border-radius:0 0 6px 0;
 }
 .b-q-num{font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:7px;}
-.b-question{font-size:19px;font-weight:800;color:var(--navy);line-height:1.4;margin-bottom:6px;}
-.b-translation{font-size:12.5px;color:var(--muted);font-style:italic;line-height:1.5;}
+.b-question-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;}
+.b-question{font-size:19px;font-weight:800;color:var(--navy);line-height:1.4;flex:1;}
+.b-translation{font-size:12.5px;color:var(--muted);font-style:italic;line-height:1.5;margin-top:4px;}
 
-.tts-btn{
-  display:inline-flex;align-items:center;gap:8px;background:none;
-  border:2px solid var(--border);border-radius:var(--r-sm);padding:8px 14px;
-  font-family:var(--font);font-size:12px;font-weight:700;color:var(--slate);cursor:pointer;
-  margin-top:12px;transition:all .2s;
+/* Keyword highlight in interview */
+.keyword-chip{
+  display:inline-block;background:var(--gold-lt);border:1.5px solid var(--gold);
+  border-radius:5px;padding:2px 7px;font-size:11px;font-weight:800;color:var(--gold-dk);
+  margin-top:10px;
 }
-.tts-btn:hover{border-color:var(--navy);color:var(--navy);}
-.tts-dot{width:9px;height:9px;background:var(--gold);border-radius:50%;}
-.tts-btn.speaking .tts-dot{animation:dotPulse .5s ease-in-out infinite alternate;}
-@keyframes dotPulse{from{transform:scale(1);opacity:1}to{transform:scale(1.6);opacity:.4}}
 
 .answer-section{background:var(--white);border:2px solid var(--border2);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-xs);}
 .answer-section h4{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-.accepted-answer{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:7px;}
-.accepted-answer:last-child{margin-bottom:0;}
-.accepted-answer::before{content:'';width:7px;height:7px;min-width:7px;background:var(--gold);border-radius:50%;margin-top:5px;}
+.accepted-answer{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:14px;font-weight:700;color:var(--navy);line-height:1.4;
+  margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid var(--border2);
+}
+.accepted-answer:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.accepted-answer-text{display:flex;align-items:flex-start;gap:10px;flex:1;}
+.accepted-answer-text::before{content:'';width:7px;height:7px;min-width:7px;background:var(--gold);border-radius:50%;margin-top:5px;}
 
 .interview-footer{
   position:fixed;bottom:0;left:50%;transform:translateX(-50%);
@@ -382,7 +524,7 @@ body{
   border-top:2px solid var(--border2);padding:14px 18px 18px;
   display:flex;gap:10px;z-index:100;
 }
-.iv-nav-btn{flex:1;padding:14px;border-radius:var(--r-sm);font-family:var(--font);font-size:13.5px;font-weight:900;cursor:pointer;border:none;transition:all .2s;}
+.iv-nav-btn{flex:1;padding:14px;border-radius:var(--r-sm);font-family:var(--font);font-size:13.5px;font-weight:900;cursor:pointer;border:none;transition:all .2s;min-height:52px;}
 .iv-nav-btn:disabled{opacity:.4;cursor:default;}
 .btn-prev{background:var(--cream2);color:var(--slate);border:2px solid var(--border);}
 .btn-next{background:var(--navy);color:#fff;}
@@ -419,8 +561,17 @@ body{
 
 .results-actions{display:flex;flex-direction:column;gap:9px;}
 
+/* Weak spots section */
+.weak-spots{margin-top:16px;margin-bottom:20px;}
+.weak-spots h4{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.weak-pill{
+  display:inline-block;background:var(--red-lt);border:1.5px solid var(--red-md);
+  border-radius:99px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--red);
+  margin:3px;cursor:pointer;
+}
+
 /* ═══════════════════════════════════════════
-   LEVEL UP MODAL
+   MODALS
 ═══════════════════════════════════════════ */
 .modal-backdrop{
   position:fixed;inset:0;background:rgba(26,58,92,.55);backdrop-filter:blur(4px);
@@ -438,39 +589,31 @@ body{
 @keyframes modalBounce{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(0)}}
 .modal-title{font-size:24px;font-weight:900;color:var(--navy);margin-bottom:6px;}
 .modal-sub{font-size:14px;color:var(--slate);font-weight:600;margin-bottom:24px;line-height:1.5;}
-.modal-btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--r);background:var(--navy);color:#fff;font-family:var(--font);font-size:15px;font-weight:900;cursor:pointer;transition:background .2s;}
+.modal-btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--r);background:var(--navy);color:#fff;font-family:var(--font);font-size:15px;font-weight:900;cursor:pointer;transition:background .2s;min-height:52px;}
 .modal-btn:hover{background:var(--navy2);}
 
-/* Streak freeze badge */
-.freeze-badge{
-  display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#e8f4ff,#d0e8f5);
-  border:2px solid #a8cce0;border-radius:99px;padding:5px 12px;font-size:12px;font-weight:800;color:#1a3a5c;margin-bottom:10px;
-}
-
 /* ═══════════════════════════════════════════
-   STREAK WARNING PILL
+   HEARTS / ANIMATION
 ═══════════════════════════════════════════ */
-.streak-warning{
-  position:fixed;top:12px;left:50%;transform:translateX(-50%);
-  background:#fff3cd;border:2px solid #f0c040;border-radius:99px;
-  padding:8px 18px;font-size:13px;font-weight:800;color:#7a4a00;
-  z-index:400;box-shadow:var(--shadow);
-  animation:slideDown .4s cubic-bezier(0.34,1.56,0.64,1) both;
-}
-@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.heart-pip.last{animation:lastHeartPulse 1s ease-in-out infinite;}
+@keyframes lastHeartPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
 
 /* ═══════════════════════════════════════════
    CONFETTI
 ═══════════════════════════════════════════ */
 .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
-.cc{position:absolute;top:-12px;animation:ccFall linear forwards;border-radius:2px;}
+.cc{position:absolute;top:-12px;animation:ccFall linear forwards;border-radius:2px;will-change:transform;}
 @keyframes ccFall{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}
 
 /* ═══════════════════════════════════════════
-   LOW HEARTS PULSE
+   EMPTY CATEGORY WARNING
 ═══════════════════════════════════════════ */
-.heart-pip.last{animation:lastHeartPulse 1s ease-in-out infinite;}
-@keyframes lastHeartPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+.empty-cat-warn{
+  background:var(--amber-lt);border:2px solid var(--amber);border-radius:var(--r-sm);
+  padding:12px 14px;font-size:13px;font-weight:700;color:#7a4a00;margin-top:8px;
+  display:none;line-height:1.5;
+}
+.empty-cat-warn.show{display:block;}
 
 /* ═══════════════════════════════════════════
    SCROLLBAR
@@ -478,72 +621,37 @@ body{
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
-
-/* === TTS STYLES === */
-.tts-speaker{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:#f0f4ff;border:2.5px solid #d4e0f0;color:#2a8fa3;cursor:pointer;transition:all .25s;flex-shrink:0;margin-left:12px;}
-.tts-speaker:hover{background:#e0f0ff;border-color:#2a8fa3;transform:scale(1.05);}
-.tts-speaker.speaking{background:#2a8fa3;color:white;border-color:#2a8fa3;animation:speakerPulse 1.4s infinite;}
-.tts-speaker .wave{display:flex;gap:3px;height:20px;align-items:center;}
-.tts-speaker .bar{width:3.5px;background:currentColor;border-radius:999px;animation:soundWave .75s infinite ease-in-out;}
-.tts-speaker .bar:nth-child(2){animation-delay:.1s;height:65%;}
-.tts-speaker .bar:nth-child(3){animation-delay:.25s;}
-.tts-speaker .bar:nth-child(4){animation-delay:.15s;height:75%;}
-@keyframes speakerPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-@keyframes soundWave{0%,100%{height:6px}50%{height:20px}}
-
-/* Audio Settings */
-#audio-settings{position:fixed;inset:0;background:rgba(26,58,92,0.75);backdrop-filter:blur(6px);z-index:700;display:none;align-items:center;justify-content:center;}
-#audio-settings.show{display:flex;}
-.settings-panel{background:white;border-radius:20px;width:100%;max-width:380px;box-shadow:var(--shadow-lg);overflow:hidden;}
-.settings-header{padding:20px 24px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;text-align:center;}
-.settings-body{padding:24px;}
-.setting-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #eee;}
-.setting-label{font-weight:700;color:#334155;font-size:15px;}
-
 </style>
 </head>
 <body>
 
 <div class="ambient-bar"><div class="ambient-inner" id="ambient-indicator"></div></div>
 
-<!-- AUDIO SETTINGS -->
-<div id="audio-settings">
-  <div class="settings-panel">
-    <div class="settings-header"><h2>🎵 Cài đặt Âm thanh & TTS</h2></div>
-    <div class="settings-body">
-      <div class="setting-row"><span class="setting-label">🔊 Narration (TTS)</span><button class="toggle on" id="toggle-narration"></button></div>
-      <div class="setting-row"><span class="setting-label">📢 Tự động đọc câu hỏi</span><button class="toggle" id="toggle-autonarr"></button></div>
-      <div class="setting-row"><span class="setting-label">Tốc độ đọc</span><input type="range" id="speed-slider" min="0.7" max="1.5" step="0.05" value="1" style="width:160px"><span id="speed-val" style="font-weight:700;min-width:48px;text-align:right;">1.0x</span></div>
-      <div class="setting-row"><span class="setting-label">Hiệu ứng âm thanh</span><button class="toggle on" id="toggle-sfx-global"></button></div>
-      <button onclick="closeAudioSettings()" class="btn btn-navy" style="margin-top:20px;width:100%;">Đóng</button>
-    </div>
-  </div>
-</div>
-
-
 <!-- Level Up Modal -->
-<div class="modal-backdrop" id="levelup-modal">
+<div class="modal-backdrop" id="levelup-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal-box">
-    <span class="modal-icon">🎉</span>
+    <span class="modal-icon" aria-hidden="true">🎉</span>
     <div class="modal-title" id="modal-title">Lên cấp!</div>
-    <div class="modal-sub" id="modal-sub">Bạn đã đạt Cấp 2 — Người học!</div>
+    <div class="modal-sub" id="modal-sub">Bạn đã đạt Cấp 2!</div>
     <button class="modal-btn" onclick="closeModal('levelup-modal')">Tiếp tục học 🚀</button>
   </div>
 </div>
+
 <!-- Exit Confirm Modal -->
-<div class="modal-backdrop" id="exit-modal">
+<div class="modal-backdrop" id="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title">
   <div class="modal-box">
-    <span class="modal-icon">🚪</span>
-    <div class="modal-title">Thoát buổi học?</div>
+    <span class="modal-icon" aria-hidden="true">🚪</span>
+    <div class="modal-title" id="exit-modal-title">Thoát buổi học?</div>
     <div class="modal-sub">Tiến độ của bạn sẽ không được lưu.</div>
     <button class="modal-btn" id="exit-confirm-btn" style="background:var(--red);margin-bottom:10px;">Thoát</button>
     <button class="modal-btn" onclick="closeModal('exit-modal')" style="background:var(--cream2);color:var(--navy);">Tiếp tục học</button>
   </div>
 </div>
+
 <!-- Achievement Modal -->
-<div class="modal-backdrop" id="achievement-modal">
+<div class="modal-backdrop" id="achievement-modal" role="dialog" aria-modal="true" aria-labelledby="ach-title">
   <div class="modal-box">
-    <span class="modal-icon" id="ach-icon">🏆</span>
+    <span class="modal-icon" id="ach-icon" aria-hidden="true">🏆</span>
     <div class="modal-title" id="ach-title">Thành tựu mới!</div>
     <div class="modal-sub" id="ach-sub">Bạn đã mở khóa huy hiệu đầu tiên!</div>
     <button class="modal-btn" onclick="closeModal('achievement-modal')">Tuyệt vời! 🌟</button>
@@ -558,41 +666,28 @@ body{
 <div id="home" class="screen active">
   <div class="home-header">
     <div class="home-mascot-wrap">
-      <!-- Guinea Pig Mascot SVG -->
-      <svg class="gp-mascot" id="home-gp" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-        <!-- Body -->
+      <svg class="gp-mascot" id="home-gp" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <ellipse cx="40" cy="52" rx="28" ry="22" fill="#c8a26e"/>
-        <!-- Belly -->
         <ellipse cx="40" cy="56" rx="18" ry="14" fill="#e8cfa0"/>
-        <!-- Head -->
         <ellipse cx="40" cy="30" rx="22" ry="20" fill="#c8a26e"/>
-        <!-- Cheek patches -->
         <ellipse cx="30" cy="35" rx="7" ry="5" fill="#e8a090" opacity=".6"/>
         <ellipse cx="50" cy="35" rx="7" ry="5" fill="#e8a090" opacity=".6"/>
-        <!-- Eyes -->
         <circle cx="33" cy="27" r="5" fill="#1a2a1a"/>
         <circle cx="47" cy="27" r="5" fill="#1a2a1a"/>
         <circle cx="34.5" cy="25.5" r="1.8" fill="#fff"/>
         <circle cx="48.5" cy="25.5" r="1.8" fill="#fff"/>
-        <!-- Nose -->
         <ellipse cx="40" cy="34" rx="3.5" ry="2.5" fill="#8b5e3c"/>
-        <!-- Nostrils -->
         <circle cx="38.5" cy="34.5" r=".9" fill="#6a4228"/>
         <circle cx="41.5" cy="34.5" r=".9" fill="#6a4228"/>
-        <!-- Mouth smile -->
         <path d="M36 37 Q40 41 44 37" stroke="#6a4228" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Ears -->
         <ellipse cx="21" cy="18" rx="7" ry="9" fill="#b08050"/>
         <ellipse cx="21" cy="18" rx="4" ry="6" fill="#e8a090" opacity=".7"/>
         <ellipse cx="59" cy="18" rx="7" ry="9" fill="#b08050"/>
         <ellipse cx="59" cy="18" rx="4" ry="6" fill="#e8a090" opacity=".7"/>
-        <!-- Little tuft on head -->
         <ellipse cx="38" cy="12" rx="4" ry="3" fill="#9a7040" transform="rotate(-15 38 12)"/>
         <ellipse cx="42" cy="11" rx="3.5" ry="2.5" fill="#9a7040" transform="rotate(10 42 11)"/>
-        <!-- Front paws -->
         <ellipse cx="26" cy="70" rx="7" ry="4.5" fill="#b08050"/>
         <ellipse cx="54" cy="70" rx="7" ry="4.5" fill="#b08050"/>
-        <!-- Flag (tiny) -->
         <line x1="56" y1="42" x2="56" y2="28" stroke="#c8a26e" stroke-width="1.5"/>
         <rect x="56" y="28" width="14" height="8" fill="#bf3030"/>
         <rect x="56" y="28" width="14" height="2.7" fill="#bf3030"/>
@@ -618,17 +713,17 @@ body{
 
   <div class="stats-row">
     <div class="stat-box streak">
-      <div class="stat-icon">🔥</div>
+      <div class="stat-icon" aria-hidden="true">🔥</div>
       <div class="stat-val" id="stat-streak">0</div>
       <div class="stat-lbl">Chuỗi ngày</div>
     </div>
     <div class="stat-box">
-      <div class="stat-icon">⚡</div>
+      <div class="stat-icon" aria-hidden="true">⚡</div>
       <div class="stat-val" id="stat-xp">0</div>
       <div class="stat-lbl">Tổng XP</div>
     </div>
     <div class="stat-box">
-      <div class="stat-icon">🏆</div>
+      <div class="stat-icon" aria-hidden="true">🏆</div>
       <div class="stat-val" id="stat-best">—</div>
       <div class="stat-lbl">Kỷ lục</div>
     </div>
@@ -638,15 +733,25 @@ body{
     <div>
       <div class="section-label">Chế độ học</div>
       <div class="mode-cards">
-        <div class="mode-card selected" data-mode="practice" onclick="selectMode(this,'practice')">
-          <div class="mode-icon">✏️</div>
+        <div class="mode-card selected" data-mode="practice" onclick="selectMode(this,'practice')" role="button" tabindex="0">
+          <div class="mode-icon" aria-hidden="true">✏️</div>
           <div class="mode-name">Luyện tập</div>
           <div class="mode-desc">Trắc nghiệm có chấm điểm, mạng sống và XP</div>
         </div>
-        <div class="mode-card" data-mode="interview" onclick="selectMode(this,'interview')">
-          <div class="mode-icon">👔</div>
+        <div class="mode-card" data-mode="interview" onclick="selectMode(this,'interview')" role="button" tabindex="0">
+          <div class="mode-icon" aria-hidden="true">👔</div>
           <div class="mode-name">Phỏng vấn</div>
           <div class="mode-desc">Mô phỏng phỏng vấn USCIS, xem đáp án</div>
+        </div>
+        <div class="mode-card" data-mode="flash" onclick="selectMode(this,'flash')" role="button" tabindex="0">
+          <div class="mode-icon" aria-hidden="true">⚡</div>
+          <div class="mode-name">Từ khóa Flash</div>
+          <div class="mode-desc">Nghe từ khóa → nhớ đáp án ngay lập tức</div>
+        </div>
+        <div class="mode-card" data-mode="match" onclick="selectMode(this,'match')" role="button" tabindex="0">
+          <div class="mode-icon" aria-hidden="true">🔗</div>
+          <div class="mode-name">Ghép từ khóa</div>
+          <div class="mode-desc">Ghép câu hỏi với đáp án theo kiểu Duolingo</div>
         </div>
       </div>
     </div>
@@ -655,8 +760,8 @@ body{
       <div class="section-label">Cài đặt buổi học</div>
       <div class="config-grid">
         <div class="config-field">
-          <label>Chủ đề</label>
-          <select id="sel-cat">
+          <label for="sel-cat">Chủ đề</label>
+          <select id="sel-cat" onchange="checkCatEmpty()">
             <option value="all">Tất cả (128 câu)</option>
             <option value="principles">Nguyên tắc (15)</option>
             <option value="government">Chính phủ (46)</option>
@@ -664,34 +769,38 @@ body{
             <option value="colonial">Thuộc địa (17)</option>
             <option value="1800s">Thế kỷ 19 (10)</option>
             <option value="recent">Lịch sử gần đây (19)</option>
-            <option value="geography">Địa lý & Biểu tượng (6)</option>
-            <option value="civics">Công dân & Lễ (4)</option>
-            <option value="texas">Texas / Galveston</option>
+            <option value="geography">Địa lý &amp; Biểu tượng (6)</option>
+            <option value="civics">Công dân &amp; Lễ (4)</option>
+            <option value="texas">Texas / Galveston (3)</option>
           </select>
         </div>
         <div class="config-field">
-          <label>Số câu hỏi</label>
+          <label for="sel-len">Số câu hỏi</label>
           <select id="sel-len">
             <option value="10">10 câu</option>
             <option value="20" selected>20 câu</option>
             <option value="50">50 câu</option>
-            <option value="128">Tất cả 128</option>
+            <option value="128">Tất cả</option>
           </select>
         </div>
         <div class="config-field">
-          <label>Phương thức</label>
+          <label for="sel-mode">Phương thức</label>
           <select id="sel-mode">
             <option value="multiple">Trắc nghiệm</option>
             <option value="typing">Gõ câu trả lời</option>
           </select>
         </div>
         <div class="config-field">
-          <label>Ngôn ngữ</label>
-          <select id="sel-lang">
-            <option value="en">Tiếng Anh</option>
-            <option value="both" selected>Anh + Việt</option>
+          <label for="sel-weak">Câu ưu tiên</label>
+          <select id="sel-weak">
+            <option value="normal">Ngẫu nhiên</option>
+            <option value="weak">Câu yếu nhất</option>
+            <option value="starred">Câu quan trọng</option>
           </select>
         </div>
+      </div>
+      <div class="empty-cat-warn" id="empty-cat-warn">
+        ⚠️ Chủ đề này không có câu hỏi — sẽ dùng toàn bộ 128 câu.
       </div>
     </div>
 
@@ -699,18 +808,45 @@ body{
       <div class="section-label">Tùy chọn phỏng vấn</div>
       <div class="config-grid">
         <div class="config-field">
-          <label>Bộ câu hỏi</label>
+          <label for="sel-iv-cat">Bộ câu hỏi</label>
           <select id="sel-iv-cat">
             <option value="all">Tất cả 128 câu</option>
-            <option value="starred">Câu ưu tiên 65/20</option>
+            <option value="starred">Câu quan trọng</option>
             <option value="texas">Texas / Galveston</option>
           </select>
         </div>
+      </div>
+    </div>
+
+    <div id="flash-config" style="display:none">
+      <div class="section-label">Tùy chọn Flash</div>
+      <div class="config-grid">
         <div class="config-field">
-          <label>Ngôn ngữ</label>
-          <select id="sel-iv-lang">
-            <option value="en">Tiếng Anh</option>
-            <option value="both" selected>Anh + Việt</option>
+          <label for="sel-flash-cat">Chủ đề từ khóa</label>
+          <select id="sel-flash-cat">
+            <option value="all">Tất cả từ khóa</option>
+            <option value="principles">Nguyên tắc &amp; Hiến pháp</option>
+            <option value="government">Chính phủ &amp; Quan chức</option>
+            <option value="rights">Quyền &amp; Trách nhiệm</option>
+            <option value="history">Lịch sử Hoa Kỳ</option>
+            <option value="geography">Địa lý &amp; Biểu tượng</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="match-config" style="display:none">
+      <div class="section-label">Tùy chọn Ghép từ</div>
+      <div class="config-grid">
+        <div class="config-field">
+          <label for="sel-match-cat">Chủ đề</label>
+          <select id="sel-match-cat">
+            <option value="all">Tất cả từ khóa</option>
+            <option value="principles">Nguyên tắc &amp; Hiến pháp</option>
+            <option value="government">Chính phủ &amp; Quan chức</option>
+            <option value="rights">Quyền &amp; Trách nhiệm</option>
+            <option value="history">Lịch sử Hoa Kỳ</option>
+            <option value="geography">Địa lý &amp; Biểu tượng</option>
           </select>
         </div>
       </div>
@@ -719,11 +855,11 @@ body{
     <div>
       <div class="toggle-row">
         <span class="toggle-label">🔊 Hiệu ứng âm thanh</span>
-        <button class="toggle on" id="toggle-sfx" onclick="toggleSFX(this)"></button>
+        <button class="toggle on" id="toggle-sfx" onclick="toggleSFX(this)" aria-label="Bật/tắt hiệu ứng âm thanh" role="switch" aria-checked="true"></button>
       </div>
       <div class="toggle-row">
         <span class="toggle-label">🎵 Nhạc nền</span>
-        <button class="toggle" id="toggle-ambient" onclick="toggleAmbient(this)"></button>
+        <button class="toggle" id="toggle-ambient" onclick="toggleAmbient(this)" aria-label="Bật/tắt nhạc nền" role="switch" aria-checked="false"></button>
       </div>
     </div>
 
@@ -734,17 +870,19 @@ body{
 <!-- ══════════════════════════════════════
      QUIZ SCREEN
 ══════════════════════════════════════ -->
-<div id="quiz" class="screen">
+<div id="quiz" class="screen" aria-label="Màn hình luyện tập">
   <div class="quiz-header">
     <button class="btn-exit" onclick="confirmExit()">Thoát</button>
     <div class="progress-wrap">
-      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="prog-bar">
+        <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
       <div class="progress-label" id="prog-label">0 / 20</div>
     </div>
-    <div class="hearts-row" id="hearts-row">
-      <span class="heart-pip" id="hp1">❤️</span>
-      <span class="heart-pip" id="hp2">❤️</span>
-      <span class="heart-pip" id="hp3">❤️</span>
+    <div class="hearts-row" id="hearts-row" aria-label="Mạng sống">
+      <span class="heart-pip" id="hp1" aria-hidden="true">❤️</span>
+      <span class="heart-pip" id="hp2" aria-hidden="true">❤️</span>
+      <span class="heart-pip" id="hp3" aria-hidden="true">❤️</span>
     </div>
   </div>
 
@@ -753,18 +891,26 @@ body{
       <span class="q-num" id="q-num">Câu 1</span>
       <span class="q-badge" id="q-badge">Chính phủ</span>
     </div>
-    <div class="q-text" id="q-text"></div>
-    <div class="q-vi" id="q-vi"></div>
+    <div class="q-text-row">
+      <div class="q-text" id="q-text"></div>
+      <button class="tts-speaker" id="quiz-tts-btn" aria-label="Nghe câu hỏi" onclick="TTS.toggleQuestion()">
+        <div class="wave" aria-hidden="true">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+      </button>
+    </div>
+    <div class="q-vi" id="q-vi" lang="vi"></div>
     <div class="options-list" id="options-list"></div>
     <div class="type-area" id="type-area" style="display:none">
-      <input class="type-input" id="type-input" type="text" placeholder="Gõ câu trả lời..." autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="btn btn-navy" id="btn-check" onclick="checkTyped()">Kiểm tra</button>
+      <div class="type-hint">Nhập câu trả lời bằng tiếng Anh rồi nhấn Enter ↵</div>
+      <input class="type-input" id="type-input" type="text" placeholder="Gõ câu trả lời..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Nhập câu trả lời">
+      <button class="btn btn-navy" id="btn-check" onclick="checkTyped()">Kiểm tra ↵</button>
     </div>
   </div>
 
-  <div class="feedback-footer" id="feedback-footer">
+  <div class="feedback-footer" id="feedback-footer" role="status">
     <div class="fb-inner">
-      <svg class="fb-mascot-sm" id="fb-gp" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <svg class="fb-mascot-sm" id="fb-gp" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <ellipse cx="40" cy="52" rx="28" ry="22" fill="#c8a26e"/>
         <ellipse cx="40" cy="56" rx="18" ry="14" fill="#e8cfa0"/>
         <ellipse cx="40" cy="30" rx="22" ry="20" fill="#c8a26e"/>
@@ -777,7 +923,6 @@ body{
         <ellipse cx="40" cy="34" rx="3.5" ry="2.5" fill="#8b5e3c"/>
         <circle cx="38.5" cy="34.5" r=".9" fill="#6a4228"/>
         <circle cx="41.5" cy="34.5" r=".9" fill="#6a4228"/>
-        <!-- mouth changes via JS class -->
         <path id="fb-gp-mouth" d="M36 37 Q40 41 44 37" stroke="#6a4228" stroke-width="1.5" fill="none" stroke-linecap="round"/>
         <ellipse cx="21" cy="18" rx="7" ry="9" fill="#b08050"/>
         <ellipse cx="21" cy="18" rx="4" ry="6" fill="#e8a090" opacity=".7"/>
@@ -787,83 +932,136 @@ body{
         <ellipse cx="42" cy="11" rx="3.5" ry="2.5" fill="#9a7040" transform="rotate(10 42 11)"/>
         <ellipse cx="26" cy="70" rx="7" ry="4.5" fill="#b08050"/>
         <ellipse cx="54" cy="70" rx="7" ry="4.5" fill="#b08050"/>
-        <!-- Stars for happy state (hidden by default) -->
-        <text id="fb-star-l" x="8" y="20" font-size="14" opacity="0">⭐</text>
-        <text id="fb-star-r" x="56" y="20" font-size="14" opacity="0">⭐</text>
+        <text id="fb-star-l" x="8" y="20" font-size="14" opacity="0" aria-hidden="true">⭐</text>
+        <text id="fb-star-r" x="56" y="20" font-size="14" opacity="0" aria-hidden="true">⭐</text>
       </svg>
       <div class="fb-text">
         <div class="fb-title" id="fb-title">Đúng rồi!</div>
         <div class="fb-answer" id="fb-answer"></div>
+        <button class="fb-listen-btn" id="fb-listen-btn" onclick="TTS.speakFeedbackAnswer()" style="display:none" aria-label="Nghe đáp án đúng">
+          <div class="wave" style="display:inline-flex;gap:2px;height:14px;align-items:center;" aria-hidden="true">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+          Nghe đáp án đúng
+        </button>
       </div>
     </div>
-    <button class="fb-continue" id="fb-continue" onclick="advanceQuiz()">Tiếp tục</button>
+    <button class="fb-continue" id="fb-continue" onclick="advanceQuiz()">Tiếp tục →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KEYWORD FLASH SCREEN
+══════════════════════════════════════ -->
+<div id="flash" class="screen" aria-label="Chế độ từ khóa Flash">
+  <div class="flash-header">
+    <button class="btn-exit" onclick="confirmExit()">Thoát</button>
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="flash-prog-fill" style="width:0%"></div>
+      </div>
+      <div class="progress-label" id="flash-prog-label">0 / 0</div>
+    </div>
+  </div>
+  <div class="flash-body" id="flash-body">
+    <div class="flash-card" id="flash-card" onclick="revealFlashAnswer()" role="button" tabindex="0" aria-label="Nhấn để xem đáp án">
+      <div class="flash-cat-badge" id="flash-cat-badge">Nguyên tắc</div>
+      <div class="flash-keyword" id="flash-keyword"></div>
+      <div class="flash-keyword-vi" id="flash-keyword-vi" lang="vi"></div>
+      <div class="flash-tap-hint">Nhấn để xem đáp án 👆</div>
+    </div>
+
+    <div class="flash-answer-reveal" id="flash-answer-reveal">
+      <div class="flash-ans-label">Đáp án</div>
+      <div class="flash-ans-text" id="flash-ans-text"></div>
+      <div class="flash-ans-vi" id="flash-ans-vi" lang="vi"></div>
+      <button class="tts-speaker" id="flash-tts-btn" onclick="TTS.speakFlashAnswer()" style="margin:12px auto 0;" aria-label="Nghe đáp án">
+        <div class="wave" aria-hidden="true"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+      </button>
+    </div>
+
+    <div class="flash-actions" id="flash-actions" style="display:none">
+      <button class="flash-btn flash-btn-again" onclick="flashRespond(false)">😅 Chưa nhớ</button>
+      <button class="flash-btn flash-btn-knew" onclick="flashRespond(true)">✅ Đã nhớ!</button>
+    </div>
+
+    <div class="flash-progress" id="flash-progress"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KEYWORD MATCH SCREEN
+══════════════════════════════════════ -->
+<div id="match" class="screen" aria-label="Chế độ ghép từ khóa">
+  <div class="match-header">
+    <button class="btn-exit" onclick="confirmExit()">Thoát</button>
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="match-prog-fill" style="width:0%"></div>
+      </div>
+      <div class="progress-label" id="match-prog-label">0 / 6 cặp</div>
+    </div>
+  </div>
+  <div class="match-body" id="match-body">
+    <div class="match-instructions">
+      Nhấn vào <strong>từ khóa</strong> bên trái, rồi nhấn vào <strong>đáp án</strong> bên phải để ghép cặp! 🔗
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <div class="match-col-label">TỪ KHÓA</div>
+      <div class="match-col-label">ĐÁP ÁN</div>
+    </div>
+    <div class="match-grid" id="match-grid"></div>
+  </div>
+  <div class="match-score-bar">
+    <div class="match-pairs-count">Đã ghép: <span id="match-matched">0</span> / <span id="match-total">6</span></div>
+    <button class="btn btn-sm btn-ghost" onclick="confirmExit()" style="width:auto;">Thoát</button>
   </div>
 </div>
 
 <!-- ══════════════════════════════════════
      INTERVIEW SCREEN
 ══════════════════════════════════════ -->
-<div id="interview" class="screen">
+<div id="interview" class="screen" aria-label="Màn hình phỏng vấn">
   <div class="interview-header">
     <button class="btn-exit-iv" onclick="confirmExitIV()">← Thoát</button>
     <div class="iv-eyebrow">Phỏng vấn USCIS · Galveston</div>
     <div class="iv-title">Mô phỏng Viên chức</div>
     <div class="iv-sub">Chế độ học — xem tất cả đáp án chấp nhận được</div>
+    <div class="iv-progress" id="iv-progress">Câu 1 / 128</div>
   </div>
 
   <div class="officer-stage">
     <div class="officer-bar">
-      <!-- Kingpin mini avatar in bar -->
-      <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+      <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <circle cx="18" cy="18" r="18" fill="#1a3a5c"/>
-        <!-- bald head -->
         <ellipse cx="18" cy="13" rx="9" ry="10" fill="#d4a87a"/>
-        <!-- face -->
         <ellipse cx="18" cy="17" rx="8" ry="7" fill="#d4a87a"/>
-        <!-- Eyes tiny -->
         <circle cx="15" cy="16" r="1.2" fill="#1a1a1a"/>
         <circle cx="21" cy="16" r="1.2" fill="#1a1a1a"/>
-        <!-- suit collar -->
         <path d="M9 30 Q18 24 27 30 L27 36 L9 36Z" fill="#0d1f33"/>
         <path d="M18 24 L15 30 L18 28 L21 30Z" fill="#fff"/>
       </svg>
-      <div class="officer-name-wrap">
+      <div>
         <div class="officer-title-lbl">Viên chức Di trú</div>
         <div class="officer-name-lbl">USCIS — Khu vực Galveston</div>
       </div>
     </div>
-
-    <!-- Full Kingpin Sprite -->
     <div class="kingpin-sprite">
-      <svg width="160" height="200" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
-        <!-- Shadow -->
+      <svg width="160" height="200" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <ellipse cx="80" cy="196" rx="38" ry="6" fill="rgba(0,0,0,.12)"/>
-
-        <!-- Legs -->
         <rect x="56" y="150" width="20" height="44" rx="6" fill="#0d1f33"/>
         <rect x="84" y="150" width="20" height="44" rx="6" fill="#0d1f33"/>
-        <!-- Shoes -->
         <ellipse cx="66" cy="193" rx="13" ry="5" fill="#111"/>
         <ellipse cx="94" cy="193" rx="13" ry="5" fill="#111"/>
-
-        <!-- Body / Suit jacket — massive, wide -->
         <rect x="34" y="88" width="92" height="72" rx="14" fill="#0d1f33"/>
-        <!-- Jacket lapels / white shirt -->
         <path d="M80 92 L68 110 L80 120 L92 110Z" fill="#f5f5f5"/>
-        <!-- Tie -->
         <path d="M80 108 L76 130 L80 134 L84 130Z" fill="#8b0000"/>
         <rect x="77" y="104" width="6" height="8" rx="2" fill="#8b0000"/>
-        <!-- Pocket square -->
         <polygon points="105,96 115,96 112,102 108,102" fill="#f5f5f5" opacity=".8"/>
-        <!-- Buttons -->
         <circle cx="80" cy="140" r="2.5" fill="#1a3060"/>
         <circle cx="80" cy="130" r="2.5" fill="#1a3060"/>
-
-        <!-- Left arm — holding paper -->
         <rect x="14" y="88" width="24" height="60" rx="10" fill="#0d1f33"/>
-        <!-- Hand left -->
         <ellipse cx="26" cy="150" rx="10" ry="8" fill="#c8956a"/>
-        <!-- Paper / question list -->
         <rect x="4" y="108" width="34" height="46" rx="4" fill="#fdfbf4" stroke="#ccc" stroke-width="1.5"/>
         <rect x="9" y="114" width="24" height="2" rx="1" fill="#ccc"/>
         <rect x="9" y="120" width="20" height="2" rx="1" fill="#ccc"/>
@@ -872,49 +1070,29 @@ body{
         <rect x="9" y="138" width="22" height="2" rx="1" fill="#ccc"/>
         <rect x="9" y="144" width="18" height="2" rx="1" fill="#ccc"/>
         <text x="8" y="112" font-size="7" fill="#1a3a5c" font-family="sans-serif" font-weight="bold">USCIS</text>
-
-        <!-- Right arm -->
         <rect x="122" y="88" width="24" height="60" rx="10" fill="#0d1f33"/>
-        <!-- Hand right -->
         <ellipse cx="134" cy="150" rx="10" ry="8" fill="#c8956a"/>
-
-        <!-- Neck -->
         <rect x="71" y="72" width="18" height="20" rx="6" fill="#c8956a"/>
-
-        <!-- BALD HEAD — big, round, imposing -->
         <ellipse cx="80" cy="55" rx="36" ry="42" fill="#c8956a"/>
-
-        <!-- Face details -->
-        <!-- Brow ridge -->
         <ellipse cx="80" cy="36" rx="30" ry="12" fill="#bf8a5e"/>
-        <!-- Eyes — small, intense, deep-set -->
         <ellipse cx="67" cy="52" rx="6" ry="5" fill="#fff"/>
         <circle cx="67" cy="52" r="3.5" fill="#1a1a1a"/>
         <circle cx="68.2" cy="50.8" r="1.2" fill="#fff"/>
         <ellipse cx="93" cy="52" rx="6" ry="5" fill="#fff"/>
         <circle cx="93" cy="52" r="3.5" fill="#1a1a1a"/>
         <circle cx="94.2" cy="50.8" r="1.2" fill="#fff"/>
-        <!-- Brows — thick, stern -->
         <path d="M60 44 Q67 41 74 43" stroke="#6a3a1a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
         <path d="M86 43 Q93 41 100 44" stroke="#6a3a1a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <!-- Nose — prominent -->
         <ellipse cx="80" cy="61" rx="5" ry="6" fill="#b07a50"/>
         <circle cx="77.5" cy="63.5" r="2" fill="#9a6640" opacity=".6"/>
         <circle cx="82.5" cy="63.5" r="2" fill="#9a6640" opacity=".6"/>
-        <!-- Mouth — stern, thin -->
         <path d="M70 72 Q80 70 90 72" stroke="#8a4a28" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <!-- Chin -->
         <ellipse cx="80" cy="82" rx="20" ry="8" fill="#c0885c"/>
-        <!-- Ear left -->
         <ellipse cx="44" cy="55" rx="8" ry="11" fill="#c8956a"/>
         <ellipse cx="44" cy="55" rx="4" ry="7" fill="#b07a50" opacity=".5"/>
-        <!-- Ear right -->
         <ellipse cx="116" cy="55" rx="8" ry="11" fill="#c8956a"/>
         <ellipse cx="116" cy="55" rx="4" ry="7" fill="#b07a50" opacity=".5"/>
-        <!-- Slight glare on bald head -->
         <ellipse cx="70" cy="28" rx="12" ry="7" fill="rgba(255,255,255,.12)" transform="rotate(-20 70 28)"/>
-
-        <!-- USCIS badge on jacket lapel -->
         <rect x="88" y="96" width="24" height="16" rx="3" fill="#c8a843"/>
         <text x="90" y="107" font-size="6" fill="#1a1a1a" font-family="sans-serif" font-weight="900">USCIS</text>
       </svg>
@@ -925,12 +1103,14 @@ body{
     <div style="height:14px"></div>
     <div class="speech-bubble">
       <div class="b-q-num" id="b-q-num">Câu 1 / 128</div>
-      <div class="b-question" id="b-question"></div>
-      <div class="b-translation" id="b-translation"></div>
-      <button class="tts-btn" id="tts-btn" onclick="speakQuestion()">
-        <div class="tts-dot" id="tts-dot"></div>
-        <span id="tts-label">Nghe câu hỏi</span>
-      </button>
+      <div class="b-question-row">
+        <div class="b-question" id="b-question"></div>
+        <button class="tts-speaker" id="iv-tts-btn" onclick="TTS.speakIVQuestion()" aria-label="Nghe câu hỏi">
+          <div class="wave" aria-hidden="true"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        </button>
+      </div>
+      <div class="b-translation" id="b-translation" lang="vi"></div>
+      <div id="b-keyword-chip"></div>
     </div>
     <div class="answer-section">
       <h4>Các đáp án được chấp nhận</h4>
@@ -939,7 +1119,7 @@ body{
   </div>
 
   <div class="interview-footer">
-    <button class="iv-nav-btn btn-prev" id="iv-prev" onclick="interviewNav(-1)">◀ Trước</button>
+    <button class="iv-nav-btn btn-prev" id="iv-prev" onclick="interviewNav(-1)" disabled>◀ Trước</button>
     <button class="iv-nav-btn btn-next" id="iv-next" onclick="interviewNav(1)">Tiếp theo ▶</button>
   </div>
 </div>
@@ -950,8 +1130,7 @@ body{
 <div id="results" class="screen">
   <div class="results-header">
     <div class="result-status" id="result-status">KẾT QUẢ</div>
-    <!-- Result mascot -->
-    <svg class="result-mascot" id="result-gp" width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <svg class="result-mascot" id="result-gp" width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <ellipse cx="40" cy="52" rx="28" ry="22" fill="#c8a26e"/>
       <ellipse cx="40" cy="56" rx="18" ry="14" fill="#e8cfa0"/>
       <ellipse cx="40" cy="30" rx="22" ry="20" fill="#c8a26e"/>
@@ -987,6 +1166,10 @@ body{
       <div class="rg-card"><div class="rv" id="rr-wrong">0</div><div class="rl">Sai ❌</div></div>
       <div class="rg-card"><div class="rv" id="rr-xp">+0</div><div class="rl">XP ⚡</div></div>
     </div>
+    <div class="weak-spots" id="weak-spots-section" style="display:none">
+      <h4>Câu yếu nhất — Ôn lại</h4>
+      <div id="weak-spots-list"></div>
+    </div>
     <div class="results-actions">
       <button class="btn btn-navy" onclick="retryQuiz()">🔄 Luyện tập lại</button>
       <button class="btn btn-ghost" onclick="goHome()">🏠 Về trang chủ</button>
@@ -997,376 +1180,564 @@ body{
 </div><!-- #app -->
 
 <script>
+'use strict';
+
+// ════════════════════════════════════════════════════════
+//  KEYWORD ASSOCIATIONS — the core learning data
+// ════════════════════════════════════════════════════════
+const KEYWORDS = [
+  // === PRINCIPLES & CONSTITUTION ===
+  { cat:'principles', trigger:'Supreme law / Luật tối cao', vi:'Luật tối cao của đất nước', answer:'the Constitution', answerVi:'Hiến pháp' },
+  { cat:'principles', trigger:'Sets up / forms the government', vi:'Thành lập chính phủ', answer:'the Constitution', answerVi:'Hiến pháp' },
+  { cat:'principles', trigger:'First three words / Ba từ đầu tiên', vi:'Ba từ đầu tiên của Hiến pháp', answer:'We the People', answerVi:'Chúng tôi, nhân dân' },
+  { cat:'principles', trigger:'An amendment / Tu chính án', vi:'Tu chính án là gì?', answer:'a change (to the Constitution)', answerVi:'Một sự thay đổi trong Hiến pháp' },
+  { cat:'principles', trigger:'Bill of Rights / Tuyên ngôn quyền', vi:'Bill of Rights là gì?', answer:'the first ten amendments', answerVi:'Mười tu chính án đầu tiên' },
+  { cat:'principles', trigger:'First Amendment right / Quyền Tu chính án 1', vi:'Quyền nào trong Tu chính án 1?', answer:'Freedom of speech / religion', answerVi:'Tự do ngôn luận / tôn giáo' },
+  { cat:'principles', trigger:'Declaration of Independence', vi:'Tuyên ngôn Độc lập nói gì?', answer:'said America is free from Britain', answerVi:'Mỹ tự do khỏi Anh' },
+  { cat:'principles', trigger:'Economic system / Hệ thống kinh tế', vi:'Hệ thống kinh tế Hoa Kỳ?', answer:'capitalism / free market', answerVi:'Chủ nghĩa tư bản / thị trường tự do' },
+  { cat:'principles', trigger:'Rule of law / Pháp quyền', vi:'Pháp quyền nghĩa là gì?', answer:'everyone must follow the law', answerVi:'Mọi người phải tuân theo pháp luật' },
+  { cat:'principles', trigger:'How many amendments? / Bao nhiêu tu chính án?', vi:'Hiến pháp có bao nhiêu tu chính án?', answer:'27', answerVi:'27 tu chính án' },
+
+  // === GOVERNMENT & OFFICIALS ===
+  { cat:'government', trigger:'Three branches / Ba nhánh chính phủ', vi:'Ba nhánh chính phủ là gì?', answer:'Legislative, Executive, Judicial', answerVi:'Lập pháp, Hành pháp, Tư pháp' },
+  { cat:'government', trigger:'Stops one branch / Kiểm soát một nhánh', vi:'Gì để một nhánh không quá mạnh?', answer:'checks and balances', answerVi:'Kiểm soát và cân bằng' },
+  { cat:'government', trigger:'In charge / Executive branch', vi:'Ai phụ trách nhánh hành pháp?', answer:'the President', answerVi:'Tổng thống' },
+  { cat:'government', trigger:'Makes federal laws / Làm luật liên bang', vi:'Ai làm luật liên bang?', answer:'Congress', answerVi:'Quốc hội' },
+  { cat:'government', trigger:'Two parts of Congress / Hai bộ phận Quốc hội', vi:'Hai bộ phận của Quốc hội Hoa Kỳ?', answer:'Senate and House of Representatives', answerVi:'Thượng viện và Hạ viện' },
+  { cat:'government', trigger:'How many Senators? / Bao nhiêu Thượng nghị sĩ?', vi:'Có bao nhiêu Thượng nghị sĩ Hoa Kỳ?', answer:'100', answerVi:'100 Thượng nghị sĩ' },
+  { cat:'government', trigger:'Senator term / Nhiệm kỳ Thượng nghị sĩ', vi:'Nhiệm kỳ Thượng nghị sĩ là bao lâu?', answer:'6 years', answerVi:'6 năm' },
+  { cat:'government', trigger:'Representative term / Nhiệm kỳ Hạ nghị sĩ', vi:'Nhiệm kỳ Hạ nghị sĩ là bao lâu?', answer:'2 years', answerVi:'2 năm' },
+  { cat:'government', trigger:'President term / Nhiệm kỳ Tổng thống', vi:'Tổng thống được bầu bao nhiêu năm?', answer:'4 years', answerVi:'4 năm' },
+  { cat:'government', trigger:'President can no longer serve / Tổng thống không thể phục vụ', vi:'Ai lên thay khi Tổng thống không thể phục vụ?', answer:'the Vice President', answerVi:'Phó Tổng thống' },
+  { cat:'government', trigger:'President AND VP cannot serve / Cả hai không thể phục vụ', vi:'Nếu cả Tổng thống và Phó Tổng thống không thể phục vụ?', answer:'Speaker of the House', answerVi:'Chủ tịch Hạ viện' },
+  { cat:'government', trigger:'Commander in Chief / Tổng tư lệnh', vi:'Ai là Tổng tư lệnh quân đội?', answer:'the President', answerVi:'Tổng thống' },
+  { cat:'government', trigger:'Signs bills / Ký dự luật', vi:'Ai ký dự luật thành luật?', answer:'the President', answerVi:'Tổng thống' },
+  { cat:'government', trigger:'Vetoes bills / Phủ quyết', vi:'Ai phủ quyết dự luật?', answer:'the President', answerVi:'Tổng thống' },
+  { cat:'government', trigger:'Cabinet does / Nội các làm gì', vi:'Nội các Tổng thống làm gì?', answer:'advises the President', answerVi:'Tư vấn cho Tổng thống' },
+  { cat:'government', trigger:'Highest court / Tòa án cao nhất', vi:'Tòa án cao nhất Hoa Kỳ là gì?', answer:'the Supreme Court', answerVi:'Tòa án Tối cao' },
+  { cat:'government', trigger:'How many justices? / Bao nhiêu thẩm phán?', vi:'Tòa án Tối cao có bao nhiêu thẩm phán?', answer:'9', answerVi:'9 thẩm phán' },
+  { cat:'government', trigger:'Current President / Tổng thống hiện tại', vi:'Tổng thống Hoa Kỳ hiện nay là ai?', answer:'Donald Trump', answerVi:'Donald Trump' },
+  { cat:'government', trigger:'Current Vice President / Phó Tổng thống', vi:'Phó Tổng thống hiện nay là ai?', answer:'JD Vance', answerVi:'JD Vance' },
+  { cat:'government', trigger:'Speaker of the House / Chủ tịch Hạ viện', vi:'Chủ tịch Hạ viện hiện nay là ai?', answer:'Mike Johnson', answerVi:'Mike Johnson' },
+
+  // === RIGHTS & RESPONSIBILITIES ===
+  { cat:'rights', trigger:'Only citizens can / Chỉ công dân mới có thể', vi:'Quyền nào chỉ dành cho công dân?', answer:'vote in a federal election', answerVi:'Bỏ phiếu trong bầu cử liên bang' },
+  { cat:'rights', trigger:'Two rights / everyone / Hai quyền mọi người', vi:'Hai quyền mọi người tại Hoa Kỳ có?', answer:'freedom of speech and religion', answerVi:'Tự do ngôn luận và tôn giáo' },
+  { cat:'rights', trigger:'Pledge of Allegiance / Lời thề Trung thành', vi:'Lời thề Trung thành thể hiện trung thành với ai?', answer:'the flag / the United States', answerVi:'Lá cờ / Hoa Kỳ' },
+  { cat:'rights', trigger:'Promise to become citizen / Lời hứa nhập tịch', vi:'Lời hứa khi trở thành công dân?', answer:'be loyal to the United States', answerVi:'Trung thành với Hoa Kỳ' },
+
+  // === HISTORY ===
+  { cat:'history', trigger:'Reason colonists came / Lý do định cư đến', vi:'Lý do người định cư đến Mỹ?', answer:'freedom', answerVi:'Tự do' },
+  { cat:'history', trigger:'Lived in America before / Sống ở Mỹ trước', vi:'Ai sống ở Mỹ trước người châu Âu?', answer:'American Indians / Native Americans', answerVi:'Người Mỹ bản địa' },
+  { cat:'history', trigger:'Bought in 1803 / Mua năm 1803', vi:'Hoa Kỳ mua vùng lãnh thổ nào năm 1803?', answer:'Louisiana Territory', answerVi:'Lãnh thổ Louisiana' },
+  { cat:'history', trigger:'One war 1800s / Một cuộc chiến thế kỷ 19', vi:'Một cuộc chiến Hoa Kỳ trong thế kỷ 19?', answer:'Civil War', answerVi:'Nội chiến' },
+  { cat:'history', trigger:'Civil War problem / Vấn đề Nội chiến', vi:'Vấn đề chính của Nội chiến là gì?', answer:'slavery', answerVi:'Chế độ nô lệ' },
+  { cat:'history', trigger:'Abraham Lincoln did / Lincoln đã làm', vi:'Abraham Lincoln nổi tiếng vì điều gì?', answer:'freed the slaves', answerVi:'Giải phóng nô lệ' },
+  { cat:'history', trigger:'President WWI / Tổng thống Thế chiến I', vi:'Ai là Tổng thống trong Thế chiến I?', answer:'Woodrow Wilson', answerVi:'Woodrow Wilson' },
+  { cat:'history', trigger:'President Depression & WWII', vi:'Tổng thống thời Đại Khủng hoảng và Thế chiến II?', answer:'Franklin Roosevelt', answerVi:'Franklin Roosevelt' },
+  { cat:'history', trigger:'WWII enemies / Kẻ thù Thế chiến II', vi:'Kẻ thù của Hoa Kỳ trong Thế chiến II?', answer:'Japan, Germany, and Italy', answerVi:'Nhật Bản, Đức và Ý' },
+  { cat:'history', trigger:'Eisenhower general / Eisenhower là tướng', vi:'Eisenhower là tướng trong cuộc chiến nào?', answer:'World War II', answerVi:'Thế chiến II' },
+  { cat:'history', trigger:'Cold War concern / Mối lo Chiến tranh Lạnh', vi:'Mối lo ngại chính của Hoa Kỳ trong Chiến tranh Lạnh?', answer:'communism', answerVi:'Chủ nghĩa cộng sản' },
+  { cat:'history', trigger:'Martin Luther King Jr. did / MLK đã làm', vi:'Martin Luther King Jr. nổi tiếng vì gì?', answer:'fought for civil rights', answerVi:'Đấu tranh cho quyền dân sự' },
+  { cat:'history', trigger:'September 11, 2001 / Ngày 11/9/2001', vi:'Sự kiện gì xảy ra ngày 11/9/2001?', answer:'terrorists attacked the United States', answerVi:'Khủng bố tấn công Hoa Kỳ' },
+
+  // === GEOGRAPHY & SYMBOLS ===
+  { cat:'geography', trigger:'Longest rivers / Sông dài nhất', vi:'Sông dài nhất ở Hoa Kỳ?', answer:'Missouri / Mississippi', answerVi:'Missouri / Mississippi' },
+  { cat:'geography', trigger:'West Coast ocean / Đại dương bờ Tây', vi:'Đại dương nào ở bờ Tây?', answer:'Pacific Ocean', answerVi:'Thái Bình Dương' },
+  { cat:'geography', trigger:'East Coast ocean / Đại dương bờ Đông', vi:'Đại dương nào ở bờ Đông?', answer:'Atlantic Ocean', answerVi:'Đại Tây Dương' },
+  { cat:'geography', trigger:'Capital of the U.S. / Thủ đô', vi:'Thủ đô của Hoa Kỳ là gì?', answer:'Washington, D.C.', answerVi:'Washington, D.C.' },
+  { cat:'geography', trigger:'Statue of Liberty / Tượng Nữ thần Tự do', vi:'Tượng Nữ thần Tự do ở đâu?', answer:'New York Harbor', answerVi:'Cảng New York' },
+  { cat:'geography', trigger:'Why 13 stripes? / Tại sao 13 sọc?', vi:'Tại sao cờ có 13 sọc?', answer:'13 original colonies', answerVi:'13 thuộc địa ban đầu' },
+  { cat:'geography', trigger:'Why 50 stars? / Tại sao 50 sao?', vi:'Tại sao cờ có 50 ngôi sao?', answer:'50 states', answerVi:'50 tiểu bang' },
+  { cat:'geography', trigger:'National anthem / Quốc ca', vi:'Tên quốc ca Hoa Kỳ?', answer:'The Star-Spangled Banner', answerVi:'Lá cờ đầy sao' },
+];
+
 // ════════════════════════════════════════════════════════
 //  FULL QUESTION BANK — 128 USCIS 2025 + Texas/Galveston
 // ════════════════════════════════════════════════════════
 const Q=[
-{id:1,cat:"principles",starred:false,en:"What is the form of government of the United States?",vi:"Hình thức chính phủ của Hoa Kỳ là gì?",answers:["Republic","Constitution-based federal republic","Representative democracy"]},
-{id:2,cat:"principles",starred:true,en:"What is the supreme law of the land?",vi:"Luật tối cao của đất nước là gì?",answers:["the Constitution","the U.S. Constitution"]},
-{id:3,cat:"principles",starred:false,en:"Name one thing the U.S. Constitution does.",vi:"Kể tên một điều Hiến pháp Hoa Kỳ thực hiện.",answers:["forms the government","defines powers of government","defines the parts of government","protects the rights of the people"]},
-{id:4,cat:"principles",starred:false,en:"The U.S. Constitution starts with the words \"We the People.\" What does \"We the People\" mean?",vi:"Hiến pháp Hoa Kỳ bắt đầu bằng \"We the People.\" Nghĩa là gì?",answers:["self-government","popular sovereignty","consent of the governed","people should govern themselves","social contract"]},
-{id:5,cat:"principles",starred:false,en:"How are changes made to the U.S. Constitution?",vi:"Hiến pháp Hoa Kỳ được sửa đổi như thế nào?",answers:["amendments","the amendment process"]},
-{id:6,cat:"principles",starred:false,en:"What does the Bill of Rights protect?",vi:"Tu chính án quyền bảo vệ điều gì?",answers:["the basic rights of Americans","the basic rights of people living in the United States"]},
-{id:7,cat:"principles",starred:true,en:"How many amendments does the U.S. Constitution have?",vi:"Hiến pháp Hoa Kỳ có bao nhiêu tu chính án?",answers:["twenty-seven","27"]},
-{id:8,cat:"principles",starred:false,en:"Why is the Declaration of Independence important?",vi:"Tại sao Tuyên ngôn Độc lập quan trọng?",answers:["it says America is free from British control","it says all people are created equal","it identifies inherent rights","it identifies individual freedoms"]},
-{id:9,cat:"principles",starred:false,en:"What founding document said the American colonies were free from Britain?",vi:"Văn kiện lập quốc nào tuyên bố các thuộc địa Mỹ tự do khỏi Anh?",answers:["Declaration of Independence"]},
-{id:10,cat:"principles",starred:false,en:"Name two important ideas from the Declaration of Independence and the U.S. Constitution.",vi:"Kể tên hai ý tưởng quan trọng từ Tuyên ngôn Độc lập và Hiến pháp Hoa Kỳ.",answers:["equality","liberty","social contract","natural rights","limited government","self-government"]},
-{id:11,cat:"principles",starred:false,en:"The words \"Life, Liberty, and the pursuit of Happiness\" are in what founding document?",vi:"\"Life, Liberty, and the pursuit of Happiness\" xuất hiện trong văn kiện nào?",answers:["Declaration of Independence"]},
-{id:12,cat:"principles",starred:true,en:"What is the economic system of the United States?",vi:"Hệ thống kinh tế của Hoa Kỳ là gì?",answers:["capitalism","free market economy","capitalist economy"]},
-{id:13,cat:"principles",starred:false,en:"What is the rule of law?",vi:"Pháp quyền là gì?",answers:["everyone must follow the law","leaders must obey the law","government must obey the law","no one is above the law"]},
-{id:14,cat:"principles",starred:false,en:"Many documents influenced the U.S. Constitution. Name one.",vi:"Nhiều văn kiện đã ảnh hưởng đến Hiến pháp Hoa Kỳ. Kể tên một.",answers:["Declaration of Independence","Articles of Confederation","Federalist Papers","Anti-Federalist Papers","Virginia Declaration of Rights","Fundamental Orders of Connecticut","Mayflower Compact","Iroquois Great Law of Peace"]},
-{id:15,cat:"principles",starred:false,en:"There are three branches of government. Why?",vi:"Có ba nhánh chính phủ. Tại sao?",answers:["so one part does not become too powerful","checks and balances","separation of powers"]},
-{id:16,cat:"government",starred:false,en:"Name the three branches of government.",vi:"Kể tên ba nhánh chính phủ.",answers:["legislative, executive, and judicial","Congress, president, and the courts"]},
-{id:17,cat:"government",starred:false,en:"The President of the United States is in charge of which branch of government?",vi:"Tổng thống Hoa Kỳ phụ trách nhánh nào?",answers:["executive branch","executive"]},
-{id:18,cat:"government",starred:false,en:"What part of the federal government writes laws?",vi:"Bộ phận nào của chính phủ liên bang viết luật?",answers:["Congress","U.S. Congress","the legislature","legislative branch"]},
-{id:19,cat:"government",starred:false,en:"What are the two parts of the U.S. Congress?",vi:"Hai bộ phận của Quốc hội Hoa Kỳ là gì?",answers:["the Senate and House of Representatives","Senate and House"]},
-{id:20,cat:"government",starred:true,en:"Name one power of the U.S. Congress.",vi:"Kể tên một quyền hạn của Quốc hội Hoa Kỳ.",answers:["writes laws","declares war","makes the federal budget","approves treaties","approves presidential appointments"]},
-{id:21,cat:"government",starred:false,en:"How many U.S. senators are there?",vi:"Có bao nhiêu Thượng nghị sĩ Hoa Kỳ?",answers:["one hundred","100"]},
-{id:22,cat:"government",starred:false,en:"How long is a term for a U.S. senator?",vi:"Nhiệm kỳ Thượng nghị sĩ là bao lâu?",answers:["six years","6 years"]},
-{id:23,cat:"government",starred:false,en:"Who is one of your state's U.S. senators now? (Texas)",vi:"Một Thượng nghị sĩ Hoa Kỳ của Texas hiện nay là ai?",answers:["John Cornyn","Ted Cruz"]},
-{id:24,cat:"government",starred:false,en:"How many voting members are in the House of Representatives?",vi:"Hạ viện có bao nhiêu thành viên có quyền bỏ phiếu?",answers:["four hundred thirty-five","435"]},
-{id:25,cat:"government",starred:false,en:"How long is a term for a member of the House of Representatives?",vi:"Nhiệm kỳ của thành viên Hạ viện là bao lâu?",answers:["two years","2 years"]},
-{id:26,cat:"government",starred:false,en:"Why do U.S. representatives serve shorter terms than U.S. senators?",vi:"Tại sao Hạ nghị sĩ có nhiệm kỳ ngắn hơn?",answers:["to more closely follow public opinion","to be more responsive to the people"]},
-{id:27,cat:"government",starred:false,en:"How many senators does each state have?",vi:"Mỗi tiểu bang có bao nhiêu Thượng nghị sĩ?",answers:["two","2"]},
-{id:28,cat:"government",starred:false,en:"Why does each state have two senators?",vi:"Tại sao mỗi tiểu bang có hai Thượng nghị sĩ?",answers:["equal representation for small states","the Great Compromise","Connecticut Compromise"]},
-{id:29,cat:"government",starred:false,en:"Name your U.S. representative. (Galveston — District 14)",vi:"Hạ nghị sĩ liên bang của bạn là ai? (Galveston — Địa hạt 14)",answers:["Randy Weber","Representative Weber"]},
-{id:30,cat:"government",starred:true,en:"What is the name of the Speaker of the House of Representatives now?",vi:"Chủ tịch Hạ viện hiện nay là ai?",answers:["Mike Johnson"]},
-{id:31,cat:"government",starred:false,en:"Who does a U.S. senator represent?",vi:"Thượng nghị sĩ đại diện cho ai?",answers:["citizens of their state","all people of the state"]},
-{id:32,cat:"government",starred:false,en:"Who elects U.S. senators?",vi:"Ai bầu Thượng nghị sĩ?",answers:["citizens from their state","voters of the state"]},
-{id:33,cat:"government",starred:false,en:"Who does a member of the House of Representatives represent?",vi:"Thành viên Hạ viện đại diện cho ai?",answers:["citizens in their congressional district","people from their district"]},
-{id:34,cat:"government",starred:false,en:"Who elects members of the House of Representatives?",vi:"Ai bầu thành viên Hạ viện?",answers:["citizens from their congressional district","voters in their district"]},
-{id:35,cat:"government",starred:false,en:"Some states have more representatives than other states. Why?",vi:"Tại sao một số tiểu bang có nhiều đại diện hơn?",answers:["because of the state's population","because they have more people"]},
-{id:36,cat:"government",starred:true,en:"The President of the United States is elected for how many years?",vi:"Tổng thống Hoa Kỳ được bầu trong bao nhiêu năm?",answers:["four","4"]},
-{id:37,cat:"government",starred:false,en:"The President of the United States can serve only two terms. Why?",vi:"Tổng thống Hoa Kỳ chỉ được phục vụ hai nhiệm kỳ. Tại sao?",answers:["because of the 22nd Amendment","to keep the president from becoming too powerful"]},
-{id:38,cat:"government",starred:true,en:"What is the name of the President of the United States now?",vi:"Tổng thống Hoa Kỳ hiện nay là ai?",answers:["Donald Trump","Donald J. Trump","Trump"]},
-{id:39,cat:"government",starred:true,en:"What is the name of the Vice President of the United States now?",vi:"Phó Tổng thống Hoa Kỳ hiện nay là ai?",answers:["JD Vance","J.D. Vance","James David Vance","Vance"]},
-{id:40,cat:"government",starred:false,en:"If the president can no longer serve, who becomes president?",vi:"Nếu Tổng thống không thể tiếp tục phục vụ, ai trở thành Tổng thống?",answers:["the Vice President","Vice President"]},
-{id:41,cat:"government",starred:false,en:"Name one power of the president.",vi:"Kể tên một quyền hạn của Tổng thống.",answers:["signs bills into law","vetoes bills","enforces laws","commander in chief of the military","chief diplomat","appoints federal judges"]},
-{id:42,cat:"government",starred:false,en:"Who is Commander in Chief of the U.S. military?",vi:"Ai là Tổng tư lệnh quân đội Hoa Kỳ?",answers:["the President","the President of the United States"]},
-{id:43,cat:"government",starred:false,en:"Who signs bills to become laws?",vi:"Ai ký dự luật để trở thành luật?",answers:["the President","the President of the United States"]},
-{id:44,cat:"government",starred:true,en:"Who vetoes bills?",vi:"Ai phủ quyết dự luật?",answers:["the President","the President of the United States"]},
-{id:45,cat:"government",starred:false,en:"Who appoints federal judges?",vi:"Ai bổ nhiệm thẩm phán liên bang?",answers:["the President","the President of the United States"]},
-{id:46,cat:"government",starred:false,en:"The executive branch has many parts. Name one.",vi:"Nhánh hành pháp có nhiều bộ phận. Kể tên một.",answers:["the President","Cabinet","federal departments and agencies"]},
-{id:47,cat:"government",starred:false,en:"What does the President's Cabinet do?",vi:"Nội các Tổng thống làm gì?",answers:["advises the President"]},
-{id:48,cat:"government",starred:false,en:"What are two Cabinet-level positions?",vi:"Hai chức vụ cấp Nội các là gì?",answers:["Attorney General","Secretary of State","Secretary of Defense","Secretary of the Treasury","Vice President"]},
-{id:49,cat:"government",starred:false,en:"Why is the Electoral College important?",vi:"Tại sao Đại cử tri đoàn quan trọng?",answers:["it decides who is elected president","it provides a compromise between popular election and congressional selection"]},
-{id:50,cat:"government",starred:false,en:"What is one part of the judicial branch?",vi:"Một bộ phận của nhánh tư pháp là gì?",answers:["Supreme Court","federal courts"]},
-{id:51,cat:"government",starred:false,en:"What does the judicial branch do?",vi:"Nhánh tư pháp làm gì?",answers:["reviews laws","explains laws","resolves disputes about the law","decides if a law goes against the Constitution"]},
-{id:52,cat:"government",starred:true,en:"What is the highest court in the United States?",vi:"Tòa án cao nhất Hoa Kỳ là gì?",answers:["the Supreme Court","Supreme Court"]},
-{id:53,cat:"government",starred:false,en:"How many seats are on the Supreme Court?",vi:"Tòa án Tối cao có bao nhiêu ghế?",answers:["nine","9"]},
-{id:54,cat:"government",starred:false,en:"How many Supreme Court justices are usually needed to decide a case?",vi:"Thường cần bao nhiêu thẩm phán để quyết định một vụ?",answers:["five","5"]},
-{id:55,cat:"government",starred:false,en:"How long do Supreme Court justices serve?",vi:"Thẩm phán Tòa án Tối cao phục vụ bao lâu?",answers:["for life","lifetime appointment","until retirement"]},
-{id:56,cat:"government",starred:false,en:"Supreme Court justices serve for life. Why?",vi:"Thẩm phán Tòa án Tối cao phục vụ suốt đời. Tại sao?",answers:["to be independent of politics","to limit outside political influence"]},
-{id:57,cat:"government",starred:false,en:"Who is the Chief Justice of the United States now?",vi:"Chánh án Tòa án Tối cao hiện nay là ai?",answers:["John Roberts","John G. Roberts Jr."]},
-{id:58,cat:"government",starred:false,en:"Name one power that is only for the federal government.",vi:"Kể tên một quyền chỉ dành cho chính phủ liên bang.",answers:["print paper money","mint coins","declare war","create an army","make treaties","set foreign policy"]},
-{id:59,cat:"government",starred:false,en:"Name one power that is only for the states.",vi:"Kể tên một quyền chỉ dành cho tiểu bang.",answers:["provide schooling and education","provide protection (police)","provide safety (fire departments)","give a driver's license","approve zoning and land use"]},
-{id:60,cat:"government",starred:false,en:"What is the purpose of the 10th Amendment?",vi:"Mục đích của Tu chính án thứ 10 là gì?",answers:["powers not given to the federal government belong to the states or to the people"]},
-{id:61,cat:"government",starred:true,en:"Who is the governor of your state now? (Texas)",vi:"Thống đốc tiểu bang Texas hiện nay là ai?",answers:["Greg Abbott","Governor Abbott"]},
-{id:62,cat:"government",starred:false,en:"What is the capital of your state? (Texas)",vi:"Thủ phủ của tiểu bang Texas là gì?",answers:["Austin"]},
-{id:63,cat:"rights",starred:false,en:"There are four amendments to the U.S. Constitution about who can vote. Describe one of them.",vi:"Có bốn tu chính án về quyền bầu cử. Mô tả một.",answers:["citizens eighteen and older can vote","you don't have to pay a poll tax to vote","any citizen can vote","a male citizen of any race can vote"]},
-{id:64,cat:"rights",starred:false,en:"Who can vote in federal elections, run for federal office, and serve on a jury in the United States?",vi:"Ai có thể bầu cử, ứng cử và phục vụ trong bồi thẩm đoàn?",answers:["citizens","U.S. citizens","citizens of the United States"]},
-{id:65,cat:"rights",starred:false,en:"What are three rights of everyone living in the United States?",vi:"Ba quyền của mọi người sống tại Hoa Kỳ là gì?",answers:["freedom of expression","freedom of speech","freedom of assembly","freedom to petition the government","freedom of religion","the right to bear arms"]},
-{id:66,cat:"rights",starred:true,en:"What do we show loyalty to when we say the Pledge of Allegiance?",vi:"Chúng ta thể hiện lòng trung thành với ai khi đọc Lời thề Trung thành?",answers:["the United States","the flag"]},
-{id:67,cat:"rights",starred:false,en:"Name two promises that new citizens make in the Oath of Allegiance.",vi:"Kể hai lời hứa trong Lời thề Trung thành.",answers:["give up loyalty to other countries","defend the Constitution","obey the laws of the United States","serve in the military if needed","be loyal to the United States"]},
-{id:68,cat:"rights",starred:false,en:"How can people become United States citizens?",vi:"Làm thế nào để trở thành công dân Hoa Kỳ?",answers:["be born in the United States","naturalize","derive citizenship"]},
-{id:69,cat:"rights",starred:false,en:"What are two examples of civic participation in the United States?",vi:"Hai ví dụ về sự tham gia dân sự là gì?",answers:["vote","run for office","join a political party","help with a campaign","join a civic group","contact elected officials","write to a newspaper"]},
-{id:70,cat:"rights",starred:false,en:"What is one way Americans can serve their country?",vi:"Một cách người Mỹ có thể phục vụ đất nước là gì?",answers:["vote","pay taxes","obey the law","serve in the military","run for office","work for local state or federal government"]},
-{id:71,cat:"rights",starred:false,en:"Why is it important to pay federal taxes?",vi:"Tại sao quan trọng phải nộp thuế liên bang?",answers:["required by law","all people pay to fund the federal government","civic duty","required by the Constitution"]},
-{id:72,cat:"rights",starred:false,en:"It is important for all men age 18 through 25 to register for the Selective Service. Name one reason why.",vi:"Nam giới 18-25 tuổi cần đăng ký Selective Service. Kể một lý do.",answers:["required by law","civic duty","makes the draft fair if needed"]},
-{id:73,cat:"colonial",starred:false,en:"The colonists came to America for many reasons. Name one.",vi:"Người định cư đến Mỹ vì nhiều lý do. Kể tên một.",answers:["freedom","political liberty","religious freedom","economic opportunity","escape persecution"]},
-{id:74,cat:"colonial",starred:true,en:"Who lived in America before the Europeans arrived?",vi:"Ai sống ở Mỹ trước khi người châu Âu đến?",answers:["American Indians","Native Americans"]},
-{id:75,cat:"colonial",starred:false,en:"What group of people was taken and sold as slaves?",vi:"Nhóm người nào bị bắt và bán làm nô lệ?",answers:["Africans","people from Africa"]},
-{id:76,cat:"colonial",starred:false,en:"What war did the Americans fight to win independence from Britain?",vi:"Người Mỹ chiến đấu trong cuộc chiến nào để giành độc lập?",answers:["American Revolution","the Revolutionary War","War for American Independence"]},
-{id:77,cat:"colonial",starred:false,en:"Name one reason why the Americans declared independence from Britain.",vi:"Kể một lý do người Mỹ tuyên bố độc lập.",answers:["high taxes","taxation without representation","British soldiers stayed in Americans' houses","they did not have self-government","Boston Massacre","Boston Tea Party","Stamp Act","Intolerable Acts"]},
-{id:78,cat:"colonial",starred:true,en:"Who wrote the Declaration of Independence?",vi:"Ai viết Tuyên ngôn Độc lập?",answers:["Thomas Jefferson","Jefferson"]},
-{id:79,cat:"colonial",starred:false,en:"When was the Declaration of Independence adopted?",vi:"Tuyên ngôn Độc lập được thông qua ngày nào?",answers:["July 4, 1776"]},
-{id:80,cat:"colonial",starred:false,en:"The American Revolution had many important events. Name one.",vi:"Cách mạng Mỹ có nhiều sự kiện quan trọng. Kể tên một.",answers:["Battle of Bunker Hill","Declaration of Independence","Washington Crossing the Delaware","Battle of Saratoga","Valley Forge","Battle of Yorktown","British surrender at Yorktown"]},
-{id:81,cat:"colonial",starred:false,en:"There were 13 original states. Name five.",vi:"Có 13 bang gốc. Kể tên năm bang.",answers:["New Hampshire","Massachusetts","Rhode Island","Connecticut","New York","New Jersey","Pennsylvania","Delaware","Maryland","Virginia","North Carolina","South Carolina","Georgia"]},
-{id:82,cat:"colonial",starred:false,en:"What founding document was written in 1787?",vi:"Văn kiện lập quốc nào được viết năm 1787?",answers:["the Constitution","U.S. Constitution"]},
-{id:83,cat:"colonial",starred:false,en:"The Federalist Papers supported the passage of the U.S. Constitution. Name one of the writers.",vi:"Kể tên một tác giả của Federalist Papers.",answers:["James Madison","Alexander Hamilton","John Jay","Publius"]},
-{id:84,cat:"colonial",starred:false,en:"Why were the Federalist Papers important?",vi:"Tại sao Federalist Papers quan trọng?",answers:["they helped people understand the Constitution","they supported passing the Constitution"]},
-{id:85,cat:"colonial",starred:false,en:"Benjamin Franklin is famous for many things. Name one.",vi:"Benjamin Franklin nổi tiếng vì nhiều điều. Kể tên một.",answers:["founded the first free public libraries","first Postmaster General","helped write the Declaration of Independence","inventor","U.S. diplomat"]},
-{id:86,cat:"colonial",starred:true,en:"George Washington is famous for many things. Name one.",vi:"George Washington nổi tiếng vì nhiều điều. Kể tên một.",answers:["Father of Our Country","first president of the United States","General of the Continental Army","President of the Constitutional Convention"]},
-{id:87,cat:"colonial",starred:false,en:"Thomas Jefferson is famous for many things. Name one.",vi:"Thomas Jefferson nổi tiếng vì nhiều điều. Kể tên một.",answers:["writer of the Declaration of Independence","third president","doubled the size of the United States Louisiana Purchase","first Secretary of State"]},
-{id:88,cat:"colonial",starred:false,en:"James Madison is famous for many things. Name one.",vi:"James Madison nổi tiếng vì nhiều điều. Kể tên một.",answers:["Father of the Constitution","fourth president","president during the War of 1812","one of the writers of the Federalist Papers"]},
-{id:89,cat:"colonial",starred:false,en:"Alexander Hamilton is famous for many things. Name one.",vi:"Alexander Hamilton nổi tiếng vì nhiều điều. Kể tên một.",answers:["first Secretary of the Treasury","one of the writers of the Federalist Papers","helped establish the First Bank of the United States"]},
-{id:90,cat:"1800s",starred:false,en:"What territory did the United States buy from France in 1803?",vi:"Hoa Kỳ đã mua vùng lãnh thổ nào từ Pháp năm 1803?",answers:["Louisiana Territory","Louisiana"]},
-{id:91,cat:"1800s",starred:false,en:"Name one war fought by the United States in the 1800s.",vi:"Kể tên một cuộc chiến Hoa Kỳ tham gia trong thế kỷ 19.",answers:["War of 1812","Mexican-American War","Civil War","Spanish-American War"]},
-{id:92,cat:"1800s",starred:false,en:"Name the U.S. war between the North and the South.",vi:"Tên cuộc chiến tranh giữa miền Bắc và miền Nam là gì?",answers:["the Civil War","Civil War"]},
-{id:93,cat:"1800s",starred:false,en:"The Civil War had many important events. Name one.",vi:"Nội chiến có nhiều sự kiện quan trọng. Kể tên một.",answers:["Battle of Fort Sumter","Emancipation Proclamation","Battle of Vicksburg","Battle of Gettysburg","Sherman's March","surrender at Appomattox","Lincoln was assassinated"]},
-{id:94,cat:"1800s",starred:true,en:"Abraham Lincoln is famous for many things. Name one.",vi:"Abraham Lincoln nổi tiếng vì nhiều điều. Kể tên một.",answers:["freed the slaves","Emancipation Proclamation","saved the Union","led the United States during the Civil War","16th president of the United States"]},
-{id:95,cat:"1800s",starred:false,en:"What did the Emancipation Proclamation do?",vi:"Tuyên ngôn Giải phóng đã làm gì?",answers:["freed the slaves","freed slaves in the Confederacy","freed slaves in the Confederate states"]},
-{id:96,cat:"1800s",starred:false,en:"What U.S. war ended slavery?",vi:"Cuộc chiến nào của Hoa Kỳ đã chấm dứt chế độ nô lệ?",answers:["the Civil War","Civil War"]},
-{id:97,cat:"1800s",starred:false,en:"What amendment says all persons born or naturalized in the United States are U.S. citizens?",vi:"Tu chính án nào nói tất cả người sinh ra hoặc nhập tịch đều là công dân?",answers:["14th Amendment","the 14th Amendment"]},
-{id:98,cat:"1800s",starred:false,en:"When did all men get the right to vote?",vi:"Tất cả nam giới có quyền bầu cử khi nào?",answers:["after the Civil War","during Reconstruction","with the 15th Amendment","1870"]},
-{id:99,cat:"1800s",starred:false,en:"Name one leader of the women's rights movement in the 1800s.",vi:"Kể tên một lãnh đạo của phong trào quyền phụ nữ thế kỷ 19.",answers:["Susan B. Anthony","Elizabeth Cady Stanton","Sojourner Truth","Harriet Tubman","Lucretia Mott","Lucy Stone"]},
-{id:100,cat:"recent",starred:false,en:"Name one war fought by the United States in the 1900s.",vi:"Kể tên một cuộc chiến Hoa Kỳ tham gia trong thế kỷ 20.",answers:["World War I","World War II","Korean War","Vietnam War","Persian Gulf War","Gulf War"]},
-{id:101,cat:"recent",starred:false,en:"Why did the United States enter World War I?",vi:"Tại sao Hoa Kỳ tham gia Thế chiến I?",answers:["because Germany attacked U.S. civilian ships","to support the Allied Powers","to oppose the Central Powers"]},
-{id:102,cat:"recent",starred:false,en:"When did all women get the right to vote?",vi:"Tất cả phụ nữ có quyền bầu cử khi nào?",answers:["1920","after World War I","with the 19th Amendment"]},
-{id:103,cat:"recent",starred:false,en:"What was the Great Depression?",vi:"Cuộc Đại Khủng hoảng là gì?",answers:["longest economic recession in modern history","the worst economic crisis in U.S. history"]},
-{id:104,cat:"recent",starred:false,en:"When did the Great Depression start?",vi:"Cuộc Đại Khủng hoảng bắt đầu khi nào?",answers:["the Great Crash 1929","stock market crash of 1929","1929"]},
-{id:105,cat:"recent",starred:false,en:"Who was president during the Great Depression and World War II?",vi:"Ai là Tổng thống trong thời kỳ Đại Khủng hoảng và Thế chiến II?",answers:["Franklin Roosevelt","Franklin D. Roosevelt","FDR","Roosevelt"]},
-{id:106,cat:"recent",starred:false,en:"Why did the United States enter World War II?",vi:"Tại sao Hoa Kỳ tham gia Thế chiến II?",answers:["bombing of Pearl Harbor","Japanese attacked Pearl Harbor","to support the Allied Powers","to oppose the Axis Powers"]},
-{id:107,cat:"recent",starred:false,en:"Dwight Eisenhower is famous for many things. Name one.",vi:"Dwight Eisenhower nổi tiếng vì nhiều điều. Kể tên một.",answers:["general during World War II","president at the end of the Korean War","34th president of the United States","signed the Federal-Aid Highway Act"]},
-{id:108,cat:"recent",starred:false,en:"Who was the United States' main rival during the Cold War?",vi:"Đối thủ chính của Hoa Kỳ trong Chiến tranh Lạnh là ai?",answers:["Soviet Union","USSR","Russia"]},
-{id:109,cat:"recent",starred:false,en:"During the Cold War, what was one main concern of the United States?",vi:"Trong Chiến tranh Lạnh, mối lo ngại chính của Hoa Kỳ là gì?",answers:["communism","nuclear war"]},
-{id:110,cat:"recent",starred:false,en:"Why did the United States enter the Korean War?",vi:"Tại sao Hoa Kỳ tham gia Chiến tranh Triều Tiên?",answers:["to stop the spread of communism"]},
-{id:111,cat:"recent",starred:false,en:"Why did the United States enter the Vietnam War?",vi:"Tại sao Hoa Kỳ tham gia Chiến tranh Việt Nam?",answers:["to stop the spread of communism"]},
-{id:112,cat:"recent",starred:false,en:"What did the civil rights movement do?",vi:"Phong trào dân quyền đã làm gì?",answers:["fought to end racial discrimination"]},
-{id:113,cat:"recent",starred:true,en:"Martin Luther King, Jr. is famous for many things. Name one.",vi:"Martin Luther King Jr. nổi tiếng vì nhiều điều. Kể tên một.",answers:["fought for civil rights","worked for equality for all Americans","worked to ensure people would not be judged by the color of their skin"]},
-{id:114,cat:"recent",starred:false,en:"Why did the United States enter the Persian Gulf War?",vi:"Tại sao Hoa Kỳ tham gia Chiến tranh Vùng Vịnh?",answers:["to force the Iraqi military from Kuwait"]},
-{id:115,cat:"recent",starred:true,en:"What major event happened on September 11, 2001 in the United States?",vi:"Sự kiện lớn nào xảy ra vào ngày 11 tháng 9 năm 2001?",answers:["terrorists attacked the United States","terrorists took over planes and crashed them into the World Trade Center","terrorists attacked the Pentagon"]},
-{id:116,cat:"recent",starred:false,en:"Name one U.S. military conflict after the September 11, 2001 attacks.",vi:"Kể tên một cuộc xung đột quân sự sau ngày 11/9/2001.",answers:["Global War on Terror","War in Afghanistan","War in Iraq"]},
-{id:117,cat:"recent",starred:false,en:"Name one American Indian tribe in the United States.",vi:"Kể tên một bộ lạc người Mỹ bản địa.",answers:["Cherokee","Navajo","Sioux","Chippewa","Choctaw","Apache","Iroquois","Creek","Blackfeet","Seminole","Pueblo","Mohawk","Lakota","Crow","Hopi"]},
-{id:118,cat:"recent",starred:false,en:"Name one example of an American innovation.",vi:"Kể tên một ví dụ về sáng tạo của Mỹ.",answers:["light bulb","automobile","skyscrapers","airplane","assembly line","landing on the moon","integrated circuit"]},
-{id:119,cat:"geography",starred:false,en:"What is the capital of the United States?",vi:"Thủ đô của Hoa Kỳ là gì?",answers:["Washington D.C.","Washington, D.C."]},
-{id:120,cat:"geography",starred:false,en:"Where is the Statue of Liberty?",vi:"Tượng Nữ thần Tự do ở đâu?",answers:["New York Harbor","Liberty Island","New Jersey","near New York City"]},
-{id:121,cat:"geography",starred:true,en:"Why does the flag have 13 stripes?",vi:"Tại sao cờ Hoa Kỳ có 13 sọc?",answers:["because there were 13 original colonies","the stripes represent the original colonies"]},
-{id:122,cat:"geography",starred:false,en:"Why does the flag have 50 stars?",vi:"Tại sao cờ Hoa Kỳ có 50 ngôi sao?",answers:["one star for each state","each star represents a state","because there are 50 states"]},
-{id:123,cat:"geography",starred:false,en:"What is the name of the national anthem?",vi:"Tên quốc ca Hoa Kỳ là gì?",answers:["The Star-Spangled Banner"]},
-{id:124,cat:"geography",starred:false,en:"The Nation's first motto was \"E Pluribus Unum.\" What does that mean?",vi:"Khẩu hiệu đầu tiên của quốc gia là \"E Pluribus Unum.\" Nghĩa là gì?",answers:["out of many, one","we all become one"]},
-{id:125,cat:"civics",starred:false,en:"What is Independence Day?",vi:"Ngày Độc lập là gì?",answers:["a holiday to celebrate U.S. independence from Britain","the country's birthday"]},
-{id:126,cat:"civics",starred:true,en:"Name three national U.S. holidays.",vi:"Kể tên ba ngày lễ quốc gia Hoa Kỳ.",answers:["New Year's Day","Martin Luther King Jr. Day","Presidents Day","Memorial Day","Juneteenth","Independence Day","Labor Day","Columbus Day","Veterans Day","Thanksgiving Day","Christmas Day"]},
-{id:127,cat:"civics",starred:false,en:"What is Memorial Day?",vi:"Ngày Memorial Day là gì?",answers:["a holiday to honor soldiers who died in military service"]},
-{id:128,cat:"civics",starred:false,en:"What is Veterans Day?",vi:"Ngày Veterans Day là gì?",answers:["a holiday to honor people in the U.S. military","a holiday to honor people who have served in the U.S. military"]},
+{id:1,cat:"principles",starred:false,en:"What is the form of government of the United States?",vi:"Hình thức chính phủ của Hoa Kỳ là gì?",answers:["Republic","Constitution-based federal republic","Representative democracy"],wrongCount:0},
+{id:2,cat:"principles",starred:true,en:"What is the supreme law of the land?",vi:"Luật tối cao của đất nước là gì?",answers:["the Constitution","the U.S. Constitution"],wrongCount:0},
+{id:3,cat:"principles",starred:false,en:"Name one thing the U.S. Constitution does.",vi:"Kể tên một điều Hiến pháp Hoa Kỳ thực hiện.",answers:["forms the government","defines powers of government","defines the parts of government","protects the rights of the people"],wrongCount:0},
+{id:4,cat:"principles",starred:false,en:"The U.S. Constitution starts with the words \"We the People.\" What does \"We the People\" mean?",vi:"Hiến pháp Hoa Kỳ bắt đầu bằng \"We the People.\" Nghĩa là gì?",answers:["self-government","popular sovereignty","consent of the governed","people should govern themselves","social contract"],wrongCount:0},
+{id:5,cat:"principles",starred:false,en:"How are changes made to the U.S. Constitution?",vi:"Hiến pháp Hoa Kỳ được sửa đổi như thế nào?",answers:["amendments","the amendment process"],wrongCount:0},
+{id:6,cat:"principles",starred:false,en:"What does the Bill of Rights protect?",vi:"Tu chính án quyền bảo vệ điều gì?",answers:["the basic rights of Americans","the basic rights of people living in the United States"],wrongCount:0},
+{id:7,cat:"principles",starred:true,en:"How many amendments does the U.S. Constitution have?",vi:"Hiến pháp Hoa Kỳ có bao nhiêu tu chính án?",answers:["twenty-seven","27"],wrongCount:0},
+{id:8,cat:"principles",starred:false,en:"Why is the Declaration of Independence important?",vi:"Tại sao Tuyên ngôn Độc lập quan trọng?",answers:["it says America is free from British control","it says all people are created equal","it identifies inherent rights","it identifies individual freedoms"],wrongCount:0},
+{id:9,cat:"principles",starred:false,en:"What founding document said the American colonies were free from Britain?",vi:"Văn kiện lập quốc nào tuyên bố các thuộc địa Mỹ tự do khỏi Anh?",answers:["Declaration of Independence"],wrongCount:0},
+{id:10,cat:"principles",starred:false,en:"Name two important ideas from the Declaration of Independence and the U.S. Constitution.",vi:"Kể tên hai ý tưởng quan trọng từ Tuyên ngôn Độc lập và Hiến pháp Hoa Kỳ.",answers:["equality","liberty","social contract","natural rights","limited government","self-government"],wrongCount:0},
+{id:11,cat:"principles",starred:false,en:"The words \"Life, Liberty, and the pursuit of Happiness\" are in what founding document?",vi:"\"Life, Liberty, and the pursuit of Happiness\" xuất hiện trong văn kiện nào?",answers:["Declaration of Independence"],wrongCount:0},
+{id:12,cat:"principles",starred:true,en:"What is the economic system of the United States?",vi:"Hệ thống kinh tế của Hoa Kỳ là gì?",answers:["capitalism","free market economy","capitalist economy"],wrongCount:0},
+{id:13,cat:"principles",starred:false,en:"What is the rule of law?",vi:"Pháp quyền là gì?",answers:["everyone must follow the law","leaders must obey the law","government must obey the law","no one is above the law"],wrongCount:0},
+{id:14,cat:"principles",starred:false,en:"Many documents influenced the U.S. Constitution. Name one.",vi:"Nhiều văn kiện đã ảnh hưởng đến Hiến pháp Hoa Kỳ. Kể tên một.",answers:["Declaration of Independence","Articles of Confederation","Federalist Papers","Anti-Federalist Papers","Virginia Declaration of Rights","Fundamental Orders of Connecticut","Mayflower Compact","Iroquois Great Law of Peace"],wrongCount:0},
+{id:15,cat:"principles",starred:false,en:"There are three branches of government. Why?",vi:"Có ba nhánh chính phủ. Tại sao?",answers:["so one part does not become too powerful","checks and balances","separation of powers"],wrongCount:0},
+{id:16,cat:"government",starred:false,en:"Name the three branches of government.",vi:"Kể tên ba nhánh chính phủ.",answers:["legislative, executive, and judicial","Congress, president, and the courts"],wrongCount:0},
+{id:17,cat:"government",starred:false,en:"The President of the United States is in charge of which branch of government?",vi:"Tổng thống Hoa Kỳ phụ trách nhánh nào?",answers:["executive branch","executive"],wrongCount:0},
+{id:18,cat:"government",starred:false,en:"What part of the federal government writes laws?",vi:"Bộ phận nào của chính phủ liên bang viết luật?",answers:["Congress","U.S. Congress","the legislature","legislative branch"],wrongCount:0},
+{id:19,cat:"government",starred:false,en:"What are the two parts of the U.S. Congress?",vi:"Hai bộ phận của Quốc hội Hoa Kỳ là gì?",answers:["the Senate and House of Representatives","Senate and House"],wrongCount:0},
+{id:20,cat:"government",starred:true,en:"Name one power of the U.S. Congress.",vi:"Kể tên một quyền hạn của Quốc hội Hoa Kỳ.",answers:["writes laws","declares war","makes the federal budget","approves treaties","approves presidential appointments"],wrongCount:0},
+{id:21,cat:"government",starred:false,en:"How many U.S. senators are there?",vi:"Có bao nhiêu Thượng nghị sĩ Hoa Kỳ?",answers:["one hundred","100"],wrongCount:0},
+{id:22,cat:"government",starred:false,en:"How long is a term for a U.S. senator?",vi:"Nhiệm kỳ Thượng nghị sĩ là bao lâu?",answers:["six years","6 years"],wrongCount:0},
+{id:23,cat:"government",starred:false,en:"Who is one of your state's U.S. senators now? (Texas)",vi:"Một Thượng nghị sĩ Hoa Kỳ của Texas hiện nay là ai?",answers:["John Cornyn","Ted Cruz"],wrongCount:0},
+{id:24,cat:"government",starred:false,en:"How many voting members are in the House of Representatives?",vi:"Hạ viện có bao nhiêu thành viên có quyền bỏ phiếu?",answers:["four hundred thirty-five","435"],wrongCount:0},
+{id:25,cat:"government",starred:false,en:"How long is a term for a member of the House of Representatives?",vi:"Nhiệm kỳ của thành viên Hạ viện là bao lâu?",answers:["two years","2 years"],wrongCount:0},
+{id:26,cat:"government",starred:false,en:"Why do U.S. representatives serve shorter terms than U.S. senators?",vi:"Tại sao Hạ nghị sĩ có nhiệm kỳ ngắn hơn?",answers:["to more closely follow public opinion","to be more responsive to the people"],wrongCount:0},
+{id:27,cat:"government",starred:false,en:"How many senators does each state have?",vi:"Mỗi tiểu bang có bao nhiêu Thượng nghị sĩ?",answers:["two","2"],wrongCount:0},
+{id:28,cat:"government",starred:false,en:"Why does each state have two senators?",vi:"Tại sao mỗi tiểu bang có hai Thượng nghị sĩ?",answers:["equal representation for small states","the Great Compromise","Connecticut Compromise"],wrongCount:0},
+{id:29,cat:"government",starred:false,en:"Name your U.S. representative. (Galveston — District 14)",vi:"Hạ nghị sĩ liên bang của bạn là ai? (Galveston — Địa hạt 14)",answers:["Randy Weber","Representative Weber"],wrongCount:0},
+{id:30,cat:"government",starred:true,en:"What is the name of the Speaker of the House of Representatives now?",vi:"Chủ tịch Hạ viện hiện nay là ai?",answers:["Mike Johnson"],wrongCount:0},
+{id:31,cat:"government",starred:false,en:"Who does a U.S. senator represent?",vi:"Thượng nghị sĩ đại diện cho ai?",answers:["citizens of their state","all people of the state"],wrongCount:0},
+{id:32,cat:"government",starred:false,en:"Who elects U.S. senators?",vi:"Ai bầu Thượng nghị sĩ?",answers:["citizens from their state","voters of the state"],wrongCount:0},
+{id:33,cat:"government",starred:false,en:"Who does a member of the House of Representatives represent?",vi:"Thành viên Hạ viện đại diện cho ai?",answers:["citizens in their congressional district","people from their district"],wrongCount:0},
+{id:34,cat:"government",starred:false,en:"Who elects members of the House of Representatives?",vi:"Ai bầu thành viên Hạ viện?",answers:["citizens from their congressional district","voters in their district"],wrongCount:0},
+{id:35,cat:"government",starred:false,en:"Some states have more representatives than other states. Why?",vi:"Tại sao một số tiểu bang có nhiều đại diện hơn?",answers:["because of the state's population","because they have more people"],wrongCount:0},
+{id:36,cat:"government",starred:true,en:"The President of the United States is elected for how many years?",vi:"Tổng thống Hoa Kỳ được bầu trong bao nhiêu năm?",answers:["four","4"],wrongCount:0},
+{id:37,cat:"government",starred:false,en:"The President of the United States can serve only two terms. Why?",vi:"Tổng thống Hoa Kỳ chỉ được phục vụ hai nhiệm kỳ. Tại sao?",answers:["because of the 22nd Amendment","to keep the president from becoming too powerful"],wrongCount:0},
+{id:38,cat:"government",starred:true,en:"What is the name of the President of the United States now?",vi:"Tổng thống Hoa Kỳ hiện nay là ai?",answers:["Donald Trump","Donald J. Trump","Trump"],wrongCount:0},
+{id:39,cat:"government",starred:true,en:"What is the name of the Vice President of the United States now?",vi:"Phó Tổng thống Hoa Kỳ hiện nay là ai?",answers:["JD Vance","J.D. Vance","James David Vance","Vance"],wrongCount:0},
+{id:40,cat:"government",starred:false,en:"If the president can no longer serve, who becomes president?",vi:"Nếu Tổng thống không thể tiếp tục phục vụ, ai trở thành Tổng thống?",answers:["the Vice President","Vice President"],wrongCount:0},
+{id:41,cat:"government",starred:false,en:"Name one power of the president.",vi:"Kể tên một quyền hạn của Tổng thống.",answers:["signs bills into law","vetoes bills","enforces laws","commander in chief of the military","chief diplomat","appoints federal judges"],wrongCount:0},
+{id:42,cat:"government",starred:false,en:"Who is Commander in Chief of the U.S. military?",vi:"Ai là Tổng tư lệnh quân đội Hoa Kỳ?",answers:["the President","the President of the United States"],wrongCount:0},
+{id:43,cat:"government",starred:false,en:"Who signs bills to become laws?",vi:"Ai ký dự luật để trở thành luật?",answers:["the President","the President of the United States"],wrongCount:0},
+{id:44,cat:"government",starred:true,en:"Who vetoes bills?",vi:"Ai phủ quyết dự luật?",answers:["the President","the President of the United States"],wrongCount:0},
+{id:45,cat:"government",starred:false,en:"Who appoints federal judges?",vi:"Ai bổ nhiệm thẩm phán liên bang?",answers:["the President","the President of the United States"],wrongCount:0},
+{id:46,cat:"government",starred:false,en:"The executive branch has many parts. Name one.",vi:"Nhánh hành pháp có nhiều bộ phận. Kể tên một.",answers:["the President","Cabinet","federal departments and agencies"],wrongCount:0},
+{id:47,cat:"government",starred:false,en:"What does the President's Cabinet do?",vi:"Nội các Tổng thống làm gì?",answers:["advises the President"],wrongCount:0},
+{id:48,cat:"government",starred:false,en:"What are two Cabinet-level positions?",vi:"Hai chức vụ cấp Nội các là gì?",answers:["Attorney General","Secretary of State","Secretary of Defense","Secretary of the Treasury","Vice President"],wrongCount:0},
+{id:49,cat:"government",starred:false,en:"Why is the Electoral College important?",vi:"Tại sao Đại cử tri đoàn quan trọng?",answers:["it decides who is elected president","it provides a compromise between popular election and congressional selection"],wrongCount:0},
+{id:50,cat:"government",starred:false,en:"What is one part of the judicial branch?",vi:"Một bộ phận của nhánh tư pháp là gì?",answers:["Supreme Court","federal courts"],wrongCount:0},
+{id:51,cat:"government",starred:false,en:"What does the judicial branch do?",vi:"Nhánh tư pháp làm gì?",answers:["reviews laws","explains laws","resolves disputes about the law","decides if a law goes against the Constitution"],wrongCount:0},
+{id:52,cat:"government",starred:true,en:"What is the highest court in the United States?",vi:"Tòa án cao nhất Hoa Kỳ là gì?",answers:["the Supreme Court","Supreme Court"],wrongCount:0},
+{id:53,cat:"government",starred:false,en:"How many seats are on the Supreme Court?",vi:"Tòa án Tối cao có bao nhiêu ghế?",answers:["nine","9"],wrongCount:0},
+{id:54,cat:"government",starred:false,en:"How many Supreme Court justices are usually needed to decide a case?",vi:"Thường cần bao nhiêu thẩm phán để quyết định một vụ?",answers:["five","5"],wrongCount:0},
+{id:55,cat:"government",starred:false,en:"How long do Supreme Court justices serve?",vi:"Thẩm phán Tòa án Tối cao phục vụ bao lâu?",answers:["for life","lifetime appointment","until retirement"],wrongCount:0},
+{id:56,cat:"government",starred:false,en:"Supreme Court justices serve for life. Why?",vi:"Thẩm phán Tòa án Tối cao phục vụ suốt đời. Tại sao?",answers:["to be independent of politics","to limit outside political influence"],wrongCount:0},
+{id:57,cat:"government",starred:false,en:"Who is the Chief Justice of the United States now?",vi:"Chánh án Tòa án Tối cao hiện nay là ai?",answers:["John Roberts","John G. Roberts Jr."],wrongCount:0},
+{id:58,cat:"government",starred:false,en:"Name one power that is only for the federal government.",vi:"Kể tên một quyền chỉ dành cho chính phủ liên bang.",answers:["print paper money","mint coins","declare war","create an army","make treaties","set foreign policy"],wrongCount:0},
+{id:59,cat:"government",starred:false,en:"Name one power that is only for the states.",vi:"Kể tên một quyền chỉ dành cho tiểu bang.",answers:["provide schooling and education","provide protection (police)","provide safety (fire departments)","give a driver's license","approve zoning and land use"],wrongCount:0},
+{id:60,cat:"government",starred:false,en:"What is the purpose of the 10th Amendment?",vi:"Mục đích của Tu chính án thứ 10 là gì?",answers:["powers not given to the federal government belong to the states or to the people"],wrongCount:0},
+{id:61,cat:"government",starred:true,en:"Who is the governor of your state now? (Texas)",vi:"Thống đốc tiểu bang Texas hiện nay là ai?",answers:["Greg Abbott","Governor Abbott"],wrongCount:0},
+{id:62,cat:"government",starred:false,en:"What is the capital of your state? (Texas)",vi:"Thủ phủ của tiểu bang Texas là gì?",answers:["Austin"],wrongCount:0},
+{id:63,cat:"rights",starred:false,en:"There are four amendments to the U.S. Constitution about who can vote. Describe one of them.",vi:"Có bốn tu chính án về quyền bầu cử. Mô tả một.",answers:["citizens eighteen and older can vote","you don't have to pay a poll tax to vote","any citizen can vote","a male citizen of any race can vote"],wrongCount:0},
+{id:64,cat:"rights",starred:false,en:"Who can vote in federal elections, run for federal office, and serve on a jury in the United States?",vi:"Ai có thể bầu cử, ứng cử và phục vụ trong bồi thẩm đoàn?",answers:["citizens","U.S. citizens","citizens of the United States"],wrongCount:0},
+{id:65,cat:"rights",starred:false,en:"What are three rights of everyone living in the United States?",vi:"Ba quyền của mọi người sống tại Hoa Kỳ là gì?",answers:["freedom of expression","freedom of speech","freedom of assembly","freedom to petition the government","freedom of religion","the right to bear arms"],wrongCount:0},
+{id:66,cat:"rights",starred:true,en:"What do we show loyalty to when we say the Pledge of Allegiance?",vi:"Chúng ta thể hiện lòng trung thành với ai khi đọc Lời thề Trung thành?",answers:["the United States","the flag"],wrongCount:0},
+{id:67,cat:"rights",starred:false,en:"Name two promises that new citizens make in the Oath of Allegiance.",vi:"Kể hai lời hứa trong Lời thề Trung thành.",answers:["give up loyalty to other countries","defend the Constitution","obey the laws of the United States","serve in the military if needed","be loyal to the United States"],wrongCount:0},
+{id:68,cat:"rights",starred:false,en:"How can people become United States citizens?",vi:"Làm thế nào để trở thành công dân Hoa Kỳ?",answers:["be born in the United States","naturalize","derive citizenship"],wrongCount:0},
+{id:69,cat:"rights",starred:false,en:"What are two examples of civic participation in the United States?",vi:"Hai ví dụ về sự tham gia dân sự là gì?",answers:["vote","run for office","join a political party","help with a campaign","join a civic group","contact elected officials","write to a newspaper"],wrongCount:0},
+{id:70,cat:"rights",starred:false,en:"What is one way Americans can serve their country?",vi:"Một cách người Mỹ có thể phục vụ đất nước là gì?",answers:["vote","pay taxes","obey the law","serve in the military","run for office","work for local state or federal government"],wrongCount:0},
+{id:71,cat:"rights",starred:false,en:"Why is it important to pay federal taxes?",vi:"Tại sao quan trọng phải nộp thuế liên bang?",answers:["required by law","all people pay to fund the federal government","civic duty","required by the Constitution"],wrongCount:0},
+{id:72,cat:"rights",starred:false,en:"It is important for all men age 18 through 25 to register for the Selective Service. Name one reason why.",vi:"Nam giới 18-25 tuổi cần đăng ký Selective Service. Kể một lý do.",answers:["required by law","civic duty","makes the draft fair if needed"],wrongCount:0},
+{id:73,cat:"colonial",starred:false,en:"The colonists came to America for many reasons. Name one.",vi:"Người định cư đến Mỹ vì nhiều lý do. Kể tên một.",answers:["freedom","political liberty","religious freedom","economic opportunity","escape persecution"],wrongCount:0},
+{id:74,cat:"colonial",starred:true,en:"Who lived in America before the Europeans arrived?",vi:"Ai sống ở Mỹ trước khi người châu Âu đến?",answers:["American Indians","Native Americans"],wrongCount:0},
+{id:75,cat:"colonial",starred:false,en:"What group of people was taken and sold as slaves?",vi:"Nhóm người nào bị bắt và bán làm nô lệ?",answers:["Africans","people from Africa"],wrongCount:0},
+{id:76,cat:"colonial",starred:false,en:"What war did the Americans fight to win independence from Britain?",vi:"Người Mỹ chiến đấu trong cuộc chiến nào để giành độc lập?",answers:["American Revolution","the Revolutionary War","War for American Independence"],wrongCount:0},
+{id:77,cat:"colonial",starred:false,en:"Name one reason why the Americans declared independence from Britain.",vi:"Kể một lý do người Mỹ tuyên bố độc lập.",answers:["high taxes","taxation without representation","British soldiers stayed in Americans' houses","they did not have self-government","Boston Massacre","Boston Tea Party","Stamp Act","Intolerable Acts"],wrongCount:0},
+{id:78,cat:"colonial",starred:true,en:"Who wrote the Declaration of Independence?",vi:"Ai viết Tuyên ngôn Độc lập?",answers:["Thomas Jefferson","Jefferson"],wrongCount:0},
+{id:79,cat:"colonial",starred:false,en:"When was the Declaration of Independence adopted?",vi:"Tuyên ngôn Độc lập được thông qua ngày nào?",answers:["July 4, 1776"],wrongCount:0},
+{id:80,cat:"colonial",starred:false,en:"The American Revolution had many important events. Name one.",vi:"Cách mạng Mỹ có nhiều sự kiện quan trọng. Kể tên một.",answers:["Battle of Bunker Hill","Declaration of Independence","Washington Crossing the Delaware","Battle of Saratoga","Valley Forge","Battle of Yorktown","British surrender at Yorktown"],wrongCount:0},
+{id:81,cat:"colonial",starred:false,en:"There were 13 original states. Name five.",vi:"Có 13 bang gốc. Kể tên năm bang.",answers:["New Hampshire","Massachusetts","Rhode Island","Connecticut","New York","New Jersey","Pennsylvania","Delaware","Maryland","Virginia","North Carolina","South Carolina","Georgia"],wrongCount:0},
+{id:82,cat:"colonial",starred:false,en:"What founding document was written in 1787?",vi:"Văn kiện lập quốc nào được viết năm 1787?",answers:["the Constitution","U.S. Constitution"],wrongCount:0},
+{id:83,cat:"colonial",starred:false,en:"The Federalist Papers supported the passage of the U.S. Constitution. Name one of the writers.",vi:"Kể tên một tác giả của Federalist Papers.",answers:["James Madison","Alexander Hamilton","John Jay","Publius"],wrongCount:0},
+{id:84,cat:"colonial",starred:false,en:"Why were the Federalist Papers important?",vi:"Tại sao Federalist Papers quan trọng?",answers:["they helped people understand the Constitution","they supported passing the Constitution"],wrongCount:0},
+{id:85,cat:"colonial",starred:false,en:"Benjamin Franklin is famous for many things. Name one.",vi:"Benjamin Franklin nổi tiếng vì nhiều điều. Kể tên một.",answers:["founded the first free public libraries","first Postmaster General","helped write the Declaration of Independence","inventor","U.S. diplomat"],wrongCount:0},
+{id:86,cat:"colonial",starred:true,en:"George Washington is famous for many things. Name one.",vi:"George Washington nổi tiếng vì nhiều điều. Kể tên một.",answers:["Father of Our Country","first president of the United States","General of the Continental Army","President of the Constitutional Convention"],wrongCount:0},
+{id:87,cat:"colonial",starred:false,en:"Thomas Jefferson is famous for many things. Name one.",vi:"Thomas Jefferson nổi tiếng vì nhiều điều. Kể tên một.",answers:["writer of the Declaration of Independence","third president","doubled the size of the United States Louisiana Purchase","first Secretary of State"],wrongCount:0},
+{id:88,cat:"colonial",starred:false,en:"James Madison is famous for many things. Name one.",vi:"James Madison nổi tiếng vì nhiều điều. Kể tên một.",answers:["Father of the Constitution","fourth president","president during the War of 1812","one of the writers of the Federalist Papers"],wrongCount:0},
+{id:89,cat:"colonial",starred:false,en:"Alexander Hamilton is famous for many things. Name one.",vi:"Alexander Hamilton nổi tiếng vì nhiều điều. Kể tên một.",answers:["first Secretary of the Treasury","one of the writers of the Federalist Papers","helped establish the First Bank of the United States"],wrongCount:0},
+{id:90,cat:"1800s",starred:false,en:"What territory did the United States buy from France in 1803?",vi:"Hoa Kỳ đã mua vùng lãnh thổ nào từ Pháp năm 1803?",answers:["Louisiana Territory","Louisiana"],wrongCount:0},
+{id:91,cat:"1800s",starred:false,en:"Name one war fought by the United States in the 1800s.",vi:"Kể tên một cuộc chiến Hoa Kỳ tham gia trong thế kỷ 19.",answers:["War of 1812","Mexican-American War","Civil War","Spanish-American War"],wrongCount:0},
+{id:92,cat:"1800s",starred:false,en:"Name the U.S. war between the North and the South.",vi:"Tên cuộc chiến tranh giữa miền Bắc và miền Nam là gì?",answers:["the Civil War","Civil War"],wrongCount:0},
+{id:93,cat:"1800s",starred:false,en:"The Civil War had many important events. Name one.",vi:"Nội chiến có nhiều sự kiện quan trọng. Kể tên một.",answers:["Battle of Fort Sumter","Emancipation Proclamation","Battle of Vicksburg","Battle of Gettysburg","Sherman's March","surrender at Appomattox","Lincoln was assassinated"],wrongCount:0},
+{id:94,cat:"1800s",starred:true,en:"Abraham Lincoln is famous for many things. Name one.",vi:"Abraham Lincoln nổi tiếng vì nhiều điều. Kể tên một.",answers:["freed the slaves","Emancipation Proclamation","saved the Union","led the United States during the Civil War","16th president of the United States"],wrongCount:0},
+{id:95,cat:"1800s",starred:false,en:"What did the Emancipation Proclamation do?",vi:"Tuyên ngôn Giải phóng đã làm gì?",answers:["freed the slaves","freed slaves in the Confederacy","freed slaves in the Confederate states"],wrongCount:0},
+{id:96,cat:"1800s",starred:false,en:"What U.S. war ended slavery?",vi:"Cuộc chiến nào của Hoa Kỳ đã chấm dứt chế độ nô lệ?",answers:["the Civil War","Civil War"],wrongCount:0},
+{id:97,cat:"1800s",starred:false,en:"What amendment says all persons born or naturalized in the United States are U.S. citizens?",vi:"Tu chính án nào nói tất cả người sinh ra hoặc nhập tịch đều là công dân?",answers:["14th Amendment","the 14th Amendment"],wrongCount:0},
+{id:98,cat:"1800s",starred:false,en:"When did all men get the right to vote?",vi:"Tất cả nam giới có quyền bầu cử khi nào?",answers:["after the Civil War","during Reconstruction","with the 15th Amendment","1870"],wrongCount:0},
+{id:99,cat:"1800s",starred:false,en:"Name one leader of the women's rights movement in the 1800s.",vi:"Kể tên một lãnh đạo của phong trào quyền phụ nữ thế kỷ 19.",answers:["Susan B. Anthony","Elizabeth Cady Stanton","Sojourner Truth","Harriet Tubman","Lucretia Mott","Lucy Stone"],wrongCount:0},
+{id:100,cat:"recent",starred:false,en:"Name one war fought by the United States in the 1900s.",vi:"Kể tên một cuộc chiến Hoa Kỳ tham gia trong thế kỷ 20.",answers:["World War I","World War II","Korean War","Vietnam War","Persian Gulf War","Gulf War"],wrongCount:0},
+{id:101,cat:"recent",starred:false,en:"Why did the United States enter World War I?",vi:"Tại sao Hoa Kỳ tham gia Thế chiến I?",answers:["because Germany attacked U.S. civilian ships","to support the Allied Powers","to oppose the Central Powers"],wrongCount:0},
+{id:102,cat:"recent",starred:false,en:"When did all women get the right to vote?",vi:"Tất cả phụ nữ có quyền bầu cử khi nào?",answers:["1920","after World War I","with the 19th Amendment"],wrongCount:0},
+{id:103,cat:"recent",starred:false,en:"What was the Great Depression?",vi:"Cuộc Đại Khủng hoảng là gì?",answers:["longest economic recession in modern history","the worst economic crisis in U.S. history"],wrongCount:0},
+{id:104,cat:"recent",starred:false,en:"When did the Great Depression start?",vi:"Cuộc Đại Khủng hoảng bắt đầu khi nào?",answers:["the Great Crash 1929","stock market crash of 1929","1929"],wrongCount:0},
+{id:105,cat:"recent",starred:false,en:"Who was president during the Great Depression and World War II?",vi:"Ai là Tổng thống trong thời kỳ Đại Khủng hoảng và Thế chiến II?",answers:["Franklin Roosevelt","Franklin D. Roosevelt","FDR","Roosevelt"],wrongCount:0},
+{id:106,cat:"recent",starred:false,en:"Why did the United States enter World War II?",vi:"Tại sao Hoa Kỳ tham gia Thế chiến II?",answers:["bombing of Pearl Harbor","Japanese attacked Pearl Harbor","to support the Allied Powers","to oppose the Axis Powers"],wrongCount:0},
+{id:107,cat:"recent",starred:false,en:"Dwight Eisenhower is famous for many things. Name one.",vi:"Dwight Eisenhower nổi tiếng vì nhiều điều. Kể tên một.",answers:["general during World War II","president at the end of the Korean War","34th president of the United States","signed the Federal-Aid Highway Act"],wrongCount:0},
+{id:108,cat:"recent",starred:false,en:"Who was the United States' main rival during the Cold War?",vi:"Đối thủ chính của Hoa Kỳ trong Chiến tranh Lạnh là ai?",answers:["Soviet Union","USSR","Russia"],wrongCount:0},
+{id:109,cat:"recent",starred:false,en:"During the Cold War, what was one main concern of the United States?",vi:"Trong Chiến tranh Lạnh, mối lo ngại chính của Hoa Kỳ là gì?",answers:["communism","nuclear war"],wrongCount:0},
+{id:110,cat:"recent",starred:false,en:"Why did the United States enter the Korean War?",vi:"Tại sao Hoa Kỳ tham gia Chiến tranh Triều Tiên?",answers:["to stop the spread of communism"],wrongCount:0},
+{id:111,cat:"recent",starred:false,en:"Why did the United States enter the Vietnam War?",vi:"Tại sao Hoa Kỳ tham gia Chiến tranh Việt Nam?",answers:["to stop the spread of communism"],wrongCount:0},
+{id:112,cat:"recent",starred:false,en:"What did the civil rights movement do?",vi:"Phong trào dân quyền đã làm gì?",answers:["fought to end racial discrimination"],wrongCount:0},
+{id:113,cat:"recent",starred:true,en:"Martin Luther King, Jr. is famous for many things. Name one.",vi:"Martin Luther King Jr. nổi tiếng vì nhiều điều. Kể tên một.",answers:["fought for civil rights","worked for equality for all Americans","worked to ensure people would not be judged by the color of their skin"],wrongCount:0},
+{id:114,cat:"recent",starred:false,en:"Why did the United States enter the Persian Gulf War?",vi:"Tại sao Hoa Kỳ tham gia Chiến tranh Vùng Vịnh?",answers:["to force the Iraqi military from Kuwait"],wrongCount:0},
+{id:115,cat:"recent",starred:true,en:"What major event happened on September 11, 2001 in the United States?",vi:"Sự kiện lớn nào xảy ra vào ngày 11 tháng 9 năm 2001?",answers:["terrorists attacked the United States","terrorists took over planes and crashed them into the World Trade Center","terrorists attacked the Pentagon"],wrongCount:0},
+{id:116,cat:"recent",starred:false,en:"Name one U.S. military conflict after the September 11, 2001 attacks.",vi:"Kể tên một cuộc xung đột quân sự sau ngày 11/9/2001.",answers:["Global War on Terror","War in Afghanistan","War in Iraq"],wrongCount:0},
+{id:117,cat:"recent",starred:false,en:"Name one American Indian tribe in the United States.",vi:"Kể tên một bộ lạc người Mỹ bản địa.",answers:["Cherokee","Navajo","Sioux","Chippewa","Choctaw","Apache","Iroquois","Creek","Blackfeet","Seminole","Pueblo","Mohawk","Lakota","Crow","Hopi"],wrongCount:0},
+{id:118,cat:"recent",starred:false,en:"Name one example of an American innovation.",vi:"Kể tên một ví dụ về sáng tạo của Mỹ.",answers:["light bulb","automobile","skyscrapers","airplane","assembly line","landing on the moon","integrated circuit"],wrongCount:0},
+{id:119,cat:"geography",starred:false,en:"What is the capital of the United States?",vi:"Thủ đô của Hoa Kỳ là gì?",answers:["Washington D.C.","Washington, D.C."],wrongCount:0},
+{id:120,cat:"geography",starred:false,en:"Where is the Statue of Liberty?",vi:"Tượng Nữ thần Tự do ở đâu?",answers:["New York Harbor","Liberty Island","New Jersey","near New York City"],wrongCount:0},
+{id:121,cat:"geography",starred:true,en:"Why does the flag have 13 stripes?",vi:"Tại sao cờ Hoa Kỳ có 13 sọc?",answers:["because there were 13 original colonies","the stripes represent the original colonies"],wrongCount:0},
+{id:122,cat:"geography",starred:false,en:"Why does the flag have 50 stars?",vi:"Tại sao cờ Hoa Kỳ có 50 ngôi sao?",answers:["one star for each state","each star represents a state","because there are 50 states"],wrongCount:0},
+{id:123,cat:"geography",starred:false,en:"What is the name of the national anthem?",vi:"Tên quốc ca Hoa Kỳ là gì?",answers:["The Star-Spangled Banner"],wrongCount:0},
+{id:124,cat:"geography",starred:false,en:"The Nation's first motto was \"E Pluribus Unum.\" What does that mean?",vi:"Khẩu hiệu đầu tiên của quốc gia là \"E Pluribus Unum.\" Nghĩa là gì?",answers:["out of many, one","we all become one"],wrongCount:0},
+{id:125,cat:"civics",starred:false,en:"What is Independence Day?",vi:"Ngày Độc lập là gì?",answers:["a holiday to celebrate U.S. independence from Britain","the country's birthday"],wrongCount:0},
+{id:126,cat:"civics",starred:true,en:"Name three national U.S. holidays.",vi:"Kể tên ba ngày lễ quốc gia Hoa Kỳ.",answers:["New Year's Day","Martin Luther King Jr. Day","Presidents Day","Memorial Day","Juneteenth","Independence Day","Labor Day","Columbus Day","Veterans Day","Thanksgiving Day","Christmas Day"],wrongCount:0},
+{id:127,cat:"civics",starred:false,en:"What is Memorial Day?",vi:"Ngày Memorial Day là gì?",answers:["a holiday to honor soldiers who died in military service"],wrongCount:0},
+{id:128,cat:"civics",starred:false,en:"What is Veterans Day?",vi:"Ngày Veterans Day là gì?",answers:["a holiday to honor people in the U.S. military","a holiday to honor people who have served in the U.S. military"],wrongCount:0},
+// === TEXAS / GALVESTON (3 questions) ===
+{id:201,cat:"texas",starred:true,en:"Who is your U.S. representative? (Galveston, District 14)",vi:"Hạ nghị sĩ liên bang của bạn là ai? (Galveston, Địa hạt 14)",answers:["Randy Weber","Representative Weber"],wrongCount:0},
+{id:202,cat:"texas",starred:true,en:"Who is the governor of Texas now?",vi:"Thống đốc Texas hiện nay là ai?",answers:["Greg Abbott","Governor Abbott"],wrongCount:0},
+{id:203,cat:"texas",starred:true,en:"What is the capital of Texas?",vi:"Thủ phủ của Texas là gì?",answers:["Austin"],wrongCount:0},
 ];
 
 // ════════════════════════════════════════════════════════
 //  PERSISTENCE
 // ════════════════════════════════════════════════════════
-const SK='ciq_v3';
-function loadSave(){try{return JSON.parse(localStorage.getItem(SK))||{};}catch(e){return{};}}
-function writeSave(o){try{localStorage.setItem(SK,JSON.stringify(o));}catch(e){}}
+const SK='ciq_v4';
 
-let save=loadSave();
-let xp=save.xp||0;
-let streak=save.streak||0;
-let lastStudyDate=save.lastStudyDate||null;
-let best=save.best||null;
-let achievements=save.achievements||[];
+function loadSave(){
+  try { return JSON.parse(localStorage.getItem(SK)) || {}; }
+  catch(e) { return {}; }
+}
 
-const XP_PER_LEVEL=300;
-const LVL_NAMES=['','Người mới','Người học','Học sinh','Công dân','Học giả','Chuyên gia','Bậc thầy','Yêu nước','Huyền thoại','Vô địch'];
-function lvl(x){return Math.floor(x/XP_PER_LEVEL)+1;}
-function xpInLvl(x){return x%XP_PER_LEVEL;}
-function lvlName(l){return LVL_NAMES[Math.min(l,LVL_NAMES.length-1)]||'Vô địch';}
-function persist(){writeSave({xp,streak,lastStudyDate,best,achievements});}
+function writeSave(o){
+  try { localStorage.setItem(SK, JSON.stringify(o)); }
+  catch(e) { console.warn('Save failed:', e); }
+}
 
-// Check and update streak
+let save = loadSave();
+let xp             = save.xp || 0;
+let streak         = save.streak || 0;
+let lastStudyDate  = save.lastStudyDate || null;
+let best           = save.best || null;
+let achievements   = save.achievements || [];
+let wrongCounts    = save.wrongCounts || {}; // {questionId: count}
+
+// Sync wrongCounts into Q array
+Q.forEach(q => { q.wrongCount = wrongCounts[q.id] || 0; });
+
+const XP_PER_LEVEL = 300;
+const LVL_NAMES = ['','Người mới','Người học','Học sinh','Công dân','Học giả','Chuyên gia','Bậc thầy','Yêu nước','Huyền thoại','Vô địch'];
+function lvl(x) { return Math.floor(x / XP_PER_LEVEL) + 1; }
+function xpInLvl(x) { return x % XP_PER_LEVEL; }
+function lvlName(l) { return LVL_NAMES[Math.min(l, LVL_NAMES.length - 1)] || 'Vô địch'; }
+
+function persist(){
+  const wc = {};
+  Q.forEach(q => { if(q.wrongCount > 0) wc[q.id] = q.wrongCount; });
+  writeSave({ xp, streak, lastStudyDate, best, achievements, wrongCounts: wc });
+}
+
 function checkStreak(){
-  const today=new Date().toDateString();
-  if(lastStudyDate===today) return;
-  const yesterday=new Date(Date.now()-86400000).toDateString();
-  if(lastStudyDate===yesterday){streak++;}
-  else if(lastStudyDate!==today){
-    if(streak>0&&lastStudyDate!==yesterday){streak=0;}
-  }
-  lastStudyDate=today;
+  const today = new Date().toDateString();
+  if(lastStudyDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if(lastStudyDate === yesterday){ streak++; }
+  else if(lastStudyDate !== today){ streak = (streak > 0 && lastStudyDate !== yesterday) ? 0 : streak; }
+  lastStudyDate = today;
   persist();
+}
+
+// ════════════════════════════════════════════════════════
+//  TTS SINGLETON — clean, no monkey-patching
+// ════════════════════════════════════════════════════════
+const TTS = (function(){
+  let _enabled = true;
+  let _speaking = false;
+  let _currentText = '';
+  let _currentBtn = null;
+
+  function _stop(){
+    if('speechSynthesis' in window) window.speechSynthesis.cancel();
+    _speaking = false;
+    _currentText = '';
+    // Reset all speaker buttons
+    document.querySelectorAll('.tts-speaker').forEach(b => b.classList.remove('speaking'));
+    _currentBtn = null;
+  }
+
+  function _speak(text, btn){
+    if(!text || !_enabled || !('speechSynthesis' in window)) return;
+    _stop();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.88;
+    u.pitch = 1.0;
+    _speaking = true;
+    _currentText = text;
+    _currentBtn = btn || null;
+    if(btn) btn.classList.add('speaking');
+    u.onend = () => _stop();
+    u.onerror = () => _stop();
+    window.speechSynthesis.speak(u);
+  }
+
+  return {
+    stop: _stop,
+    speak: _speak,
+    get enabled(){ return _enabled; },
+    set enabled(v){ _enabled = v; if(!v) _stop(); },
+
+    // Specific contexts
+    speakQuestion(){
+      const text = document.getElementById('q-text')?.textContent;
+      const btn = document.getElementById('quiz-tts-btn');
+      if(_currentBtn === btn && _speaking){ _stop(); return; }
+      _speak(text, btn);
+    },
+    toggleQuestion(){
+      this.speakQuestion();
+    },
+    speakFeedbackAnswer(){
+      _speak(S._lastCorrectAnswer, null);
+    },
+    speakIVQuestion(){
+      const q = S.ivQueue[S.ivIdx];
+      const btn = document.getElementById('iv-tts-btn');
+      if(_currentBtn === btn && _speaking){ _stop(); return; }
+      if(q) _speak(q.en, btn);
+    },
+    speakFlashAnswer(){
+      const kw = S.flashQueue[S.flashIdx];
+      const btn = document.getElementById('flash-tts-btn');
+      if(_currentBtn === btn && _speaking){ _stop(); return; }
+      if(kw) _speak(kw.answer, btn);
+    },
+    speakIVAnswer(text, btn){
+      if(_currentBtn === btn && _speaking){ _stop(); return; }
+      _speak(text, btn);
+    }
+  };
+})();
+
+// ════════════════════════════════════════════════════════
+//  AUDIO ENGINE
+// ════════════════════════════════════════════════════════
+let audioCtx = null;
+let ambientNodes = null;
+let ambientPlaying = false;
+
+function getCtx(){
+  if(!audioCtx){ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function tone(freq, type, dur, gain=0.25, delay=0){
+  if(!S.sfxOn) return;
+  try{
+    const c = getCtx();
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, c.currentTime + delay);
+    g.gain.linearRampToValueAtTime(gain, c.currentTime + delay + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + dur);
+    o.start(c.currentTime + delay); o.stop(c.currentTime + delay + dur + 0.05);
+  } catch(e){}
+}
+
+function sndCorrect(){ tone(523,'sine',.1,.22,0); tone(659,'sine',.1,.22,.09); tone(784,'sine',.2,.22,.18); }
+function sndWrong(){ tone(350,'sawtooth',.07,.16,0); tone(230,'sawtooth',.18,.16,.08); }
+function sndComplete(){ [523,659,784,1047].forEach((f,i) => tone(f,'sine',.2,.18,i*.09)); }
+function sndLevelUp(){ [392,523,659,784,1047].forEach((f,i) => tone(f,'sine',.22,.2,i*.08)); }
+function sndMatch(){ tone(659,'sine',.08,.2,0); tone(784,'sine',.15,.2,.07); }
+
+function startAmbient(){
+  if(ambientPlaying) return;
+  try{
+    const c = getCtx();
+    const master = c.createGain(); master.gain.value = 0.04; master.connect(c.destination);
+    const freqs = [82.4,110,164.8,220,246.9];
+    const oscs = freqs.map((freq,i) => {
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = 'sine'; o.frequency.value = freq; o.detune.value = (i%2?-1:1)*3;
+      g.gain.value = 0.12+(i*.04); o.connect(g); g.connect(master); o.start();
+      return {o,g};
+    });
+    const lfo = c.createOscillator(), lg = c.createGain();
+    lfo.type = 'sine'; lfo.frequency.value = 0.07; lg.gain.value = 0.025;
+    lfo.connect(lg); lg.connect(master.gain); lfo.start();
+    ambientNodes = { stop: () => { try{lfo.stop();}catch(e){} oscs.forEach(o => {try{o.o.stop();}catch(e){}}); master.disconnect(); }};
+    ambientPlaying = true;
+    document.getElementById('ambient-indicator').classList.add('playing');
+  } catch(e){}
+}
+
+function stopAmbient(){
+  if(!ambientPlaying) return;
+  ambientPlaying = false;
+  if(ambientNodes){ ambientNodes.stop(); ambientNodes = null; }
+  document.getElementById('ambient-indicator').classList.remove('playing');
 }
 
 // ════════════════════════════════════════════════════════
 //  APP STATE
 // ════════════════════════════════════════════════════════
-let S={
-  studyMode:'practice',
-  answerMode:'multiple',
-  category:'all',
-  quizLen:20,
-  lang:'both',
-  queue:[],
-  idx:0,
-  hearts:3,
-  correct:0,
-  wrong:0,
-  xpGained:0,
-  answered:false,
-  sfxOn:true,
-  ambientOn:false,
-  ivQueue:[],
-  ivIdx:0,
-  ivLang:'both',
-  prevLvl:lvl(xp),
+const S = {
+  studyMode: 'practice',
+  answerMode: 'multiple',
+  category: 'all',
+  quizLen: 20,
+  queue: [],
+  idx: 0,
+  hearts: 3,
+  correct: 0,
+  wrong: 0,
+  xpGained: 0,
+  answered: false,
+  sfxOn: true,
+  ambientOn: false,
+  _lastCorrectAnswer: '',
+  ivQueue: [],
+  ivIdx: 0,
+  // Flash mode
+  flashQueue: [],
+  flashIdx: 0,
+  flashKnew: 0,
+  flashAgain: 0,
+  // Match mode
+  matchPairs: [],
+  matchMatched: 0,
+  matchRound: 0,
+  matchSelected: null,
+  matchSelectedSide: null,
 };
-
-// ════════════════════════════════════════════════════════
-//  AUDIO ENGINE
-// ════════════════════════════════════════════════════════
-let audioCtx=null;
-let ambientNodes=null;
-let ambientPlaying=false;
-
-function getCtx(){
-  if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
-  if(audioCtx.state==='suspended')audioCtx.resume();
-  return audioCtx;
-}
-
-function tone(freq,type,dur,gain=0.25,delay=0){
-  if(!S.sfxOn)return;
-  try{
-    const c=getCtx();
-    const o=c.createOscillator();
-    const g=c.createGain();
-    o.connect(g);g.connect(c.destination);
-    o.type=type;o.frequency.value=freq;
-    g.gain.setValueAtTime(0,c.currentTime+delay);
-    g.gain.linearRampToValueAtTime(gain,c.currentTime+delay+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+dur);
-    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+0.05);
-  }catch(e){}
-}
-
-function sndCorrect(){tone(523,'sine',.1,.22,0);tone(659,'sine',.1,.22,.09);tone(784,'sine',.2,.22,.18);}
-function sndWrong(){tone(350,'sawtooth',.07,.16,0);tone(230,'sawtooth',.18,.16,.08);}
-function sndComplete(){[523,659,784,1047].forEach((f,i)=>tone(f,'sine',.2,.18,i*.09));}
-function sndLevelUp(){[392,523,659,784,1047].forEach((f,i)=>tone(f,'sine',.22,.2,i*.08));}
-
-function startAmbient(){
-  if(ambientPlaying)return;
-  try{
-    const c=getCtx();
-    const master=c.createGain();master.gain.value=0.04;master.connect(c.destination);
-    const freqs=[82.4,110,164.8,220,246.9];
-    const oscs=freqs.map((freq,i)=>{
-      const o=c.createOscillator(),g=c.createGain();
-      o.type='sine';o.frequency.value=freq;o.detune.value=(i%2?-1:1)*3;
-      g.gain.value=0.12+(i*.04);
-      o.connect(g);g.connect(master);o.start();
-      return{o,g};
-    });
-    const lfo=c.createOscillator(),lg=c.createGain();
-    lfo.type='sine';lfo.frequency.value=0.07;lg.gain.value=0.025;
-    lfo.connect(lg);lg.connect(master.gain);lfo.start();
-    ambientNodes={stop:()=>{try{lfo.stop();}catch(e){}oscs.forEach(o=>{try{o.o.stop();}catch(e){}});master.disconnect();}};
-    ambientPlaying=true;
-    document.getElementById('ambient-indicator').classList.add('playing');
-  }catch(e){}
-}
-
-function stopAmbient(){
-  if(!ambientPlaying)return;
-  ambientPlaying=false;
-  if(ambientNodes){ambientNodes.stop();ambientNodes=null;}
-  document.getElementById('ambient-indicator').classList.remove('playing');
-}
-
-// ════════════════════════════════════════════════════════
-//  TTS
-// ════════════════════════════════════════════════════════
-function speakQuestion(){
-  if(!('speechSynthesis' in window))return;
-  const q=S.ivQueue[S.ivIdx];if(!q)return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(q.en);
-  u.rate=0.88;u.pitch=1;u.lang='en-US';
-  const btn=document.getElementById('tts-btn');
-  const lbl=document.getElementById('tts-label');
-  btn.classList.add('speaking');lbl.textContent='Đang nói...';
-  u.onend=()=>{btn.classList.remove('speaking');lbl.textContent='Nghe câu hỏi';};
-  u.onerror=()=>{btn.classList.remove('speaking');lbl.textContent='Nghe câu hỏi';};
-  window.speechSynthesis.speak(u);
-}
 
 // ════════════════════════════════════════════════════════
 //  HELPERS
 // ════════════════════════════════════════════════════════
-function shuffle(arr){return[...arr].sort(()=>Math.random()-.5);}
-function norm(s){return s.trim().toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ');}
-function matchAnswer(selected,q){
-  const ns=norm(selected);
-  if(ns.length<2)return false;
-  return q.answers.some(a=>{
-    const na=norm(a);
-    if(ns===na)return true;
-    // Only allow substring match if typed answer is at least 60% as long as correct answer
-    const minLen=Math.floor(na.length*0.6);
-    if(ns.length>=minLen&&na.includes(ns))return true;
+function shuffle(arr){ return [...arr].sort(() => Math.random() - .5); }
+
+function norm(s){
+  return s.trim().toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+function matchAnswer(selected, q){
+  const ns = norm(selected);
+  if(ns.length < 2) return false;
+  return q.answers.some(a => {
+    const na = norm(a);
+    if(ns === na) return true;
+    const minLen = Math.floor(na.length * 0.6);
+    if(ns.length >= minLen && na.includes(ns)) return true;
     return false;
   });
 }
 
 function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  TTS.stop();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
-function goHome(){updateHomeUI();showScreen('home');}
+function goHome(){ updateHomeUI(); showScreen('home'); }
 
 function updateHomeUI(){
-  document.getElementById('stat-streak').textContent=streak;
-  document.getElementById('stat-xp').textContent=xp;
-  document.getElementById('stat-best').textContent=best!==null?best+'%':'—';
-  const l=lvl(xp);
-  document.getElementById('home-lvl-lbl').textContent=`Cấp ${l} — ${lvlName(l)}`;
-  const pct=(xpInLvl(xp)/XP_PER_LEVEL)*100;
-  document.getElementById('home-xp-fill').style.width=pct+'%';
-  document.getElementById('home-xp-pts').textContent=`${xpInLvl(xp)} / ${XP_PER_LEVEL} XP`;
-
-  // Animate streak fire if >0
-  const sb=document.querySelector('.stat-box.streak');
-  if(streak>0){sb.style.background='linear-gradient(135deg,#fff5e6,#ffe8c0)';sb.style.borderColor='#e07b20';}
-  else{sb.style.background='';sb.style.borderColor='';}
+  document.getElementById('stat-streak').textContent = streak;
+  document.getElementById('stat-xp').textContent = xp;
+  document.getElementById('stat-best').textContent = best !== null ? best + '%' : '—';
+  const l = lvl(xp);
+  document.getElementById('home-lvl-lbl').textContent = `Cấp ${l} — ${lvlName(l)}`;
+  const pct = (xpInLvl(xp) / XP_PER_LEVEL) * 100;
+  document.getElementById('home-xp-fill').style.width = pct + '%';
+  document.getElementById('home-xp-pts').textContent = `${xpInLvl(xp)} / ${XP_PER_LEVEL} XP`;
+  const sb = document.querySelector('.stat-box.streak');
+  if(streak > 0){ sb.style.background = 'linear-gradient(135deg,#fff5e6,#ffe8c0)'; sb.style.borderColor = '#e07b20'; }
+  else { sb.style.background = ''; sb.style.borderColor = ''; }
 }
 
-function selectMode(el,mode){
-  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
+function selectMode(el, mode){
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  S.studyMode=mode;
-  document.getElementById('practice-config').style.display=mode==='practice'?'block':'none';
-  document.getElementById('interview-config').style.display=mode==='interview'?'block':'none';
+  S.studyMode = mode;
+  document.getElementById('practice-config').style.display = mode === 'practice' ? 'block' : 'none';
+  document.getElementById('interview-config').style.display = mode === 'interview' ? 'block' : 'none';
+  document.getElementById('flash-config').style.display = mode === 'flash' ? 'block' : 'none';
+  document.getElementById('match-config').style.display = mode === 'match' ? 'block' : 'none';
 }
 
-function toggleSFX(btn){btn.classList.toggle('on');S.sfxOn=btn.classList.contains('on');}
+// Mode card keyboard support
+document.querySelectorAll('.mode-card').forEach(card => {
+  card.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      card.click();
+    }
+  });
+});
+
+function toggleSFX(btn){
+  btn.classList.toggle('on');
+  S.sfxOn = btn.classList.contains('on');
+  btn.setAttribute('aria-checked', S.sfxOn ? 'true' : 'false');
+}
 function toggleAmbient(btn){
-  btn.classList.toggle('on');S.ambientOn=btn.classList.contains('on');
-  if(S.ambientOn)startAmbient();else stopAmbient();
+  btn.classList.toggle('on');
+  S.ambientOn = btn.classList.contains('on');
+  btn.setAttribute('aria-checked', S.ambientOn ? 'true' : 'false');
+  if(S.ambientOn) startAmbient(); else stopAmbient();
+}
+
+function checkCatEmpty(){
+  const cat = document.getElementById('sel-cat').value;
+  const pool = cat === 'all' ? Q : Q.filter(q => q.cat === cat);
+  const warn = document.getElementById('empty-cat-warn');
+  warn.classList.toggle('show', pool.length === 0);
 }
 
 function handleStart(){
   getCtx();
   checkStreak();
-  if(S.studyMode==='interview')startInterview();else startPractice();
+  if(S.studyMode === 'interview') startInterview();
+  else if(S.studyMode === 'flash') startFlash();
+  else if(S.studyMode === 'match') startMatch();
+  else startPractice();
 }
 
 // ════════════════════════════════════════════════════════
 //  MODALS
 // ════════════════════════════════════════════════════════
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 
-function checkLevelUp(oldXp,newXp){
-  const oldL=lvl(oldXp),newL=lvl(newXp);
-  if(newL>oldL){
+function checkLevelUp(oldXp, newXp){
+  const oldL = lvl(oldXp), newL = lvl(newXp);
+  if(newL > oldL){
     sndLevelUp();
-    document.getElementById('modal-title').textContent=`🎊 Lên Cấp ${newL}!`;
-    document.getElementById('modal-sub').textContent=`Xuất sắc! Bạn đã đạt Cấp ${newL} — ${lvlName(newL)}. Hãy tiếp tục phấn đấu!`;
-    setTimeout(()=>openModal('levelup-modal'),600);
+    document.getElementById('modal-title').textContent = `🎊 Lên Cấp ${newL}!`;
+    document.getElementById('modal-sub').textContent = `Xuất sắc! Bạn đã đạt Cấp ${newL} — ${lvlName(newL)}. Hãy tiếp tục!`;
+    setTimeout(() => openModal('levelup-modal'), 600);
   }
 }
 
-const ACHIEVEMENTS=[
+const ACHIEVEMENTS = [
   {id:'first_correct',icon:'⭐',name:'Câu đầu tiên',desc:'Trả lời đúng câu hỏi đầu tiên!'},
   {id:'perfect_round',icon:'💯',name:'Hoàn hảo',desc:'Hoàn thành một vòng không sai câu nào!'},
   {id:'streak_3',icon:'🔥',name:'Chuỗi 3 ngày',desc:'Học liên tiếp 3 ngày!'},
   {id:'xp_500',icon:'⚡',name:'500 XP',desc:'Tích lũy 500 XP!'},
+  {id:'flash_master',icon:'⚡',name:'Flash Master',desc:'Hoàn thành một bộ từ khóa Flash!'},
+  {id:'match_master',icon:'🔗',name:'Ghép từ xuất sắc',desc:'Hoàn thành ghép từ hoàn hảo!'},
 ];
 
 function checkAchievements(){
-  ACHIEVEMENTS.forEach(a=>{
-    if(achievements.includes(a.id))return;
-    let earned=false;
-    if(a.id==='first_correct'&&S.correct>=1)earned=true;
-    if(a.id==='perfect_round'&&S.wrong===0&&S.correct>=5)earned=true;
-    if(a.id==='streak_3'&&streak>=3)earned=true;
-    if(a.id==='xp_500'&&xp>=500)earned=true;
+  ACHIEVEMENTS.forEach(a => {
+    if(achievements.includes(a.id)) return;
+    let earned = false;
+    if(a.id === 'first_correct' && S.correct >= 1) earned = true;
+    if(a.id === 'perfect_round' && S.wrong === 0 && S.correct >= 5) earned = true;
+    if(a.id === 'streak_3' && streak >= 3) earned = true;
+    if(a.id === 'xp_500' && xp >= 500) earned = true;
     if(earned){
-      achievements.push(a.id);persist();
-      document.getElementById('ach-icon').textContent=a.icon;
-      document.getElementById('ach-title').textContent=a.name;
-      document.getElementById('ach-sub').textContent=a.desc;
-      setTimeout(()=>openModal('achievement-modal'),800);
+      achievements.push(a.id); persist();
+      document.getElementById('ach-icon').textContent = a.icon;
+      document.getElementById('ach-title').textContent = a.name;
+      document.getElementById('ach-sub').textContent = a.desc;
+      setTimeout(() => openModal('achievement-modal'), 800);
     }
   });
 }
@@ -1375,16 +1746,35 @@ function checkAchievements(){
 //  PRACTICE MODE
 // ════════════════════════════════════════════════════════
 function startPractice(){
-  S.category=document.getElementById('sel-cat').value;
-  S.quizLen=parseInt(document.getElementById('sel-len').value);
-  S.answerMode=document.getElementById('sel-mode').value;
-  S.lang=document.getElementById('sel-lang').value;
+  S.category = document.getElementById('sel-cat').value;
+  S.quizLen = parseInt(document.getElementById('sel-len').value);
+  S.answerMode = document.getElementById('sel-mode').value;
+  const weakMode = document.getElementById('sel-weak').value;
 
-  let pool=S.category==='all'?Q:Q.filter(q=>q.cat===S.category);
-  if(!pool.length)pool=Q;
-  S.queue=shuffle(pool).slice(0,Math.min(S.quizLen,pool.length));
-  S.idx=0;S.hearts=3;S.correct=0;S.wrong=0;S.xpGained=0;S.answered=false;
-  S.prevLvl=lvl(xp);
+  let pool;
+  if(S.category === 'all'){
+    pool = Q;
+  } else {
+    pool = Q.filter(q => q.cat === S.category);
+    if(pool.length === 0) pool = Q; // fallback — never empty
+  }
+
+  if(weakMode === 'weak'){
+    pool = [...pool].sort((a,b) => b.wrongCount - a.wrongCount);
+    // Take top 50% most wrong, shuffle rest
+    const topWeak = pool.filter(q => q.wrongCount > 0);
+    const rest = pool.filter(q => q.wrongCount === 0);
+    pool = [...topWeak, ...shuffle(rest)];
+  } else if(weakMode === 'starred'){
+    pool = pool.filter(q => q.starred);
+    if(pool.length === 0) pool = Q.filter(q => q.starred);
+  } else {
+    pool = shuffle(pool);
+  }
+
+  S.queue = pool.slice(0, Math.min(S.quizLen, pool.length));
+  S.idx = 0; S.hearts = 3; S.correct = 0; S.wrong = 0; S.xpGained = 0; S.answered = false;
+  S._lastCorrectAnswer = '';
 
   updateHearts();
   showScreen('quiz');
@@ -1392,578 +1782,628 @@ function startPractice(){
 }
 
 function updateHearts(){
-  for(let i=1;i<=3;i++){
-    const el=document.getElementById('hp'+i);
-    el.classList.toggle('lost',i>S.hearts);
+  for(let i = 1; i <= 3; i++){
+    const el = document.getElementById('hp'+i);
+    el.classList.toggle('lost', i > S.hearts);
     el.classList.remove('pulse','last');
   }
-  if(S.hearts===1){
-    const el=document.getElementById('hp1');
-    el.classList.add('last');
+  if(S.hearts === 1){
+    document.getElementById('hp1').classList.add('last');
   }
 }
 
 function buildOptions(q){
-  const correct=q.answers[0];
-  const wrong=shuffle(Q.filter(x=>x.id!==q.id).map(x=>x.answers[0]))
-    .filter(o=>norm(o)!==norm(correct)).slice(0,3);
-  return shuffle([correct,...wrong]);
+  const correct = q.answers[0];
+  const wrong = shuffle(Q.filter(x => x.id !== q.id).map(x => x.answers[0]))
+    .filter(o => norm(o) !== norm(correct)).slice(0, 3);
+  return shuffle([correct, ...wrong]);
 }
 
-const CAT_LABELS={
-  principles:'Nguyên tắc',government:'Chính phủ',rights:'Quyền & Trách nhiệm',
-  colonial:'Lịch sử Thuộc địa','1800s':'Thế kỷ 19',recent:'Lịch sử gần đây',
-  geography:'Địa lý & Biểu tượng',civics:'Công dân & Lễ',texas:'Texas / Galveston'
+const CAT_LABELS = {
+  principles:'Nguyên tắc', government:'Chính phủ', rights:'Quyền & Trách nhiệm',
+  colonial:'Lịch sử Thuộc địa', '1800s':'Thế kỷ 19', recent:'Lịch sử gần đây',
+  geography:'Địa lý & Biểu tượng', civics:'Công dân & Lễ', texas:'Texas / Galveston'
 };
 
 function renderQuestion(){
-  const q=S.queue[S.idx];
-  const total=S.queue.length;
+  TTS.stop();
+  const q = S.queue[S.idx];
+  const total = S.queue.length;
 
-  document.getElementById('q-num').textContent=`Câu ${S.idx+1}`;
-  document.getElementById('prog-fill').style.width=`${(S.idx/total)*100}%`;
-  document.getElementById('prog-label').textContent=`${S.idx} / ${total}`;
-  document.getElementById('q-badge').textContent=CAT_LABELS[q.cat]||q.cat;
-  document.getElementById('q-text').textContent=q.en;
+  document.getElementById('q-num').textContent = `Câu ${S.idx + 1}`;
+  document.getElementById('prog-fill').style.width = `${(S.idx / total) * 100}%`;
+  document.getElementById('prog-bar').setAttribute('aria-valuenow', Math.round((S.idx/total)*100));
+  document.getElementById('prog-label').textContent = `${S.idx} / ${total}`;
+  document.getElementById('q-badge').textContent = CAT_LABELS[q.cat] || q.cat;
+  document.getElementById('q-text').textContent = q.en;
 
-  const viEl=document.getElementById('q-vi');
-  if(S.lang==='both'){viEl.textContent=q.vi;viEl.style.display='block';}
-  else{viEl.style.display='none';}
+  // Vietnamese translation always shown
+  const viEl = document.getElementById('q-vi');
+  viEl.textContent = q.vi;
 
-  document.getElementById('feedback-footer').className='feedback-footer';
-  S.answered=false;
+  document.getElementById('feedback-footer').className = 'feedback-footer';
+  document.getElementById('fb-listen-btn').style.display = 'none';
+  S.answered = false;
 
-  if(S.answerMode==='multiple'){
-    document.getElementById('options-list').style.display='flex';
-    document.getElementById('type-area').style.display='none';
+  if(S.answerMode === 'multiple'){
+    document.getElementById('options-list').style.display = 'flex';
+    document.getElementById('type-area').style.display = 'none';
     renderOptions(q);
-  }else{
-    document.getElementById('options-list').style.display='none';
-    document.getElementById('type-area').style.display='block';
-    const inp=document.getElementById('type-input');
-    inp.value='';inp.className='type-input';inp.disabled=false;
-    setTimeout(()=>inp.focus(),100);
+  } else {
+    document.getElementById('options-list').style.display = 'none';
+    document.getElementById('type-area').style.display = 'block';
+    const inp = document.getElementById('type-input');
+    inp.value = ''; inp.className = 'type-input'; inp.disabled = false;
+    setTimeout(() => inp.focus(), 120);
   }
-  document.getElementById('quiz-body').scrollTo(0,0);
+  document.getElementById('quiz-body').scrollTo(0, 0);
 }
 
 function renderOptions(q){
-  const list=document.getElementById('options-list');
-  list.innerHTML='';
-  const letters=['A','B','C','D'];
-  buildOptions(q).forEach((opt,i)=>{
-    const btn=document.createElement('button');
-    btn.className='opt-btn';
-    btn.innerHTML=`<span class="opt-key">${letters[i]}</span><span>${opt}</span>`;
-    btn.onclick=()=>handleAnswer(opt,q);
+  const list = document.getElementById('options-list');
+  list.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  buildOptions(q).forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.setAttribute('aria-label', `Đáp án ${letters[i]}: ${opt}`);
+    btn.innerHTML = `<span class="opt-key" aria-hidden="true">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => handleAnswer(opt, q);
     list.appendChild(btn);
   });
 }
 
-function handleAnswer(selected,q){
-  if(S.answered)return;
-  S.answered=true;
-  const correct=matchAnswer(selected,q);
+function handleAnswer(selected, q){
+  if(S.answered) return;
+  S.answered = true;
+  const correct = matchAnswer(selected, q);
+  S._lastCorrectAnswer = q.answers[0];
 
-  if(S.answerMode==='multiple'){
-    document.querySelectorAll('.opt-btn').forEach(btn=>{
-      btn.disabled=true;
-      const txt=btn.querySelector('span:last-child').textContent;
-      const isCorrect=matchAnswer(txt,q);
-      if(isCorrect)btn.classList.add('correct');
-      else if(norm(txt)===norm(selected)&&!correct)btn.classList.add('wrong');
+  if(S.answerMode === 'multiple'){
+    document.querySelectorAll('.opt-btn').forEach(btn => {
+      btn.disabled = true;
+      const txt = btn.querySelector('span:last-child').textContent;
+      const isCorrect = matchAnswer(txt, q);
+      if(isCorrect) btn.classList.add('correct');
+      else if(norm(txt) === norm(selected) && !correct) btn.classList.add('wrong');
       else btn.classList.add('dim');
     });
-  }else{
-    const inp=document.getElementById('type-input');
-    inp.disabled=true;inp.classList.add(correct?'correct':'wrong');
+  } else {
+    const inp = document.getElementById('type-input');
+    inp.disabled = true;
+    inp.classList.add(correct ? 'correct' : 'wrong');
   }
 
   if(correct){
     S.correct++;
-    const earned=20;S.xpGained+=earned;
-    const oldXp=xp;xp+=earned;persist();
-    floatXP(earned);sndCorrect();
+    const earned = 20; S.xpGained += earned;
+    const oldXp = xp; xp += earned; persist();
+    floatXP(earned); sndCorrect();
     setFbMascot(true);
-    checkLevelUp(oldXp,xp);
+    checkLevelUp(oldXp, xp);
     checkAchievements();
-  }else{
-    S.hearts=Math.max(0,S.hearts-1);S.wrong++;
-    updateHearts();sndWrong();
-    // Animate lost heart
-    const h=document.getElementById('hp'+(S.hearts+1));
-    if(h){h.classList.add('pulse');setTimeout(()=>h.classList.remove('pulse'),600);}
+  } else {
+    S.hearts = Math.max(0, S.hearts - 1); S.wrong++;
+    q.wrongCount = (q.wrongCount || 0) + 1;
+    persist();
+    updateHearts(); sndWrong();
+    const h = document.getElementById('hp'+(S.hearts+1));
+    if(h){ h.classList.add('pulse'); setTimeout(() => h.classList.remove('pulse'), 600); }
     setFbMascot(false);
   }
-  showFeedback(correct,q);
+  showFeedback(correct, q);
 }
 
 function setFbMascot(happy){
-  const mouth=document.getElementById('fb-gp-mouth');
-  const starL=document.getElementById('fb-star-l');
-  const starR=document.getElementById('fb-star-r');
+  const mouth = document.getElementById('fb-gp-mouth');
+  const starL = document.getElementById('fb-star-l');
+  const starR = document.getElementById('fb-star-r');
   if(happy){
     mouth.setAttribute('d','M34 38 Q40 44 46 38');
-    starL.setAttribute('opacity','1');starR.setAttribute('opacity','1');
-  }else{
+    starL.setAttribute('opacity','1'); starR.setAttribute('opacity','1');
+  } else {
     mouth.setAttribute('d','M34 41 Q40 36 46 41');
-    starL.setAttribute('opacity','0');starR.setAttribute('opacity','0');
+    starL.setAttribute('opacity','0'); starR.setAttribute('opacity','0');
   }
 }
 
 function checkTyped(){
-  const inp=document.getElementById('type-input');
-  const val=inp.value.trim();
-  if(!val||S.answered)return;
-  handleAnswer(val,S.queue[S.idx]);
+  const inp = document.getElementById('type-input');
+  const val = inp.value.trim();
+  if(!val || S.answered) return;
+  handleAnswer(val, S.queue[S.idx]);
 }
 
-function showFeedback(correct,q){
-  const fb=document.getElementById('feedback-footer');
-  fb.classList.add(correct?'correct':'wrong');
-  document.getElementById('fb-title').textContent=correct?'Đúng rồi! 🎉':'Chưa đúng 😔';
-  document.getElementById('fb-answer').innerHTML=correct
-    ?'Xuất sắc! Bạn đang làm rất tốt.'
-    :`Đáp án đúng: <strong>${q.answers[0]}</strong>`;
-  const isLast=S.idx+1>=S.queue.length||S.hearts<=0;
-  document.getElementById('fb-continue').textContent=isLast?'Xem kết quả →':'Tiếp tục →';
+function showFeedback(correct, q){
+  const fb = document.getElementById('feedback-footer');
+  fb.classList.add(correct ? 'correct' : 'wrong');
+  document.getElementById('fb-title').textContent = correct ? 'Đúng rồi! 🎉' : 'Chưa đúng 😔';
+  document.getElementById('fb-answer').innerHTML = correct
+    ? 'Xuất sắc! Bạn đang làm rất tốt.'
+    : `Đáp án đúng: <strong>${q.answers[0]}</strong>`;
+
+  if(!correct && 'speechSynthesis' in window){
+    document.getElementById('fb-listen-btn').style.display = 'inline-flex';
+  }
+
+  const isLast = S.idx + 1 >= S.queue.length || S.hearts <= 0;
+  document.getElementById('fb-continue').textContent = isLast ? 'Xem kết quả →' : 'Tiếp tục →';
   fb.classList.add('visible');
 }
 
 function advanceQuiz(){
   S.idx++;
-  const fb=document.getElementById('feedback-footer');
-  fb.classList.remove('visible');
-  if(S.idx>=S.queue.length||S.hearts<=0){setTimeout(showResults,380);}
-  else{setTimeout(renderQuestion,380);}
+  document.getElementById('feedback-footer').classList.remove('visible');
+  if(S.idx >= S.queue.length || S.hearts <= 0){ setTimeout(showResults, 380); }
+  else { setTimeout(renderQuestion, 380); }
 }
 
 function floatXP(amount){
-  const el=document.createElement('div');
-  el.className='xp-float';el.textContent=`+${amount} XP`;
-  const appRect=document.getElementById('app').getBoundingClientRect();
-  el.style.left=(appRect.left+appRect.width/2-40)+'px';
-  el.style.top='28%';
+  const el = document.createElement('div');
+  el.className = 'xp-float'; el.textContent = `+${amount} XP`;
+  const appRect = document.getElementById('app').getBoundingClientRect();
+  el.style.left = (appRect.left + appRect.width/2 - 40) + 'px';
+  el.style.top = '28%';
   document.body.appendChild(el);
-  setTimeout(()=>el.remove(),1600);
+  setTimeout(() => el.remove(), 1600);
 }
 
 function showResults(){
-  const total=S.queue.length;
-  const pct=Math.round((S.correct/total)*100);
-  const pass=pct>=60;
+  const total = S.queue.length;
+  const pct = Math.round((S.correct / total) * 100);
+  const pass = pct >= 60;
 
-  if(best===null||pct>best)best=pct;
+  if(best === null || pct > best){ best = pct; }
   persist();
 
-  // Mascot expression
-  const mouth=document.getElementById('result-gp-mouth');
-  if(pass){mouth.setAttribute('d','M34 38 Q40 44 46 38');}
-  else{mouth.setAttribute('d','M34 41 Q40 36 46 41');}
+  const mouth = document.getElementById('result-gp-mouth');
+  if(pass){ mouth.setAttribute('d','M34 38 Q40 44 46 38'); }
+  else { mouth.setAttribute('d','M34 41 Q40 36 46 41'); }
 
-  document.getElementById('result-status').textContent=pass?'ĐẬU ✅':'RỚT ❌';
-  document.getElementById('result-status').className='result-status '+(pass?'pass':'fail');
-  document.getElementById('result-score').textContent=pct+'%';
-  document.getElementById('result-score').className='result-score '+(pass?'pass':'fail');
-  document.getElementById('result-denom').textContent=`${S.correct} / ${total} đúng`;
-  document.getElementById('rr-correct').textContent=S.correct;
-  document.getElementById('rr-wrong').textContent=S.wrong;
-  document.getElementById('rr-xp').textContent='+'+S.xpGained;
+  document.getElementById('result-status').textContent = pass ? 'ĐẬU ✅' : 'RỚT ❌';
+  document.getElementById('result-status').className = 'result-status ' + (pass ? 'pass' : 'fail');
+  document.getElementById('result-score').textContent = pct + '%';
+  document.getElementById('result-score').className = 'result-score ' + (pass ? 'pass' : 'fail');
+  document.getElementById('result-denom').textContent = `${S.correct} / ${total} đúng`;
+  document.getElementById('rr-correct').textContent = S.correct;
+  document.getElementById('rr-wrong').textContent = S.wrong;
+  document.getElementById('rr-xp').textContent = '+' + S.xpGained;
 
-  const v=document.getElementById('result-verdict');
-  v.className='result-verdict '+(pass?'pass':'fail');
-  document.getElementById('verdict-title').textContent=pass?'Đạt tiêu chuẩn USCIS 🎓':'Chưa đạt tiêu chuẩn USCIS';
-  document.getElementById('verdict-text').textContent=pass
-    ?`Bạn trả lời đúng ${pct}%. USCIS yêu cầu ít nhất 60% (12/20). Bạn đã sẵn sàng cho cuộc phỏng vấn!`
-    :`Bạn trả lời đúng ${pct}%. USCIS yêu cầu ít nhất 60% (12/20). Hãy ôn lại các câu sai và thử lại!`;
+  const v = document.getElementById('result-verdict');
+  v.className = 'result-verdict ' + (pass ? 'pass' : 'fail');
+  document.getElementById('verdict-title').textContent = pass ? 'Đạt tiêu chuẩn USCIS 🎓' : 'Chưa đạt tiêu chuẩn USCIS';
+  document.getElementById('verdict-text').textContent = pass
+    ? `Bạn trả lời đúng ${pct}%. USCIS yêu cầu ít nhất 60%. Bạn đã sẵn sàng cho cuộc phỏng vấn!`
+    : `Bạn trả lời đúng ${pct}%. USCIS yêu cầu ít nhất 60%. Hãy ôn lại các câu sai và thử lại!`;
 
-  if(pct>=80){sndComplete();launchConfetti();}
+  // Weak spots
+  const wrongQ = S.queue.filter(q => q.wrongCount > 0).sort((a,b) => b.wrongCount - a.wrongCount).slice(0,5);
+  const wsSection = document.getElementById('weak-spots-section');
+  const wsList = document.getElementById('weak-spots-list');
+  if(wrongQ.length > 0){
+    wsSection.style.display = 'block';
+    wsList.innerHTML = wrongQ.map(q =>
+      `<span class="weak-pill" title="${q.en}">❌ ${q.answers[0]} (sai ${q.wrongCount}x)</span>`
+    ).join('');
+  } else {
+    wsSection.style.display = 'none';
+  }
+
+  if(pct >= 80){ sndComplete(); launchConfetti(); }
   checkAchievements();
   showScreen('results');
   updateHomeUI();
 }
 
-function retryQuiz(){showScreen('home');updateHomeUI();setTimeout(startPractice,80);}
+function retryQuiz(){ showScreen('home'); updateHomeUI(); setTimeout(startPractice, 80); }
+
 function confirmExit(){
-  document.getElementById('exit-confirm-btn').onclick=()=>{
+  document.getElementById('exit-confirm-btn').onclick = () => {
     closeModal('exit-modal');
-    window.speechSynthesis&&window.speechSynthesis.cancel();
     goHome();
   };
   openModal('exit-modal');
 }
 function confirmExitIV(){
-  document.getElementById('exit-confirm-btn').onclick=()=>{
+  document.getElementById('exit-confirm-btn').onclick = () => {
     closeModal('exit-modal');
-    window.speechSynthesis&&window.speechSynthesis.cancel();
     goHome();
   };
   openModal('exit-modal');
 }
+
+// ════════════════════════════════════════════════════════
+//  KEYWORD FLASH MODE
+// ════════════════════════════════════════════════════════
+function startFlash(){
+  const cat = document.getElementById('sel-flash-cat').value;
+  let pool = cat === 'all' ? KEYWORDS : KEYWORDS.filter(k => k.cat === cat);
+  if(pool.length === 0) pool = KEYWORDS;
+  S.flashQueue = shuffle(pool);
+  S.flashIdx = 0;
+  S.flashKnew = 0;
+  S.flashAgain = 0;
+  showScreen('flash');
+  renderFlash();
+}
+
+function renderFlash(){
+  const kw = S.flashQueue[S.flashIdx];
+  if(!kw){
+    showFlashComplete();
+    return;
+  }
+  const total = S.flashQueue.length;
+
+  document.getElementById('flash-prog-fill').style.width = `${(S.flashIdx / total) * 100}%`;
+  document.getElementById('flash-prog-label').textContent = `${S.flashIdx} / ${total}`;
+  document.getElementById('flash-progress').textContent = `✅ ${S.flashKnew} đã nhớ · 😅 ${S.flashAgain} chưa nhớ`;
+
+  const catLabels = { principles:'Nguyên tắc', government:'Chính phủ', rights:'Quyền lợi', history:'Lịch sử', geography:'Địa lý' };
+  document.getElementById('flash-cat-badge').textContent = catLabels[kw.cat] || kw.cat;
+  document.getElementById('flash-keyword').textContent = kw.trigger;
+  document.getElementById('flash-keyword-vi').textContent = kw.vi;
+
+  // Hide answer until tapped
+  document.getElementById('flash-answer-reveal').classList.remove('show');
+  document.getElementById('flash-actions').style.display = 'none';
+  document.getElementById('flash-ans-text').textContent = kw.answer;
+  document.getElementById('flash-ans-vi').textContent = kw.answerVi;
+
+  TTS.stop();
+}
+
+function revealFlashAnswer(){
+  const reveal = document.getElementById('flash-answer-reveal');
+  if(reveal.classList.contains('show')) return; // already revealed
+  reveal.classList.add('show');
+  document.getElementById('flash-actions').style.display = 'flex';
+  // Speak the answer
+  const kw = S.flashQueue[S.flashIdx];
+  if(kw) TTS.speak(kw.answer, null);
+}
+
+function flashRespond(knew){
+  if(knew){
+    S.flashKnew++;
+    sndCorrect();
+  } else {
+    S.flashAgain++;
+    // push to end of queue to review again
+    const kw = S.flashQueue[S.flashIdx];
+    S.flashQueue.push(kw);
+    sndWrong();
+  }
+  S.flashIdx++;
+  TTS.stop();
+  setTimeout(renderFlash, 200);
+}
+
+function showFlashComplete(){
+  document.getElementById('flash-prog-fill').style.width = '100%';
+  const body = document.getElementById('flash-body');
+  body.innerHTML = `
+    <div class="match-complete">
+      <span class="match-complete-icon">⚡</span>
+      <div class="match-complete-title">Hoàn thành Flash!</div>
+      <div class="match-complete-sub">
+        ✅ Đã nhớ: <strong>${S.flashKnew}</strong> từ khóa<br>
+        Bạn đang tiến bộ rất tốt! 🎉
+      </div>
+      <button class="btn btn-navy" onclick="startFlash()" style="margin-bottom:10px;">🔄 Luyện lại</button>
+      <button class="btn btn-ghost" onclick="goHome()">🏠 Về trang chủ</button>
+    </div>
+  `;
+  sndComplete();
+  launchConfetti();
+  // achievement
+  if(!achievements.includes('flash_master')){
+    achievements.push('flash_master'); persist();
+    document.getElementById('ach-icon').textContent = '⚡';
+    document.getElementById('ach-title').textContent = 'Flash Master';
+    document.getElementById('ach-sub').textContent = 'Hoàn thành một bộ từ khóa Flash!';
+    setTimeout(() => openModal('achievement-modal'), 800);
+  }
+}
+
+// Flash card keyboard
+document.getElementById('flash-card').addEventListener('keydown', e => {
+  if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); revealFlashAnswer(); }
+});
+
+// ════════════════════════════════════════════════════════
+//  KEYWORD MATCH MODE
+// ════════════════════════════════════════════════════════
+const MATCH_ROUND_SIZE = 6; // 6 pairs per round
+
+function startMatch(){
+  const cat = document.getElementById('sel-match-cat').value;
+  let pool = cat === 'all' ? KEYWORDS : KEYWORDS.filter(k => k.cat === cat);
+  if(pool.length === 0) pool = KEYWORDS;
+  S.matchPairs = shuffle(pool);
+  S.matchRound = 0;
+  S.matchMatched = 0;
+  showScreen('match');
+  renderMatchRound();
+}
+
+function renderMatchRound(){
+  const start = S.matchRound * MATCH_ROUND_SIZE;
+  const roundPairs = S.matchPairs.slice(start, start + MATCH_ROUND_SIZE);
+
+  if(roundPairs.length === 0){
+    showMatchComplete();
+    return;
+  }
+
+  S.matchSelected = null;
+  S.matchSelectedSide = null;
+
+  document.getElementById('match-matched').textContent = S.matchMatched;
+  document.getElementById('match-total').textContent = roundPairs.length;
+  document.getElementById('match-prog-fill').style.width = `${(S.matchRound / Math.ceil(S.matchPairs.length / MATCH_ROUND_SIZE)) * 100}%`;
+  document.getElementById('match-prog-label').textContent = `Vòng ${S.matchRound+1} / ${Math.ceil(S.matchPairs.length / MATCH_ROUND_SIZE)}`;
+
+  const triggers = shuffle(roundPairs.map((p,i) => ({text: p.trigger, idx: i})));
+  const answers = shuffle(roundPairs.map((p,i) => ({text: p.answer, idx: i})));
+
+  const grid = document.getElementById('match-grid');
+  grid.innerHTML = '';
+
+  // left col (triggers)
+  const leftCol = document.createElement('div');
+  leftCol.className = 'match-col';
+  triggers.forEach(t => {
+    const tile = document.createElement('button');
+    tile.className = 'match-tile';
+    tile.textContent = t.text;
+    tile.dataset.idx = t.idx;
+    tile.dataset.side = 'left';
+    tile.onclick = () => handleMatchClick(tile, t.idx, 'left', roundPairs);
+    leftCol.appendChild(tile);
+  });
+
+  // right col (answers)
+  const rightCol = document.createElement('div');
+  rightCol.className = 'match-col';
+  answers.forEach(a => {
+    const tile = document.createElement('button');
+    tile.className = 'match-tile';
+    tile.textContent = a.text;
+    tile.dataset.idx = a.idx;
+    tile.dataset.side = 'right';
+    tile.onclick = () => handleMatchClick(tile, a.idx, 'right', roundPairs);
+    rightCol.appendChild(tile);
+  });
+
+  grid.appendChild(leftCol);
+  grid.appendChild(rightCol);
+}
+
+function handleMatchClick(tile, idx, side, roundPairs){
+  if(tile.classList.contains('matched') || tile.classList.contains('disabled')) return;
+
+  if(S.matchSelected === null){
+    // First selection — must be left side (trigger)
+    if(side !== 'left'){
+      // flash hint
+      tile.classList.add('wrong-flash');
+      setTimeout(() => tile.classList.remove('wrong-flash'), 400);
+      return;
+    }
+    S.matchSelected = {tile, idx, side};
+    tile.classList.add('selected');
+    return;
+  }
+
+  if(side === 'left'){
+    // Deselect previous left, select new one
+    S.matchSelected.tile.classList.remove('selected');
+    S.matchSelected = {tile, idx, side};
+    tile.classList.add('selected');
+    return;
+  }
+
+  // Second selection is right side — check match
+  const leftTile = S.matchSelected.tile;
+  const leftIdx = S.matchSelected.idx;
+
+  if(leftIdx === idx){
+    // Match!
+    leftTile.classList.remove('selected');
+    leftTile.classList.add('matched');
+    tile.classList.add('matched');
+    leftTile.disabled = true;
+    tile.disabled = true;
+    S.matchMatched++;
+    sndMatch();
+    document.getElementById('match-matched').textContent = S.matchMatched;
+
+    // Check if round complete
+    const matched = document.querySelectorAll('.match-tile.matched').length / 2;
+    if(matched >= roundPairs.length){
+      setTimeout(() => {
+        S.matchRound++;
+        S.matchMatched = 0;
+        renderMatchRound();
+      }, 700);
+    }
+  } else {
+    // Wrong
+    leftTile.classList.add('wrong-flash');
+    tile.classList.add('wrong-flash');
+    sndWrong();
+    setTimeout(() => {
+      leftTile.classList.remove('selected','wrong-flash');
+      tile.classList.remove('wrong-flash');
+    }, 500);
+  }
+
+  S.matchSelected = null;
+  S.matchSelectedSide = null;
+}
+
+function showMatchComplete(){
+  const body = document.getElementById('match-body');
+  body.innerHTML = `
+    <div class="match-complete">
+      <span class="match-complete-icon">🏆</span>
+      <div class="match-complete-title">Ghép từ hoàn thành!</div>
+      <div class="match-complete-sub">Bạn đã ghép tất cả ${S.matchPairs.length} cặp từ khóa! 🎉</div>
+      <button class="btn btn-navy" onclick="startMatch()" style="margin-bottom:10px;">🔄 Luyện lại</button>
+      <button class="btn btn-ghost" onclick="goHome()">🏠 Về trang chủ</button>
+    </div>
+  `;
+  sndComplete();
+  launchConfetti();
+  if(!achievements.includes('match_master')){
+    achievements.push('match_master'); persist();
+    document.getElementById('ach-icon').textContent = '🔗';
+    document.getElementById('ach-title').textContent = 'Ghép từ xuất sắc';
+    document.getElementById('ach-sub').textContent = 'Hoàn thành ghép từ hoàn hảo!';
+    setTimeout(() => openModal('achievement-modal'), 800);
+  }
+}
+
 // ════════════════════════════════════════════════════════
 //  INTERVIEW MODE
 // ════════════════════════════════════════════════════════
 function startInterview(){
-  const cat=document.getElementById('sel-iv-cat').value;
-  S.ivLang=document.getElementById('sel-iv-lang').value;
-  if(cat==='starred')S.ivQueue=Q.filter(q=>q.starred);
-  else if(cat==='texas')S.ivQueue=Q.filter(q=>q.cat==='texas');
-  else S.ivQueue=Q;
-  S.ivIdx=0;
+  const cat = document.getElementById('sel-iv-cat').value;
+  if(cat === 'starred') S.ivQueue = Q.filter(q => q.starred);
+  else if(cat === 'texas') S.ivQueue = Q.filter(q => q.cat === 'texas');
+  else S.ivQueue = Q;
+  if(S.ivQueue.length === 0) S.ivQueue = Q;
+  S.ivIdx = 0;
   showScreen('interview');
   renderIV();
 }
 
 function renderIV(){
-  const q=S.ivQueue[S.ivIdx];
-  const total=S.ivQueue.length;
-  document.getElementById('b-q-num').textContent=`Câu ${S.ivIdx+1} / ${total}`;
-  document.getElementById('b-question').textContent=q.en;
-  const viEl=document.getElementById('b-translation');
-  if(S.ivLang==='both'){viEl.textContent=q.vi;viEl.style.display='block';}
-  else viEl.style.display='none';
+  TTS.stop();
+  const q = S.ivQueue[S.ivIdx];
+  const total = S.ivQueue.length;
 
-  const ttsBtn=document.getElementById('tts-btn');
-  ttsBtn.classList.remove('speaking');
-  document.getElementById('tts-label').textContent='Nghe câu hỏi';
-  ttsBtn.style.display='speechSynthesis' in window?'inline-flex':'none';
+  document.getElementById('b-q-num').textContent = `Câu ${S.ivIdx + 1} / ${total}`;
+  document.getElementById('iv-progress').textContent = `Câu ${S.ivIdx + 1} / ${total}`;
+  document.getElementById('b-question').textContent = q.en;
+  document.getElementById('b-translation').textContent = q.vi;
 
-  document.getElementById('accepted-answers').innerHTML=
-    q.answers.map(a=>`<div class="accepted-answer">${a}</div>`).join('');
+  // Keyword chip — find matching keyword
+  const kwChip = document.getElementById('b-keyword-chip');
+  const matchingKW = KEYWORDS.find(k =>
+    k.trigger.toLowerCase().includes(q.answers[0].toLowerCase()) ||
+    q.en.toLowerCase().includes(k.trigger.split('/')[0].trim().toLowerCase())
+  );
+  if(matchingKW){
+    kwChip.innerHTML = `<span class="keyword-chip">🔑 Từ khóa: ${matchingKW.trigger.split('/')[0].trim()} ➔ ${matchingKW.answer}</span>`;
+  } else {
+    kwChip.innerHTML = '';
+  }
 
-  document.getElementById('iv-prev').disabled=S.ivIdx===0;
-  const isLast=S.ivIdx>=S.ivQueue.length-1;
-  const nextBtn=document.getElementById('iv-next');
-  nextBtn.textContent=isLast?'Hoàn thành ✓':'Tiếp theo ▶';
-  nextBtn.className='iv-nav-btn btn-next'+(isLast?' last':'');
-  document.getElementById('interview-scroll').scrollTo(0,0);
+  // Accepted answers with TTS buttons
+  const aaEl = document.getElementById('accepted-answers');
+  aaEl.innerHTML = '';
+  q.answers.forEach(ans => {
+    const row = document.createElement('div');
+    row.className = 'accepted-answer';
+    const textWrap = document.createElement('div');
+    textWrap.className = 'accepted-answer-text';
+    textWrap.textContent = ans;
+    const speakerBtn = document.createElement('button');
+    speakerBtn.className = 'tts-speaker';
+    speakerBtn.setAttribute('aria-label', `Nghe đáp án: ${ans}`);
+    speakerBtn.innerHTML = `<div class="wave" aria-hidden="true"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
+    speakerBtn.style.width = '36px'; speakerBtn.style.height = '36px'; speakerBtn.style.minWidth = '36px';
+    speakerBtn.onclick = () => TTS.speakIVAnswer(ans, speakerBtn);
+    row.appendChild(textWrap);
+    row.appendChild(speakerBtn);
+    aaEl.appendChild(row);
+  });
+
+  document.getElementById('iv-prev').disabled = S.ivIdx === 0;
+  const isLast = S.ivIdx >= S.ivQueue.length - 1;
+  const nextBtn = document.getElementById('iv-next');
+  nextBtn.textContent = isLast ? 'Hoàn thành ✓' : 'Tiếp theo ▶';
+  nextBtn.className = 'iv-nav-btn btn-next' + (isLast ? ' last' : '');
+  document.getElementById('interview-scroll').scrollTo(0, 0);
 }
 
 function interviewNav(dir){
-  window.speechSynthesis&&window.speechSynthesis.cancel();
-  const next=S.ivIdx+dir;
-  if(next<0)return;
-  if(next>=S.ivQueue.length){goHome();return;}
-  S.ivIdx=next;renderIV();
+  TTS.stop();
+  const next = S.ivIdx + dir;
+  if(next < 0) return;
+  if(next >= S.ivQueue.length){ goHome(); return; }
+  S.ivIdx = next;
+  renderIV();
 }
 
 // ════════════════════════════════════════════════════════
 //  CONFETTI
 // ════════════════════════════════════════════════════════
 function launchConfetti(){
-  const wrap=document.createElement('div');
-  wrap.className='confetti-wrap';
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti-wrap';
   document.body.appendChild(wrap);
-  const colors=['#d4a843','#2e7d4f','#1a3a5c','#c0392b','#2a8fa3','#f5c842'];
-  for(let i=0;i<80;i++){
-    const p=document.createElement('div');
-    p.className='cc';
-    p.style.left=Math.random()*100+'vw';
-    p.style.background=colors[Math.floor(Math.random()*colors.length)];
-    p.style.animationDuration=(Math.random()*2+1.5)+'s';
-    p.style.animationDelay=Math.random()*0.9+'s';
-    const sz=Math.random()*9+5;
-    p.style.width=sz+'px';p.style.height=sz+'px';
-    p.style.borderRadius=Math.random()>.5?'50%':'2px';
+  const colors = ['#d4a843','#2e7d4f','#1a3a5c','#c0392b','#2a8fa3','#f5c842'];
+  for(let i = 0; i < 80; i++){
+    const p = document.createElement('div');
+    p.className = 'cc';
+    p.style.left = Math.random()*100+'vw';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration = (Math.random()*2+1.5)+'s';
+    p.style.animationDelay = Math.random()*0.9+'s';
+    const sz = Math.random()*9+5;
+    p.style.width = sz+'px'; p.style.height = sz+'px';
+    p.style.borderRadius = Math.random()>.5 ? '50%' : '2px';
     wrap.appendChild(p);
   }
-  setTimeout(()=>wrap.remove(),5000);
+  setTimeout(() => wrap.remove(), 5000);
 }
 
 // ════════════════════════════════════════════════════════
-//  KEYBOARD
+//  KEYBOARD SHORTCUTS
 // ════════════════════════════════════════════════════════
-document.addEventListener('keydown',e=>{
-  if(!document.getElementById('quiz').classList.contains('active'))return;
-  if(S.answerMode==='multiple'&&!S.answered){
-    const map={a:0,b:1,c:2,d:3};
-    const k=e.key.toLowerCase();
-    if(k in map){const opts=document.querySelectorAll('.opt-btn:not([disabled])');if(opts[map[k]])opts[map[k]].click();}
+document.addEventListener('keydown', e => {
+  const quizActive = document.getElementById('quiz').classList.contains('active');
+  const flashActive = document.getElementById('flash').classList.contains('active');
+
+  if(quizActive){
+    if(S.answerMode === 'multiple' && !S.answered){
+      const map = {a:0,b:1,c:2,d:3};
+      const k = e.key.toLowerCase();
+      if(k in map){
+        const opts = document.querySelectorAll('.opt-btn:not([disabled])');
+        if(opts[map[k]]) opts[map[k]].click();
+      }
+    }
+    if(e.key === 'Enter' && S.answered) advanceQuiz();
+    if(e.key === 'Enter' && S.answerMode === 'typing' && !S.answered) checkTyped();
   }
-  if(e.key==='Enter'&&S.answered)advanceQuiz();
-  if(e.key==='Enter'&&S.answerMode==='typing'&&!S.answered)checkTyped();
+
+  if(flashActive){
+    if(e.key === 'Enter' || e.key === ' '){
+      const reveal = document.getElementById('flash-answer-reveal');
+      if(!reveal.classList.contains('show')){ revealFlashAnswer(); }
+    }
+    if(e.key === 'ArrowRight') flashRespond(true);
+    if(e.key === 'ArrowLeft') flashRespond(false);
+  }
 });
 
-document.getElementById('type-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkTyped();});
+document.getElementById('type-input').addEventListener('keydown', e => {
+  if(e.key === 'Enter') checkTyped();
+});
 
 // ════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════
 updateHomeUI();
 
-// Animate mascot on load
-setTimeout(()=>{
-  const gp=document.getElementById('home-gp');
-  if(gp){gp.classList.add('happy');setTimeout(()=>gp.classList.remove('happy'),800);}
-},400);
-
-
-// === IMPROVED TTS SYSTEM ===
-let speechRate = 1.0;
-let narrationEnabled = true;
-let isSpeaking = false;
-let currentSpeaker = null;
-
-function stopSpeaking() {
-  try { window.speechSynthesis.cancel(); } catch(e){}
-  isSpeaking = false;
-
-  document.querySelectorAll('.tts-speaker').forEach(btn => {
-    btn.classList.remove('speaking');
-    btn.dataset.active = 'false';
-  });
-
-  currentSpeaker = null;
-}
-
-function speak(text, btn=null) {
-  if (!text || !narrationEnabled || !('speechSynthesis' in window)) return;
-
-  stopSpeaking();
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
-  utterance.rate = speechRate;
-  utterance.pitch = 1.0;
-
-  utterance.onstart = () => {
-    isSpeaking = true;
-
-    if (btn) {
-      currentSpeaker = btn;
-      btn.dataset.active = 'true';
-      btn.classList.add('speaking');
-    }
-  };
-
-  utterance.onend = () => stopSpeaking();
-  utterance.onerror = () => stopSpeaking();
-
-  window.speechSynthesis.speak(utterance);
-}
-
-function createSpeaker(text) {
-  const btn = document.createElement('button');
-  btn.className = 'tts-speaker';
-  btn.type = 'button';
-
-  btn.innerHTML = `
-    <div class="wave">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
-  `;
-
-  btn.onclick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (currentSpeaker === btn && isSpeaking) {
-      stopSpeaking();
-      return;
-    }
-
-    speak(text, btn);
-  };
-
-  return btn;
-}
-
-// Settings
-function openAudioSettings() {
-  const modal = document.getElementById('audio-settings');
-  if (modal) modal.classList.add('show');
-}
-
-function closeAudioSettings() {
-  const modal = document.getElementById('audio-settings');
-  if (modal) modal.classList.remove('show');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  const narrationBtn = document.getElementById('toggle-narration');
-  if (narrationBtn) {
-    narrationBtn.onclick = function() {
-      narrationEnabled = !narrationEnabled;
-      this.classList.toggle('on', narrationEnabled);
-
-      if (!narrationEnabled) stopSpeaking();
-    };
-  }
-
-  const speedSlider = document.getElementById('speed-slider');
-  const speedVal = document.getElementById('speed-val');
-
-  if (speedSlider) {
-    speedSlider.oninput = function() {
-      speechRate = parseFloat(this.value);
-      if (speedVal) {
-        speedVal.textContent = speechRate.toFixed(1) + 'x';
-      }
-    };
-  }
-
-  // Home settings button
-  const homeBody = document.querySelector('.home-body');
-
-  if (homeBody && !document.getElementById('audio-settings-open')) {
-    const settingsBtn = document.createElement('button');
-    settingsBtn.id = 'audio-settings-open';
-    settingsBtn.className = 'btn btn-ghost';
-    settingsBtn.innerHTML = '🎧 Audio & TTS Settings';
-    settingsBtn.style.marginTop = '8px';
-    settingsBtn.onclick = openAudioSettings;
-
-    homeBody.appendChild(settingsBtn);
-  }
-});
-
-// ================================
-// PRACTICE MODE FIX
-// ================================
-if (typeof renderQuestion !== 'undefined') {
-
-  const originalRenderQuestion = renderQuestion;
-
-  renderQuestion = function() {
-
-    stopSpeaking();
-
-    originalRenderQuestion();
-
-    setTimeout(() => {
-
-      // Remove stale speaker
-      const oldSpeaker = document.getElementById('practice-question-speaker');
-      if (oldSpeaker) oldSpeaker.remove();
-
-      const qText = document.getElementById('q-text');
-
-      if (!qText) return;
-
-      const questionText = qText.textContent.trim();
-
-      const target =
-        document.querySelector('.q-meta') ||
-        qText.parentElement;
-
-      if (!target) return;
-
-      const speaker = createSpeaker(questionText);
-      speaker.id = 'practice-question-speaker';
-
-      target.appendChild(speaker);
-
-    }, 50);
-  };
-}
-
-// ================================
-// FEEDBACK MODE
-// Listen to correct answer
-// ================================
-if (typeof showFeedback !== 'undefined') {
-
-  const originalShowFeedback = showFeedback;
-
-  showFeedback = function(correct, q) {
-
-    originalShowFeedback(correct, q);
-
-    stopSpeaking();
-
-    if (correct) return;
-
-    setTimeout(() => {
-
-      const answerContainer =
-        document.getElementById('fb-answer') ||
-        document.querySelector('.fb-answer');
-
-      if (!answerContainer) return;
-
-      // prevent duplicates
-      const existing = document.getElementById('correct-answer-speaker');
-      if (existing) existing.remove();
-
-      const correctAnswer =
-        q && q.answers && q.answers.length
-          ? q.answers[0]
-          : answerContainer.textContent.trim();
-
-      const wrap = document.createElement('div');
-      wrap.style.display = 'flex';
-      wrap.style.alignItems = 'center';
-      wrap.style.gap = '10px';
-      wrap.style.marginTop = '12px';
-
-      const label = document.createElement('div');
-      label.style.fontWeight = '800';
-      label.textContent = 'Listen to Correct Answer';
-
-      const speaker = createSpeaker(correctAnswer);
-      speaker.id = 'correct-answer-speaker';
-
-      wrap.appendChild(label);
-      wrap.appendChild(speaker);
-
-      answerContainer.appendChild(wrap);
-
-    }, 80);
-  };
-}
-
-// ================================
-// INTERVIEW MODE
-// ================================
-if (typeof renderIV !== 'undefined') {
-
-  const originalRenderIV = renderIV;
-
-  renderIV = function() {
-
-    stopSpeaking();
-
-    originalRenderIV();
-
-    setTimeout(() => {
-
-      const q =
-        typeof S !== 'undefined' &&
-        S.ivQueue &&
-        S.ivQueue[S.ivIdx]
-          ? S.ivQueue[S.ivIdx]
-          : null;
-
-      if (!q || !q.answers) return;
-
-      const accepted = document.getElementById('accepted-answers');
-
-      if (!accepted) return;
-
-      accepted.querySelectorAll('.tts-speaker').forEach(el => el.remove());
-
-      accepted.querySelectorAll('.accepted-answer').forEach((row, idx) => {
-
-        const answerText = q.answers[idx] || row.textContent.trim();
-
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.style.justifyContent = 'space-between';
-        row.style.gap = '12px';
-
-        const speaker = createSpeaker(answerText);
-
-        row.appendChild(speaker);
-      });
-
-    }, 80);
-  };
-}
-
+setTimeout(() => {
+  const gp = document.getElementById('home-gp');
+  if(gp){ gp.classList.add('happy'); setTimeout(() => gp.classList.remove('happy'), 800); }
+}, 400);
 </script>
 </body>
 </html>
